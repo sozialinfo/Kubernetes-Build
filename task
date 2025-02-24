@@ -64,7 +64,7 @@ function odoo-apply() {
     kubectl wait --for=condition=Ready "$ODOO_POD" "$POSTGRES_POD" --timeout=60s
 }
 
-function test-odoo() {
+function test-k8s() {
     start-kind
     odoo-apply
 }
