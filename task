@@ -1,0 +1,87 @@
+#!/bin/bash
+set -e
+
+if [[ -a ".env" ]]; then
+    source .env
+fi
+
+function help() {
+    echo
+    echo "task <command> [options]"
+    echo
+    echo "commands:"
+    echo
+
+    # Define column widths
+    cmd_width=10
+    opt_width=6
+    desc_width=40
+
+    # Print table header
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "Command" "Option" "Description"
+    echo "|$(printf '%*s' $((cmd_width + 2)) '' | tr ' ' '-')|$(printf '%*s' $((opt_width + 2)) '' | tr ' ' '-')|$(printf '%*s' $((desc_width + 2)) '' | tr ' ' '-')|"
+
+    # Print table rows
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "start-kind" "" "Start kind Kubernetes cluster."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "start-minikube" "" "Start minikube Kubernetes cluster."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "odoo-apply" "" "Apply the Odoo K8s manifests."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "test-k8s" "" "Test Kubernetes environment."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "install" "" "Setup the local environment."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "version" "" "Show version of required tools."
+
+    echo
+}
+
+function start-kind() {
+    echo "Start kind."
+    kind create cluster
+}
+
+function start-minikube() {
+    echo "Start minikube."
+    minikube start
+}
+
+function odoo-apply() {
+    echo "Deploy Postgres:"
+    kubectl apply -f odoo/postgres-cm.yaml
+    kubectl apply -f odoo/postgres-pvc.yaml
+    kubectl apply -f odoo/postgres-deploy.yaml
+    kubectl apply -f odoo/postgres-svc.yaml
+
+    echo -e "\nDeploy Odoo:"
+    kubectl apply -f odoo/odoo-cm.yaml
+    kubectl apply -f odoo/odoo-deploy.yaml
+    kubectl apply -f odoo/odoo-svc.yaml
+
+    echo -e "\nWait until resources are ready."
+    sleep 8
+
+    ODOO_POD=$(kubectl get pods -o=name --all-namespaces | grep odoo)
+    POSTGRES_POD=$(kubectl get pods -o=name --all-namespaces | grep postgres)
+
+    echo -e "\nWait for $ODOO_POD and $POSTGRES_POD pods to be running:"
+    kubectl wait --for=condition=Ready "$ODOO_POD" "$POSTGRES_POD" --timeout=60s
+}
+
+function test-odoo() {
+    start-kind
+    odoo-apply
+}
+
+function version() {
+    minikube version
+    kind version
+}
+
+if declare -f "$1" > /dev/null; then
+    "$1" "${@:2}"
+else
+    case "$1" in
+        *)
+            echo "Unknown command: $1"
+            help
+            exit 1
+            ;;
+    esac
+fi
