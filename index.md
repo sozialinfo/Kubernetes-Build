@@ -42,7 +42,7 @@ Ensure you have `kubectl` installed and can access the cluster.
 The following command applies the Odoo and Postgres manifests and initializes the Odoo database.
 
 ```bash
-task odoo-apply
+task apply-odoo
 ```
 
 ### Release
