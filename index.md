@@ -1,6 +1,10 @@
-# Kubernetes Build
+---
+layout: home
 
-The Mint System collection of Helm Charts.
+hero:
+  name: "Kubernetes Build"
+  tagline: The Mint System collection of Helm Charts.
+---
 
 * ☸️ **Kubernetes**: Deploy Odoo and Postgres to a local Kubernetes cluster.  
 

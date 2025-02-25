@@ -22,14 +22,29 @@ function help() {
     echo "|$(printf '%*s' $((cmd_width + 2)) '' | tr ' ' '-')|$(printf '%*s' $((opt_width + 2)) '' | tr ' ' '-')|$(printf '%*s' $((desc_width + 2)) '' | tr ' ' '-')|"
 
     # Print table rows
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "dev-vitepress" "" "Start VitePress dev server."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "build-vitepress" "" "Build site with VitePress."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "serve-vitepress-build" "" "Build site with VitePress."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "start-kind" "" "Start kind Kubernetes cluster."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "start-minikube" "" "Start minikube Kubernetes cluster."
-    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "odoo-apply" "" "Apply the Odoo K8s manifests."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "apply-odoo" "" "Apply the Odoo K8s manifests."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "test-k8s" "" "Test Kubernetes environment."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "install" "" "Setup the local environment."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "version" "" "Show version of required tools."
 
     echo
+}
+
+function dev-vitepress() {
+    pnpm run docs:dev
+}
+
+function build-vitepress() {
+    pnpm run docs:build
+}
+
+function server-vitepress-build() {
+    pnpm run docs:preview
 }
 
 function start-kind() {
@@ -42,7 +57,7 @@ function start-minikube() {
     minikube start
 }
 
-function odoo-apply() {
+function apply-odoo() {
     echo "Deploy Postgres:"
     kubectl apply -f odoo/postgres-cm.yaml
     kubectl apply -f odoo/postgres-pvc.yaml
@@ -66,7 +81,7 @@ function odoo-apply() {
 
 function test-k8s() {
     start-kind
-    odoo-apply
+    apply-odoo
 }
 
 function version() {
