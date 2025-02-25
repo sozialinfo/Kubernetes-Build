@@ -13,8 +13,8 @@ function help() {
     echo
 
     # Define column widths
-    cmd_width=14
-    opt_width=6
+    cmd_width=22
+    opt_width=10
     desc_width=40
 
     # Print table header
@@ -24,7 +24,7 @@ function help() {
     # Print table rows
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "dev-vitepress" "" "Start VitePress dev server."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "build-vitepress" "" "Build site with VitePress."
-    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "serve-vitepress-build" "" "Build site with VitePress."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "preview-vitepress" "" "Server VitePress build."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "start-kind" "" "Start kind Kubernetes cluster."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "start-minikube" "" "Start minikube Kubernetes cluster."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "apply-odoo" "" "Apply the Odoo K8s manifests."
@@ -43,7 +43,7 @@ function build-vitepress() {
     pnpm run docs:build
 }
 
-function server-vitepress-build() {
+function preview-vitepress() {
     pnpm run docs:preview
 }
 
