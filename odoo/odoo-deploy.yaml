@@ -26,13 +26,13 @@ spec:
       initContainers:
         - name: git-clone-addons
           image: mintsystem/odoo:16.0.20250207
-          command: ["git-clone-addons"]
+          command: ["/entrypoint.sh", "git-clone-addons"]
           envFrom:
             - configMapRef:
                 name: odoo-config
         - name: init-db
           image: mintsystem/odoo:16.0.20250207
-          command: ["init-db"]
+          acommand: ["/entrypoint.sh", "odoo-config"]
           envFrom:
             - configMapRef:
                 name: odoo-config

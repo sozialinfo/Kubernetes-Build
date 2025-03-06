@@ -26,8 +26,10 @@ function help() {
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "build-vitepress" "" "Build site with VitePress."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "preview-vitepress" "" "Server VitePress build."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "start-kind" "" "Start kind Kubernetes cluster."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "start-minikube" "" "Start minikube Kubernetes cluster."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "apply-odoo" "" "Apply the Odoo K8s manifests."
+    printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "forward-odoo" "" "Forward Odoo port."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "test-k8s" "" "Test Kubernetes environment."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "install" "" "Setup the local environment."
     printf "| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n" "version" "" "Show version of required tools."
@@ -51,6 +53,12 @@ function start-kind() {
     echo "Start kind."
     kind create cluster
 }
+
+function delete-kind() {
+    echo "Delete kind."
+    kind delete cluster
+}
+
 
 function start-minikube() {
     echo "Start minikube."
@@ -87,6 +95,11 @@ function test-k8s() {
 function version() {
     minikube version
     kind version
+}
+
+function forward-odoo() {
+    echo "Open http://localhost:8069 url in your browser."
+    kubectl port-forward service/odoo 8069:8069
 }
 
 if declare -f "$1" > /dev/null; then

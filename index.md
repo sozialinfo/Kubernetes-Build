@@ -6,7 +6,7 @@ hero:
   tagline: The Mint System collection of Helm Charts.
 ---
 
-* ☸️ **Kubernetes**: Deploy Odoo and Postgres to a local Kubernetes cluster.  
+* ☸️ **Kubernetes**: Deploy Odoo and Postgres to a local Kubernetes cluster.
 
 ## Requirements
 
@@ -17,11 +17,13 @@ hero:
 
 Install this Helm repository.
 
+#FIXME
+
 ## Develop
 
 Run a local Kubernets cluster with kind or minikube.
 
-### Start Kubernetes Cluster
+### Start Kubernetes cluster
 
 Start Kubernetes with `kind`.
 
@@ -45,6 +47,22 @@ The following command applies the Odoo and Postgres manifests and initializes th
 task apply-odoo
 ```
 
+### Forward Odoo service
+
+Once the pod is ready and initialized, run this command to access the service:
+
+```bash
+task forward-odoo
+```
+
 ### Release
 
 Create new release for this repository.
+
+#FIXME
+
+### Show log files
+
+```bash
+kubectl logs odoo init-db
+```
