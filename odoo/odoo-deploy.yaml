@@ -32,7 +32,7 @@ spec:
                 name: odoo-config
         - name: init-db
           image: mintsystem/odoo:16.0.20250207
-          acommand: ["/entrypoint.sh", "odoo-config"]
+          command: ["/entrypoint.sh", "odoo-config"]
           envFrom:
             - configMapRef:
                 name: odoo-config
