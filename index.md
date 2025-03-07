@@ -8,6 +8,8 @@ hero:
 
 [![.github/workflows/test.yml](https://github.com/Mint-System/Kubernetes-Build/actions/workflows/test.yml/badge.svg)](https://github.com/Mint-System/Kubernetes-Build/actions/workflows/test.yml)
 
+[![matrix-badge](https://matrix.to/img/matrix-badge.svg)](https://matrix.to/#/#odoo-build:mint-system.ch)
+
 * 🚀 **Install**: Install Helm repository and get started with Odoo.
 * 🛠️ **Develop**: Deploy Odoo and Postgres to a local Kubernetes cluster.
 * 🏗️ **Build**: Fork and build your own Helm Charts.
