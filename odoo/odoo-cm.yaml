@@ -10,7 +10,7 @@ data:
   PGUSER: odoo
   PGPASSWORD: odoo
   PROXY_MODE: "True"
-  ADDONS_GIT_REPOS: "https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#16.0,https://github.com/OCA/server-tools.git#16.0"
+  ADDONS_GIT_REPOS: "https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#16.0,https://github.com/OCA/Server-Tools.git#16.0"
   ODOO_DATABASE: "odoo"
   ODOO_INIT: "True"
   ODOO_INIT_LANG: de_CH

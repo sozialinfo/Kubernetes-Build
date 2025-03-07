@@ -15,15 +15,10 @@ spec:
       labels:
         app: odoo
     spec:
-      containers:
-        - name: odoo
-          image: mintsystem/odoo:16.0.20250207
-          ports:
-          - containerPort: 8069
-          envFrom:
-            - configMapRef:
-                name: odoo-config
       initContainers:
+        - name: wait-for-postgres
+          image: postgres:16
+          command: [ "sh", "-c", "until pg_isready -h postgres -p 5432; do sleep 2; done" ]
         - name: git-clone-addons
           image: mintsystem/odoo:16.0.20250207
           command: ["/entrypoint.sh", "git-clone-addons"]
@@ -32,7 +27,15 @@ spec:
                 name: odoo-config
         - name: init-db
           image: mintsystem/odoo:16.0.20250207
-          command: ["/entrypoint.sh", "odoo-config"]
+          command: ["/entrypoint.sh", "init-db"]
+          envFrom:
+            - configMapRef:
+                name: odoo-config
+      containers:
+        - name: odoo
+          image: mintsystem/odoo:16.0.20250207
+          ports:
+          - containerPort: 8069
           envFrom:
             - configMapRef:
                 name: odoo-config
