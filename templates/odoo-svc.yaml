@@ -9,3 +9,4 @@ spec:
   ports:
     - port: 8069
       targetPort: 8069
+

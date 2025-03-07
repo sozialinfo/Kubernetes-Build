@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: odoo-config
+  labels:
+    app: odoo
+data:
+  PGHOST: {{ .Values.odoo.pgHost | quote }}
+  PGUSER: {{ .Values.odoo.user | quote }}
+  PGPASSWORD: {{ .Values.odoo.password | quote }}
+  PROXY_MODE: {{ .Values.odoo.proxyMode | quote }}
+  ADDONS_GIT_REPOS: {{ .Values.odoo.addonsGitRepos | quote }}
+  ODOO_DATABASE: {{ .Values.odoo.database | quote }}
+  ODOO_INIT: {{ .Values.odoo.init | quote }}
+  ODOO_INIT_LANG: {{ .Values.odoo.initLang | quote }}
+

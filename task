@@ -14,10 +14,9 @@ function help() {
 
     # Define column widths
     CMD_WIDTH=20
-    OPT_WIDTH=6
+    OPT_WIDTH=14
     DESC_WIDTH=36
     COLUMN="| %-${CMD_WIDTH}s | %-${OPT_WIDTH}s | %-${DESC_WIDTH}s |\n"
-
     # Print table header
     printf "$COLUMN" "Command" "Option" "Description"
     echo "|$(printf '%*s' $((CMD_WIDTH + 2)) '' | tr ' ' '-')|$(printf '%*s' $((OPT_WIDTH + 2)) '' | tr ' ' '-')|$(printf '%*s' $((DESC_WIDTH + 2)) '' | tr ' ' '-')|"
@@ -34,9 +33,20 @@ function help() {
     printf "$COLUMN" "test-k8s" "" "Test Kubernetes environment."
     printf "$COLUMN" "install" "" "Setup the local environment."
     printf "$COLUMN" "version" "" "Show version of required tools."
+    printf "$COLUMN" "update-with-llm" "[path][prompt]" "Update files with LLM prompt."
 
     echo
 }
+
+# Env Commands
+
+function version() {
+    minikube version
+    kind version
+    helm version
+}
+
+# Docs Commands
 
 function dev-vitepress() {
     pnpm run docs:dev
@@ -49,6 +59,8 @@ function build-vitepress() {
 function preview-vitepress() {
     pnpm run docs:preview
 }
+
+# Kubernetes Commands
 
 function start-kind() {
     echo "Start kind."
@@ -66,16 +78,11 @@ function start-minikube() {
 }
 
 function apply-odoo() {
-    echo "Deploy Postgres:"
-    kubectl apply -f odoo/postgres-cm.yaml
-    kubectl apply -f odoo/postgres-pvc.yaml
-    kubectl apply -f odoo/postgres-deploy.yaml
-    kubectl apply -f odoo/postgres-svc.yaml
+    echo "Template the manifest files."
+    helm template odoo . > manifest.yaml
 
-    echo -e "\nDeploy Odoo:"
-    kubectl apply -f odoo/odoo-cm.yaml
-    kubectl apply -f odoo/odoo-deploy.yaml
-    kubectl apply -f odoo/odoo-svc.yaml
+    echo "Apply manifest files."
+    kubectl apply -f manifest.yaml
 
     echo -e "\nWait until resources are ready."
     sleep 8
@@ -92,14 +99,104 @@ function test-k8s() {
     apply-odoo
 }
 
-function version() {
-    minikube version
-    kind version
-}
-
 function forward-odoo() {
     echo "Open http://localhost:8069 url in your browser."
     kubectl port-forward service/odoo 8069:8069
+}
+
+# Helm Commands
+
+# LLM Commands
+
+function update-with-llm() {
+    if test -z "$1"; then 
+        echo "\$1 is empty. Usage:";
+        help | grep "${FUNCNAME[0]}"
+        exit 1; 
+    fi
+
+    # Get files from path
+    if [ -f "$1" ]; then
+        FILES="$1"
+    elif [ -d "$1" ]; then
+        FILES=$(find "$1" -type f \( -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.conf" -o -name "*.nginx" \) \
+            | grep -vFf <(git -C "$1" ls-files --ignored --exclude-standard --others))
+    else
+        echo "$1 is neither a file nor a directory."
+        exit 1
+    fi
+    echo -e "Loaded these files into prompt:\n\n$FILES\n"
+
+    # Prompt task description
+    if [ -z "$2" ]; then
+        read -p "Enter the task description: " TASK_DESCRIPTION
+    else
+        TASK_DESCRIPTION="$2"
+    fi
+
+    # Prepare the files content for prompt
+    FILE_CONTENTS=""
+    for FILE in $FILES; do
+        FILE_CONTENTS+="<<<$FILE>>>
+$(cat "$FILE")
+
+"
+    done
+
+    # Define prompt content
+    mkdir -p tmp
+    PROMPT_FILE="tmp/llm_update"
+    echo -e "\nWrite prompt to $PROMPT_FILE."
+    cat << EOF > "$PROMPT_FILE"
+Look at the code files below and do the following:
+
+$TASK_DESCRIPTION
+
+Output all files that you need to change in full again, including your changes. 
+In the same format as I provide the files below. Under no circumstances output any other text, 
+no additional infos, no code formatting chars. Only the code in the given format.
+
+Here are the files:
+
+$FILE_CONTENTS
+EOF
+
+    # Run the llm command
+    echo -e "Send prompt and wait for the response of the $LLM_MODEL LLM."
+    RESULT=$(cat "$PROMPT_FILE" | llm -m "$LLM_MODEL")
+
+    # Check if result is empty
+    if [ -z "$RESULT" ]; then
+        echo "No response from the model. Exiting."
+        exit 1
+    fi
+
+    # Save the result to a file
+    RESULT_FILE="tmp/llm_update_result"
+    echo "$RESULT" > "$RESULT_FILE"
+    echo -e "Saved response to $RESULT_FILE.\n"
+
+    # Show a preview of result file
+    less "$RESULT_FILE"
+
+    # Ask for confirmation before updating files
+    read -p "Do you want to apply these updates to the files? (y/n): " CONFIRM
+    if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
+        exit 0
+    fi
+
+    # Parse the response from the file and update the files directly
+    echo -e "Parsing the response and updating files...\n"
+    CURRENT_FILE=""
+    while IFS= read -r LINE; do
+        if [[ $LINE =~ ^"<<<"(.*)">>>" ]]; then
+            CURRENT_FILE="${BASH_REMATCH[1]}"
+            echo "Update file $CURRENT_FILE."
+            > "$CURRENT_FILE"
+        elif [[ -n $CURRENT_FILE ]]; then
+            echo "$LINE" >> "$CURRENT_FILE"
+        fi
+    done < "$RESULT_FILE"
 }
 
 if declare -f "$1" > /dev/null; then

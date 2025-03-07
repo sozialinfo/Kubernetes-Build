@@ -39,3 +39,4 @@ spec:
           envFrom:
             - configMapRef:
                 name: odoo-config
+
