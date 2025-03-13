@@ -34,6 +34,9 @@ function help() {
     printf "$COLUMN" "install" "" "Setup the local environment."
     printf "$COLUMN" "version" "" "Show version of required tools."
     printf "$COLUMN" "update-with-llm" "[path][prompt]" "Update files with LLM prompt."
+    printf "$COLUMN" "package" "" "Package Helm Chart."
+    printf "$COLUMN" "index" "" "Index Helm Chart."
+    printf "$COLUMN" "build" "" "Package Helm Chart and site."
 
     echo
 }
@@ -44,6 +47,10 @@ function version() {
     minikube version
     kind version
     helm version
+}
+
+function install() {
+    pnpm install
 }
 
 # Docs Commands
@@ -78,11 +85,14 @@ function start-minikube() {
 }
 
 function apply-odoo() {
-    echo "Template the manifest files."
-    helm template odoo . > manifest.yaml
+    # echo "Template the manifest files."
+    # helm template odoo . > manifest.yaml
 
-    echo "Apply manifest files."
-    kubectl apply -f manifest.yaml
+    # echo "Apply manifest files."
+    # kubectl apply -f manifest.yaml
+
+    echo "Install release odoo with Helm."
+    helm install odoo .
 
     echo -e "\nWait until resources are ready."
     sleep 8
@@ -105,6 +115,14 @@ function forward-odoo() {
 }
 
 # Helm Commands
+
+function package() {
+    helm package .
+}
+
+function index() {
+    helm repo index .
+}
 
 # LLM Commands
 
@@ -203,6 +221,10 @@ if declare -f "$1" > /dev/null; then
     "$1" "${@:2}"
 else
     case "$1" in
+        build)
+            build-vitepress
+            package
+        ;;
         *)
             echo "Unknown command: $1"
             help

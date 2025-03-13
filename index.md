@@ -23,7 +23,9 @@ hero:
 
 Install this Helm repository.
 
-#FIXME
+```bash
+helm repo add kubernetes-build https://kubernetes.build
+```
 
 ## Develop
 

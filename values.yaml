@@ -1,11 +1,13 @@
 replicaCount: 1
 
 postgres:
+  image: postgres:16-alpine
   db: odoo
   user: odoo
   password: odoo
 
 odoo:
+  image: mintsystem/odoo:16.0.20250207
   pgHost: postgres
   user: odoo
   password: odoo

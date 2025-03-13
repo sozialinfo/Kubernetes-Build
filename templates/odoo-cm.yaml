@@ -14,4 +14,3 @@ data:
   ODOO_DATABASE: {{ .Values.odoo.database | quote }}
   ODOO_INIT: {{ .Values.odoo.init | quote }}
   ODOO_INIT_LANG: {{ .Values.odoo.initLang | quote }}
-
