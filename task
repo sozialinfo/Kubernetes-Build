@@ -22,23 +22,30 @@ function help() {
     echo "|$(printf '%*s' $((CMD_WIDTH + 2)) '' | tr ' ' '-')|$(printf '%*s' $((OPT_WIDTH + 2)) '' | tr ' ' '-')|$(printf '%*s' $((DESC_WIDTH + 2)) '' | tr ' ' '-')|"
 
     # Print table rows
+    printf "$COLUMN" "version" "" "Show version of required tools."
+
+    printf "$COLUMN" "install" "" "Install node dependencies."
     printf "$COLUMN" "dev-vitepress" "" "Start VitePress dev server."
     printf "$COLUMN" "build-vitepress" "" "Build site with VitePress."
     printf "$COLUMN" "preview-vitepress" "" "Server VitePress build."
+    
     printf "$COLUMN" "start-kind" "" "Start kind Kubernetes cluster."
     printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
-    printf "$COLUMN" "apply-odoo" "" "Apply the Odoo K8s manifests."
-    printf "$COLUMN" "forward-odoo" "" "Forward Odoo port."
+
+    printf "$COLUMN" "install-odoo" "" "Install the odoo Helm Charts."
+    printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
     printf "$COLUMN" "test-k8s" "" "Test Kubernetes environment."
-    printf "$COLUMN" "install" "" "Setup the local environment."
-    printf "$COLUMN" "version" "" "Show version of required tools."
-    printf "$COLUMN" "update-with-llm" "[path][prompt]" "Update files with LLM prompt."
-    printf "$COLUMN" "package" "" "Package Helm Chart."
+
+    printf "$COLUMN" "list" "" "List Helm deployments."
+    printf "$COLUMN" "package-repo" "" "Package Helm Chart."
     printf "$COLUMN" "index-repo" "" "Index Helm Chart."
-    printf "$COLUMN" "publish" "" "Copy Helm Chart files to dist."
+    printf "$COLUMN" "publish-repo" "" "Copy Helm Chart files to dist."
     printf "$COLUMN" "add-repo" "" "Add the kubernetes-buld repo."
     printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-buld repo."
+    printf "$COLUMN" "install-repo" "" "Install the kubernetes-buld repo."
+
+    printf "$COLUMN" "update-with-llm" "[path][prompt]" "Update files with LLM prompt."
 
     echo
 }
@@ -86,7 +93,7 @@ function start-minikube() {
     minikube start
 }
 
-function apply-odoo() {
+function install-odoo() {
     echo "Install release odoo with helm."
     helm install odoo .
 
@@ -112,7 +119,11 @@ function forward-odoo() {
 
 # Helm Commands
 
-function package() {
+function list() {
+    helm list
+}
+
+function package-repo() {
     echo "Package Helm Chart."
     helm package .
 }
@@ -122,7 +133,7 @@ function index-repo() {
     helm repo index .
 }
 
-function publish() {
+function publish-repo() {
     build-vitepress
     cp *.tgz .vitepress/dist
     cp index.yaml .vitepress/dist
@@ -136,6 +147,11 @@ function add-repo(){
 function remove-repo(){
     echo "Remove the kubernetes-build repo."
     helm repo remove kubernetes-build
+}
+
+function install-repo(){
+    echo "Install release odoo from kubernetes-build repo."
+    helm install odoo kubernetes-build/odoo
 }
 
 # LLM Commands

@@ -21,10 +21,16 @@ hero:
 
 ## Usage
 
-Install [this Helm repository](/index.yaml).
+Add [this Helm repository](/index.yaml).
 
 ```bash
 helm repo add kubernetes-build https://kubernetes.build
+```
+
+Install the odoo chart.
+
+```bash
+helm install odoo kubernetes-build/odoo
 ```
 
 ## Develop
@@ -52,7 +58,7 @@ Ensure you have `kubectl` installed and can access the cluster.
 The following command applies the Odoo and Postgres manifests and initializes the Odoo database.
 
 ```bash
-task apply-odoo
+task install-odoo
 ```
 
 ### Forward Odoo service
@@ -70,7 +76,7 @@ Adjust the version in `Chart.yaml`.
 Create new package for this repository.
 
 ```bash
-task package
+task package-repo
 ```
 
 Update index file.
