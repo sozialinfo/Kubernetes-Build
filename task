@@ -109,7 +109,7 @@ function install-odoo() {
 
 function test-k8s() {
     start-kind
-    apply-odoo
+    install-odoo
 }
 
 function forward-odoo() {
