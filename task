@@ -35,9 +35,10 @@ function help() {
     printf "$COLUMN" "version" "" "Show version of required tools."
     printf "$COLUMN" "update-with-llm" "[path][prompt]" "Update files with LLM prompt."
     printf "$COLUMN" "package" "" "Package Helm Chart."
-    printf "$COLUMN" "index" "" "Index Helm Chart."
-    printf "$COLUMN" "publish" "" "Copy Helm Chart packages and repo index."
-    printf "$COLUMN" "add" "" "Add the kubernetes-buld  repo."
+    printf "$COLUMN" "index-repo" "" "Index Helm Chart."
+    printf "$COLUMN" "publish" "" "Copy Helm Chart files to dist."
+    printf "$COLUMN" "add-repo" "" "Add the kubernetes-buld repo."
+    printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-buld repo."
 
     echo
 }
@@ -116,7 +117,7 @@ function package() {
     helm package .
 }
 
-function index() {
+function index-repo() {
     echo "Update index.yaml"
     helm repo index .
 }
@@ -127,9 +128,14 @@ function publish() {
     cp index.yaml .vitepress/dist
 }
 
-function add(){
+function add-repo(){
     echo "Add the kubernetes-build repo."
     helm repo add kubernetes-build https://kubernetes.build
+}
+
+function remove-repo(){
+    echo "Remove the kubernetes-build repo."
+    helm repo remove kubernetes-build
 }
 
 # LLM Commands

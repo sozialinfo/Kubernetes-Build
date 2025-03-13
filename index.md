@@ -76,7 +76,7 @@ task package
 Update index file.
 
 ```bash
-task index
+task index-repo
 ```
 
 ### Show log files
