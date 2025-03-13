@@ -37,6 +37,7 @@ function help() {
     printf "$COLUMN" "package" "" "Package Helm Chart."
     printf "$COLUMN" "index" "" "Index Helm Chart."
     printf "$COLUMN" "publish" "" "Copy Helm Chart packages and repo index."
+    printf "$COLUMN" "add" "" "Add the kubernetes-buld  repo."
 
     echo
 }
@@ -124,6 +125,11 @@ function publish() {
     build-vitepress
     cp *.tgz .vitepress/dist
     cp index.yaml .vitepress/dist
+}
+
+function add(){
+    echo "Add the kubernetes-build repo."
+    helm repo add kubernetes-build https://kubernetes.build
 }
 
 # LLM Commands
