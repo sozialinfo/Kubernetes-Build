@@ -36,7 +36,7 @@ function help() {
     printf "$COLUMN" "update-with-llm" "[path][prompt]" "Update files with LLM prompt."
     printf "$COLUMN" "package" "" "Package Helm Chart."
     printf "$COLUMN" "index" "" "Index Helm Chart."
-    printf "$COLUMN" "build" "" "Package Helm Chart and site."
+    printf "$COLUMN" "publish" "" "Copy Helm Chart packages and repo index."
 
     echo
 }
@@ -85,12 +85,6 @@ function start-minikube() {
 }
 
 function apply-odoo() {
-    # echo "Template the manifest files."
-    # helm template odoo . > manifest.yaml
-
-    # echo "Apply manifest files."
-    # kubectl apply -f manifest.yaml
-
     echo "Install release odoo with Helm."
     helm install odoo .
 
@@ -117,11 +111,19 @@ function forward-odoo() {
 # Helm Commands
 
 function package() {
+    echo "Package Helm Chart."
     helm package .
 }
 
 function index() {
+    echo "Update index.yaml"
     helm repo index .
+}
+
+function publish() {
+    build-vitepress
+    cp *.tgz .vitepress/dist
+    cp index.yaml .vitepress/dist
 }
 
 # LLM Commands
@@ -221,10 +223,6 @@ if declare -f "$1" > /dev/null; then
     "$1" "${@:2}"
 else
     case "$1" in
-        build)
-            build-vitepress
-            package
-        ;;
         *)
             echo "Unknown command: $1"
             help

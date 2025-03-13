@@ -21,7 +21,7 @@ hero:
 
 ## Usage
 
-Install this Helm repository.
+Install [this Helm repository](/index.yaml).
 
 ```bash
 helm repo add kubernetes-build https://kubernetes.build
@@ -65,9 +65,19 @@ task forward-odoo
 
 ### Release
 
-Create new release for this repository.
+Adjust the version in `Chart.yaml`.
 
-#FIXME
+Create new package for this repository.
+
+```bash
+task package
+```
+
+Update index file.
+
+```bash
+task index
+```
 
 ### Show log files
 
