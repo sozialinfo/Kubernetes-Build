@@ -72,7 +72,7 @@ function preview-vitepress() {
 
 function start-kind() {
     echo "Start kind."
-    kind create cluster --config kind-config.yaml
+    kind create cluster
 }
 
 function delete-kind() {

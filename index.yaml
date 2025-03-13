@@ -3,12 +3,12 @@ entries:
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-03-13T17:01:53.80074207+01:00"
+    created: "2025-03-13T17:23:58.890898637+01:00"
     description: Mint System Odoo
-    digest: 4419c9279d57aa8fb149f5927f1cd4c74be02c033d0f043bce9d974956408c1a
+    digest: d8d6df9099e940f3c6f966ea35c3e1d8a7d8ee373bea4aaf8f15f0dc071b221e
     name: odoo
     type: application
     urls:
     - odoo-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-13T17:01:53.770579802+01:00"
+generated: "2025-03-13T17:23:58.890627208+01:00"

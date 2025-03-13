@@ -1,15 +1,15 @@
+.git
 node_modules
-# Common VCS dirs
-.git/
+.github
+.vitepress
+public
+tmp
 .gitignore
-.bzr/
-.bzrignore
-.hg/
-.hgignore
-.svn/
-# Common backup files
-*.swp
-*.bak
-*.tmp
-*.orig
-*~
+index.md
+kind-config.yaml
+*.tgz
+package.json
+pnpm-lock.yaml
+task
+.helmignore
+index.yaml
