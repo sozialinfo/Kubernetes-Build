@@ -71,7 +71,7 @@ function preview-vitepress() {
 
 function start-kind() {
     echo "Start kind."
-    kind create cluster
+    kind create cluster --config kind-config.yaml
 }
 
 function delete-kind() {
@@ -85,7 +85,7 @@ function start-minikube() {
 }
 
 function apply-odoo() {
-    echo "Install release odoo with Helm."
+    echo "Install release odoo with helm."
     helm install odoo .
 
     echo -e "\nWait until resources are ready."
