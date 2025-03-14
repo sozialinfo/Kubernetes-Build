@@ -38,7 +38,7 @@ In your zone open *Helm > Repositories > Create > Repository* and enter:
 * **Description**: The Mint System collection of Helm Charts.
 * **URL**: <https://kubernetes.build>
 
-## Create Helm release
+### Create Helm release
 
 In your zone open *Helm > Helm Releases > Create > Helm Release* and filter `Postgres`. Click on the Hem Chart and select *Create* and confirm with *Create*.
 
