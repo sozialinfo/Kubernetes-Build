@@ -52,12 +52,20 @@ List of charts:
 
 ## Develop
 
-Run a local Kubernets cluster with kind or minikube.
+Setup a local Kubernetes cluster and deploy the Helm charts locally.
 
 ### Requirements
 
 * Install [Helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) 
 * Setup [kind](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/docs/)
+* Optional: bash/zsh alias `task='./task'` with [completion](https://taskfile.build/#completion).
+
+Clone the repository:
+
+```bash
+git clone git@github.com:Mint-System/Kubernetes-Build.git
+cd Kubernetes-Build
+```
 
 ### Start Kubernetes cluster
 
@@ -77,18 +85,18 @@ task start-minikube
 
 Ensure you have `kubectl` installed and can access the cluster.
 
-The followpostgresng command applies the Postgres and Odoo charts:
+The following command applies the Postgres and Odoo charts:
 
 ```bash
 task install-chart postgres
 task install-chart odoo
 ```
 
-The Odoo database will be automtically initialized.
+The Odoo database will initialized automtically.
 
 ### Forward Odoo service
 
-Once the pod is ready, run this command to access the service:
+Once the pod is ready, run this command to port forward the service:
 
 ```bash
 task forward-odoo
