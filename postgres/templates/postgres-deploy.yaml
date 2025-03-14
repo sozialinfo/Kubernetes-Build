@@ -14,11 +14,13 @@ spec:
         app: postgres
     spec:
       containers:
-        - name: {{ .Values.postgres.name }}
+        - name: {{ .Values.postgres.host }}
           image: {{ .Values.postgres.image }}
           ports:
             - containerPort: 5432
           envFrom:
+            - secretRef:
+                name: postgres-creds
             - configMapRef:
                 name: postgres-config
           volumeMounts:

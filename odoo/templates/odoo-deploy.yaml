@@ -18,6 +18,9 @@ spec:
         - name: wait-for-postgres
           image: {{ .Values.postgres.image }}
           command: [ "sh", "-c", "until pg_isready -h postgres -p 5432; do sleep 2; done" ]
+          envFrom:
+            - secretRef:
+                name: postgres-creds
         - name: init
           image: {{ .Values.odoo.image }}
           command:
@@ -27,13 +30,17 @@ spec:
               /entrypoint.sh git-clone-addons && \
               /entrypoint.sh init-db
           envFrom:
+            - secretRef:
+                name: odoo-creds
             - configMapRef:
                 name: odoo-config
       containers:
-        - name: {{ .Values.postgres.name }}
+        - name: {{ .Values.odoo.host }}
           image: {{ .Values.odoo.image }}
           ports:
           - containerPort: 8069
           envFrom:
+            - secretRef:
+                name: odoo-creds
             - configMapRef:
                 name: odoo-config

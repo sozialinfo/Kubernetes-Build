@@ -1,15 +1,14 @@
 postgres:
   image: postgres:16-alpine
-  name: postgres
+  host: postgres
   db: odoo
   user: odoo
   password: odoo
 
 odoo:
   image: mintsystem/odoo:18.0.20250207
-  name: odoo
+  host: odoo
   proxyMode: "True"
   addonsGitRepos: "https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0,https://github.com/OCA/Server-Tools.git#18.0"
   database: "odoo"
   initLang: de_CH
-

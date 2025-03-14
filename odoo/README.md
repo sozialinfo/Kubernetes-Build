@@ -11,7 +11,8 @@ Prefix: `postgres`
 | Key      | Type   | Default              |
 | -------- | ------ | -------------------- |
 | image    | string | `postgres:16-alpine` |
-| name     | string | `postgres`           |
+| host     | string | `postgres`           |
+| db       | string | `odoo`               |
 | user     | string | `odoo`               |
 | password | string | `odoo`               |
 

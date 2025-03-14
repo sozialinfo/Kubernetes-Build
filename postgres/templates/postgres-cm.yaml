@@ -6,6 +6,3 @@ metadata:
   labels:
     app: postgres
 data:
-  POSTGRES_DB: {{ .Values.postgres.name | quote }}
-  POSTGRES_DB: {{ .Values.postgres.db | quote }}
-  POSTGRES_USER: {{ .Values.postgres.user | quote }}
