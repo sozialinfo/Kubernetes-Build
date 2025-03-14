@@ -6,9 +6,8 @@ metadata:
   labels:
     app: odoo
 data:
-  PGHOST: {{ .Values.odoo.pgHost | quote }}
-  PGUSER: {{ .Values.odoo.user | quote }}
-  PGPASSWORD: {{ .Values.odoo.password | quote }}
+  PGHOST: {{ .Values.postgres.name | quote }}
+  PGUSER: {{ .Values.postgres.user | quote }}
   PROXY_MODE: {{ .Values.odoo.proxyMode | quote }}
   ADDONS_GIT_REPOS: {{ .Values.odoo.addonsGitRepos | quote }}
   ODOO_DATABASE: {{ .Values.odoo.database | quote }}

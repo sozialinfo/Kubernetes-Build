@@ -38,6 +38,7 @@ function help() {
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
     printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
 
+    printf "$COLUMN" "template" "" "Template all charts with Helm."
     printf "$COLUMN" "logs" "" "Show pod logs."
     printf "$COLUMN" "list" "" "List Helm deployments."
     printf "$COLUMN" "list-pods" "" "List all pods."
@@ -153,6 +154,12 @@ function list-pods() {
 
 
 # Helm Commands
+
+function template() {
+    echo "Template charts into manifest.yaml."
+    helm template odoo odoo > manifest.yaml
+    helm template postgres postgres >> manifest.yaml
+}
 
 function list() {
     helm list

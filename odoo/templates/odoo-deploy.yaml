@@ -6,7 +6,6 @@ metadata:
   labels:
     app: odoo
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: odoo
@@ -31,7 +30,7 @@ spec:
             - configMapRef:
                 name: odoo-config
       containers:
-        - name: odoo
+        - name: {{ .Values.postgres.name }}
           image: {{ .Values.odoo.image }}
           ports:
           - containerPort: 8069

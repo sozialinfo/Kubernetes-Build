@@ -9,6 +9,7 @@ type: application
 version: 0.1.0
 appVersion: "1.0.0"
 templates:
+  - postgres-secret.yaml
   - postgres-cm.yaml
   - postgres-deploy.yaml
   - postgres-svc.yaml
