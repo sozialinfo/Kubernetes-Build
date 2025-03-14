@@ -104,8 +104,12 @@ function install-chart() {
 
     echo "Install release $1 with helm."
     helm install "$1" "$1"
+    sleep 8
     
+    echo "Get pods with name $1:"
+    kubectl get pods -o=name --all-namespaces | grep "$1"
     POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "$1")
+
     echo -e "\nWait for $POD_ID pods to be running:"
     kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
 }
