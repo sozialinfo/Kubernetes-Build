@@ -33,17 +33,20 @@ function help() {
     printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
 
-    printf "$COLUMN" "install-odoo" "" "Install the odoo Helm Charts."
+    printf "$COLUMN" "install-chart" "[name]" "Install Helm Charts from local source."
+    printf "$COLUMN" "uninstall-chart" "[name]" "Uninstall Helm Charts from local source."
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
     printf "$COLUMN" "test-k8s" "" "Test Kubernetes environment."
 
+    printf "$COLUMN" "logs" "" "Show pod logs."
     printf "$COLUMN" "list" "" "List Helm deployments."
-    printf "$COLUMN" "package-repo" "" "Package Helm Chart."
+    printf "$COLUMN" "list-pods" "" "List all pods."
+    printf "$COLUMN" "package-repo" "" "Package Helm Charts."
     printf "$COLUMN" "index-repo" "" "Index Helm Chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm Chart files to dist."
     printf "$COLUMN" "add-repo" "" "Add the kubernetes-buld repo."
     printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-buld repo."
-    printf "$COLUMN" "install-repo" "" "Install the kubernetes-buld repo."
+    printf "$COLUMN" "install-repo" "[name]" "Install Chart from kubernetes-build repo."
 
     printf "$COLUMN" "update-with-llm" "[path][prompt]" "Update files with LLM prompt."
 
@@ -93,29 +96,52 @@ function start-minikube() {
     minikube start
 }
 
-function install-odoo() {
-    echo "Install release odoo with helm."
-    helm install odoo .
+function install-chart() {
+    if test -z "$1"; then 
+        echo "\$1 is empty."
+        exit 1; 
+    fi
 
-    echo -e "\nWait until resources are ready."
-    sleep 8
+    echo "Install release $1 with helm."
+    helm install "$1" "$1"
 
-    ODOO_POD=$(kubectl get pods -o=name --all-namespaces | grep odoo)
-    POSTGRES_POD=$(kubectl get pods -o=name --all-namespaces | grep postgres)
+    echo -e "\nWait for $1 pods to be running:"
+    POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "$1")
+    kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
+}
 
-    echo -e "\nWait for $ODOO_POD and $POSTGRES_POD pods to be running:"
-    kubectl wait --for=condition=Ready "$ODOO_POD" "$POSTGRES_POD" --timeout=120s
+function uninstall-chart() {
+    if test -z "$1"; then 
+        echo "\$1 is empty."
+        exit 1; 
+    fi
+
+    echo "Uninstall release $1 with helm."
+    helm uninstall "$1"
 }
 
 function test-k8s() {
     start-kind
-    install-odoo
+    install-chart postgres
+    install-chart odoo
 }
 
 function forward-odoo() {
     echo "Open http://localhost:8069 url in your browser."
     kubectl port-forward service/odoo 8069:8069
 }
+
+# Kubectl Commands
+
+function logs() {
+    POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
+    kubectl logs "$POD_ID"
+}
+
+function list-pods() {
+    kubectl get pods
+}
+
 
 # Helm Commands
 
@@ -124,8 +150,9 @@ function list() {
 }
 
 function package-repo() {
-    echo "Package Helm Chart."
-    helm package .
+    echo "Package Helm Charts."
+    helm package postgres
+    helm package odoo
 }
 
 function index-repo() {

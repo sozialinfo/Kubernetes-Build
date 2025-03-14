@@ -1,23 +1,15 @@
----
-layout: home
-
-hero:
-  name: "Kubernetes Build"
-  tagline: The Mint System collection of Helm Charts.
----
+Kubernetes Build
+===
 
 [![.github/workflows/test.yml](https://github.com/Mint-System/Kubernetes-Build/actions/workflows/test.yml/badge.svg)](https://github.com/Mint-System/Kubernetes-Build/actions/workflows/test.yml)
 
 [![matrix-badge](https://matrix.to/img/matrix-badge.svg)](https://matrix.to/#/#odoo-build:mint-system.ch)
 
+The Mint System collection of Helm Charts.
+
 * 🚀 **Install**: Install Helm repository and get started with Odoo.
 * 🛠️ **Develop**: Deploy Odoo and Postgres to a local Kubernetes cluster.
 * 🏗️ **Build**: Fork and build your own Helm Charts.
-
-## Requirements
-
-* Install [Helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) 
-* Setup [kind](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/docs/)
 
 ## Usage
 
@@ -27,15 +19,27 @@ Add [this Helm repository](/index.yaml).
 helm repo add kubernetes-build https://kubernetes.build
 ```
 
-Install the odoo chart.
+Install a chart.
 
 ```bash
-helm install odoo kubernetes-build/odoo
+helm install "$NAME" "kubernetes-build/$NAME"
 ```
+
+## Charts
+
+List of charts:
+
+* [odoo](/odoo/README.md)
+* [postgres](/postgres/README.md)
 
 ## Develop
 
 Run a local Kubernets cluster with kind or minikube.
+
+### Requirements
+
+* Install [Helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) 
+* Setup [kind](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/docs/)
 
 ### Start Kubernetes cluster
 
@@ -55,15 +59,18 @@ task start-minikube
 
 Ensure you have `kubectl` installed and can access the cluster.
 
-The following command applies the Odoo and Postgres manifests and initializes the Odoo database.
+The followpostgresng command applies the Postgres and Odoo charts:
 
 ```bash
-task install-odoo
+task install-chart postgres
+task install-chart odoo
 ```
+
+The Odoo database will be automtically initialized.
 
 ### Forward Odoo service
 
-Once the pod is ready and initialized, run this command to access the service:
+Once the pod is ready, run this command to access the service:
 
 ```bash
 task forward-odoo
@@ -71,9 +78,9 @@ task forward-odoo
 
 ### Release
 
-Adjust the version in `Chart.yaml`.
+Adjust the version in the `Chart.yaml` files.
 
-Create new package for this repository.
+Create new packages for all charts.
 
 ```bash
 task package-repo
@@ -83,10 +90,4 @@ Update index file.
 
 ```bash
 task index-repo
-```
-
-### Show log files
-
-```bash
-kubectl logs odoo init-db
 ```

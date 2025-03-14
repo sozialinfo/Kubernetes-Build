@@ -1,0 +1,10 @@
+apiVersion: v2
+name: odoo
+description: Mint System Odoo
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+templates:
+  - odoo-cm.yaml
+  - odoo-svc.yaml
+  - odoo-deploy.yaml

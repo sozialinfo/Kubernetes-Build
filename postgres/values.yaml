@@ -1,0 +1,5 @@
+postgres:
+  image: postgres:16-alpine
+  db: odoo
+  user: odoo
+  password: odoo

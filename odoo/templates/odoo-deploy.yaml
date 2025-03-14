@@ -19,15 +19,14 @@ spec:
         - name: wait-for-postgres
           image: {{ .Values.postgres.image }}
           command: [ "sh", "-c", "until pg_isready -h postgres -p 5432; do sleep 2; done" ]
-        - name: git-clone-addons
+        - name: init
           image: {{ .Values.odoo.image }}
-          command: ["/entrypoint.sh", "git-clone-addons"]
-          envFrom:
-            - configMapRef:
-                name: odoo-config
-        - name: init-db
-          image: {{ .Values.odoo.image }}
-          command: ["/entrypoint.sh", "init-db"]
+          command:
+            - /bin/bash
+            - -c
+            - |
+              /entrypoint.sh git-clone-addons && \
+              /entrypoint.sh init-db
           envFrom:
             - configMapRef:
                 name: odoo-config

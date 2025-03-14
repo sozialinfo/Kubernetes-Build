@@ -3,12 +3,23 @@ entries:
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-03-13T17:23:58.890898637+01:00"
+    created: "2025-03-14T09:31:14.533380661+01:00"
     description: Mint System Odoo
-    digest: d8d6df9099e940f3c6f966ea35c3e1d8a7d8ee373bea4aaf8f15f0dc071b221e
+    digest: 85f44c0e6bb296197157cdfac1803cddee6d44de950a8088e3d41983ad83abe7
     name: odoo
     type: application
     urls:
     - odoo-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-13T17:23:58.890627208+01:00"
+  postgres:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-03-14T09:31:14.533501397+01:00"
+    description: Mint System Postgres
+    digest: 244922476cf60ae18bfbdf8a94d7750a6f07b5b6bf7ff6e0d707c8fd85a3e996
+    name: postgres
+    type: application
+    urls:
+    - postgres-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-03-14T09:31:14.533131328+01:00"

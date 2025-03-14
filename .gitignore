@@ -3,3 +3,5 @@ node_modules
 .vitepress/cache
 tmp
 manifest.yaml
+.obsidian/workspace.json
+.obsidian/appearance.json

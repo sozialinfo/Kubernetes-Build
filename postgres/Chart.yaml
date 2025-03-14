@@ -1,14 +1,11 @@
 apiVersion: v2
-name: odoo
-description: Mint System Odoo
+name: postgres
+description: Mint System Postgres
 type: application
 version: 0.1.0
 appVersion: "1.0.0"
 templates:
   - postgres-cm.yaml
   - postgres-deploy.yaml
-  - odoo-cm.yaml
   - postgres-svc.yaml
-  - odoo-svc.yaml
-  - odoo-deploy.yaml
   - postgres-pvc.yaml
