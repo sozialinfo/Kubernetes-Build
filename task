@@ -36,7 +36,7 @@ function help() {
     printf "$COLUMN" "install-chart" "[name]" "Install Helm Charts from local source."
     printf "$COLUMN" "uninstall-chart" "[name]" "Uninstall Helm Charts from local source."
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
-    printf "$COLUMN" "test-k8s" "" "Test Kubernetes environment."
+    printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
 
     printf "$COLUMN" "logs" "" "Show pod logs."
     printf "$COLUMN" "list" "" "List Helm deployments."
@@ -104,9 +104,9 @@ function install-chart() {
 
     echo "Install release $1 with helm."
     helm install "$1" "$1"
-
-    echo -e "\nWait for $1 pods to be running:"
+    
     POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "$1")
+    echo -e "\nWait for $POD_ID pods to be running:"
     kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
 }
 
@@ -121,9 +121,14 @@ function uninstall-chart() {
 }
 
 function test-k8s() {
-    start-kind
-    install-chart postgres
-    install-chart odoo
+    if [ "$1" = "clean" ]; then
+        echo "Cleanup environment"
+        delete-kind
+    else
+        start-kind
+        install-chart postgres
+        install-chart odoo
+    fi
 }
 
 function forward-odoo() {
