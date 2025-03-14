@@ -25,6 +25,24 @@ Install a chart.
 helm install "$NAME" "kubernetes-build/$NAME"
 ```
 
+## APPUiO
+
+Setup and deploy the Helm charts with [APPUiO](https://portal.appuio.cloud/).
+
+### Setup Helm repository
+
+In your zone open *Helm > Repositories > Create > Repository* and enter:
+
+* **Name**: kubernetes-build
+* **Display name**: Kubernetes Build
+* **Description**: The Mint System collection of Helm Charts.
+* **URL**: <https://kubernetes.build>
+
+## Create Helm release
+
+In your zone open *Helm > Helm Releases > Create > Helm Release* and filter `Postgres`. Click on the Hem Chart and select *Create* and confirm with *Create*.
+
+Do the same for `Odoo`.
 ## Charts
 
 List of charts:
