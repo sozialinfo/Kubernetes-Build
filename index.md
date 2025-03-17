@@ -25,6 +25,13 @@ Install a chart.
 helm install "$NAME" "kubernetes-build/$NAME"
 ```
 
+## Charts
+
+List of charts:
+
+* [odoo](/odoo/README.md)
+* [postgres](/postgres/README.md)
+
 ## APPUiO
 
 Setup and deploy the Helm charts with [APPUiO](https://portal.appuio.cloud/).
@@ -45,15 +52,35 @@ Depending on your zone setup the Postgres template:
 * ExoScale: <https://docs.appcat.ch/exoscale-dbaas/postgresql/create.html>
 * cloudscale.ch: <https://docs.appcat.ch/vshn-managed/postgresql/create.html>
 
+Use `postgres-creds` as Name for the secrets.
+
 ### Create Odoo release
 
 In your zone open *Helm > Helm Releases > Create > Helm Release* and filter `Odoo`. Click on the Hem Chart and select *Create* and confirm with *Create*.
-## Charts
 
-List of charts:
-
-* [odoo](/odoo/README.md)
-* [postgres](/postgres/README.md)
+```yml
+env:
+- name: PGHOST
+    valueFrom:
+    secretKeyRef:
+        name: postgresql-credentials
+        key: POSTGRESQL_HOST
+- name: PGUSER
+    valueFrom:
+    secretKeyRef:
+        name: postgresql-credentials
+        key: POSTGRESQL_USER
+- name: PGPASSWORD
+    valueFrom:
+    secretKeyRef:
+        name: postgresql-credentials
+        key: POSTGRESQL_PASSWORD
+- name: ODOO_DATABASE
+    valueFrom:
+    secretKeyRef:
+        name: postgresql-credentials
+        key: POSTGRESQL_DB
+```
 
 ## Develop
 
