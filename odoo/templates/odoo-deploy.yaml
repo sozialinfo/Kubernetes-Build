@@ -15,12 +15,6 @@ spec:
         app: odoo
     spec:
       initContainers:
-        - name: wait-for-postgres
-          image: {{ .Values.postgres.image }}
-          command: [ "sh", "-c", "until pg_isready -h postgres -p 5432; do sleep 2; done" ]
-          envFrom:
-            - secretRef:
-                name: postgres-creds
         - name: init
           image: {{ .Values.odoo.image }}
           command:

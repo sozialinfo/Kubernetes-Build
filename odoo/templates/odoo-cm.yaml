@@ -11,5 +11,5 @@ data:
   PGPASSWORD: {{ .Values.postgres.password | quote }}
   PROXY_MODE: {{ .Values.odoo.proxyMode | quote }}
   ADDONS_GIT_REPOS: {{ .Values.odoo.addonsGitRepos | quote }}
-  ODOO_DATABASE: {{ .Values.postgres.db | quote }}
+  ODOO_DATABASE: {{ .Values.odoo.database | quote }}
   ODOO_INIT_LANG: {{ .Values.odoo.initLang | quote }}
