@@ -4,7 +4,7 @@ postgres:
   password: odoo
 
 odoo:
-  image: mintsystem/odoo:18.0.20250207
+  image: mintsystem/odoo:18.0.20250311
   host: odoo
   proxyMode: "True"
   addonsGitRepos: "https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0,https://github.com/OCA/Server-Tools.git#18.0"
