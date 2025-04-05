@@ -15,17 +15,14 @@ spec:
         app: odoo
     spec:
       initContainers:
-        - name: git-clone-addons
+        - name: init
           image: {{ .Values.odoo.image }}
-          command: [ "git-clone-addons" ]
-          envFrom:
-            - secretRef:
-                name: odoo-creds
-            - configMapRef:
-                name: odoo-config
-        - name: init-db
-          image: {{ .Values.odoo.image }}
-          command: [ "init-db" ]
+          command:
+            - /bin/bash
+            - -c
+            - |
+              /entrypoint.sh git-clone-addons && \
+              /entrypoint.sh init-db
           envFrom:
             - secretRef:
                 name: odoo-creds
