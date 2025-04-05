@@ -145,6 +145,12 @@ task install-ingress-nginx
 ```
 
 
+Forward the ingress-nginx port.
+
+```bash
+task forward-ingress-nginx
+```
+
 ### Release
 
 Adjust the version in the `Chart.yaml` files.

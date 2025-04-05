@@ -38,6 +38,7 @@ function help() {
     printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
     printf "$COLUMN" "uninstall-chart" "[name]" "Uninstall Helm Charts from local source."
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
+    printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingres-nginx port."
     printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
 
     printf "$COLUMN" "template" "" "Template all charts with Helm."
