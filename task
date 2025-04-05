@@ -32,8 +32,10 @@ function help() {
     printf "$COLUMN" "start-kind" "" "Start kind Kubernetes cluster."
     printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
+    printf "$COLUMN" "setup-hosts" "" "Update hosts file."
 
     printf "$COLUMN" "install-chart" "[name]" "Install Helm Charts from local source."
+    printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
     printf "$COLUMN" "uninstall-chart" "[name]" "Uninstall Helm Charts from local source."
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
     printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
@@ -46,6 +48,7 @@ function help() {
     printf "$COLUMN" "index-repo" "" "Index Helm Chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm Chart files to dist."
     printf "$COLUMN" "add-repo" "" "Add the kubernetes-buld repo."
+    printf "$COLUMN" "add-ingress-nginx" "" "Add the ingress-nginx repo."
     printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-buld repo."
     printf "$COLUMN" "install-repo" "[name]" "Install Chart from kubernetes-build repo."
 
@@ -64,6 +67,11 @@ function version() {
 
 function install() {
     pnpm install
+}
+
+function setup-hosts() {
+    echo "Add 127.0.0.1 odoo.local to /etc/hosts."
+    grep -qxF '127.0.0.1 odoo.local' /etc/hosts || echo "127.0.0.1 odoo.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
 # Docs Commands
@@ -115,6 +123,10 @@ function install-chart() {
     kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
 }
 
+function install-ingress-nginx() {
+    helm install ingress-nginx ingress-nginx/ingress-nginx --create-namespace --namespace ingress-nginx
+}
+
 function uninstall-chart() {
     if test -z "$1"; then 
         echo "\$1 is empty."
@@ -137,8 +149,14 @@ function test-k8s() {
 }
 
 function forward-odoo() {
-    echo "Open http://localhost:8069 url in your browser."
-    kubectl port-forward service/odoo 8069:8069
+    PORT=8080
+    echo "Open http://localhost:$PORT url in your browser."
+    kubectl port-forward service/odoo $PORT:8069
+}
+
+function forward-ingress-nginx() {
+    echo "Open https://odoo.local:8080 url in your browser."
+    kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80
 }
 
 # Kubectl Commands
@@ -185,6 +203,10 @@ function publish-repo() {
 function add-repo(){
     echo "Add the kubernetes-build repo."
     helm repo add kubernetes-build https://kubernetes.build
+}
+
+function add-ingress-nginx() {
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 }
 
 function remove-repo(){

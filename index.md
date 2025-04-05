@@ -134,6 +134,17 @@ Once the pod is ready, run this command to port forward the service:
 task forward-odoo
 ```
 
+### Setup ingress controller
+
+Add and install the ingress-nginx repo.
+
+```bash
+task setup-hosts
+task add-ingress-nginx
+task install-ingress-nginx
+```
+
+
 ### Release
 
 Adjust the version in the `Chart.yaml` files.

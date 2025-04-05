@@ -12,3 +12,4 @@ templates:
   - odoo-cm.yaml
   - odoo-svc.yaml
   - odoo-deploy.yaml
+  - odoo-ingress.yaml
