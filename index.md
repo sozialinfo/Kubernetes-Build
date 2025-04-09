@@ -1,6 +1,8 @@
 Kubernetes Build
 ===
 
+![Vercel](https://vercelbadge.vercel.app/api/mint-system/kubernetes-build)
+
 [![.github/workflows/test.yml](https://github.com/Mint-System/Kubernetes-Build/actions/workflows/test.yml/badge.svg)](https://github.com/Mint-System/Kubernetes-Build/actions/workflows/test.yml)
 
 [![matrix-badge](https://matrix.to/img/matrix-badge.svg)](https://matrix.to/#/#odoo-build:mint-system.ch)
