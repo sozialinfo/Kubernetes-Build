@@ -146,7 +146,6 @@ task add-ingress-nginx
 task install-ingress-nginx
 ```
 
-
 Forward the ingress-nginx port.
 
 ```bash

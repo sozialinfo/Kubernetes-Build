@@ -13,9 +13,9 @@ function help() {
     echo
 
     # Define column widths
-    CMD_WIDTH=20
+    CMD_WIDTH=24
     OPT_WIDTH=14
-    DESC_WIDTH=36
+    DESC_WIDTH=42
     COLUMN="| %-${CMD_WIDTH}s | %-${OPT_WIDTH}s | %-${DESC_WIDTH}s |\n"
     # Print table header
     printf "$COLUMN" "Command" "Option" "Description"
@@ -33,11 +33,13 @@ function help() {
     printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
     printf "$COLUMN" "setup-hosts" "" "Update hosts file."
+    printf "$COLUMN" "add-ingress-nginx" "" "Add the ingress-nginx repo."
 
     printf "$COLUMN" "install-chart" "[name]" "Install Helm Charts from local source."
-    printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
     printf "$COLUMN" "uninstall-chart" "[name]" "Uninstall Helm Charts from local source."
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
+    printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
+    printf "$COLUMN" "uninstall-ingress-nginx" "" "Install ingress-nginx controller."
     printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingres-nginx port."
     printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
 
@@ -48,9 +50,8 @@ function help() {
     printf "$COLUMN" "package-repo" "" "Package Helm Charts."
     printf "$COLUMN" "index-repo" "" "Index Helm Chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm Chart files to dist."
-    printf "$COLUMN" "add-repo" "" "Add the kubernetes-buld repo."
-    printf "$COLUMN" "add-ingress-nginx" "" "Add the ingress-nginx repo."
-    printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-buld repo."
+    printf "$COLUMN" "add-repo" "" "Add the kubernetes-build repo."
+    printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-build repo."
     printf "$COLUMN" "install-repo" "[name]" "Install Chart from kubernetes-build repo."
 
     printf "$COLUMN" "update-with-llm" "[path][prompt]" "Update files with LLM prompt."
@@ -71,8 +72,9 @@ function install() {
 }
 
 function setup-hosts() {
-    echo "Add 127.0.0.1 odoo.local to /etc/hosts."
-    grep -qxF '127.0.0.1 odoo.local' /etc/hosts || echo "127.0.0.1 odoo.local" | sudo tee -a /etc/hosts > /dev/null
+    echo "Adding entries to /etc/hosts ..."
+    grep -qxF '127.0.0.1 cloud.local' /etc/hosts || echo "127.0.0.1 cloud.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 odoo.cloud.local' /etc/hosts || echo "127.0.0.1 odoo.cloud.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
 # Docs Commands
@@ -128,6 +130,11 @@ function install-ingress-nginx() {
     helm install ingress-nginx ingress-nginx/ingress-nginx --create-namespace --namespace ingress-nginx
 }
 
+function uninstall-ingress-nginx() {
+    helm uninstall ingress-nginx --namespace ingress-nginx
+}
+
+
 function uninstall-chart() {
     if test -z "$1"; then 
         echo "\$1 is empty."
@@ -156,8 +163,9 @@ function forward-odoo() {
 }
 
 function forward-ingress-nginx() {
-    echo "Open https://odoo.local:8080 url in your browser."
-    kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80
+    PORT=8080
+    echo "Open http://odoo.cloud.local:$PORT url in your browser."
+    kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller $PORT:80
 }
 
 # Kubectl Commands

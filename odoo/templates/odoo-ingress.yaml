@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: odoo.local
+  - host: "*.odoo.local"
     http:
       paths:
       - path: /
