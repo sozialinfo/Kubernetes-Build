@@ -47,7 +47,7 @@ In your zone open *Helm > Repositories > Create > Repository* and enter:
 * **Description**: The Mint System collection of Helm Charts.
 * **URL**: <https://kubernetes.build>
 
-## Apply Postgres
+### Apply Postgres
 
 Depending on your zone setup the Postgres template:
 
