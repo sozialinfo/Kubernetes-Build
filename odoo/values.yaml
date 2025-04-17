@@ -1,4 +1,5 @@
 ingress:
+  className: haproxy
   host: odoo.cloud.local
 
 vshnpostgresql:

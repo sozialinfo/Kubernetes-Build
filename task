@@ -149,7 +149,8 @@ function install-ingress-nginx() {
 }
 
 function install-haproxy-ingress() {
-    helm install haproxy-ingress haproxy-ingress/haproxy-ingress --create-namespace --namespace haproxy-ingress
+    helm install haproxy-ingress haproxy-ingress/haproxy-ingress \
+        --create-namespace --namespace haproxy-ingress
 }
 
 function uninstall-ingress-nginx() {

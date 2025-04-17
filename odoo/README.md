@@ -6,6 +6,13 @@ Mint System Odoo
 
 ## Values
 
+Prefix: `ingress`
+
+| Key     | Type    | Default            |
+| ------- | ------- | ------------------ |
+| enabled | boolean | `haproxy`          |
+| host    | string  | `odoo.cloud.local` |
+
 Prefix: `postgres`
 
 | Key      | Type    | Default              |

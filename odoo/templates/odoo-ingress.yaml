@@ -3,12 +3,16 @@ kind: Ingress
 metadata:
   name: odoo-ingress
   namespace: default
+  {{- if eq .Values.ingress.className "nginx" }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+  {{- end }}
 spec:
-  ingressClassName: nginx
+  {{- if eq .Values.ingress.className "nginx" }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
   rules:
-  - host:  {{ .Values.ingress.host | quote }}
+  - host: {{ .Values.ingress.host }}
     http:
       paths:
       - path: /
