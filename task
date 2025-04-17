@@ -178,6 +178,7 @@ function test-k8s() {
         delete-kind
     else
         start-kind
+        add-repo
         install-chart odoo
     fi
 }
