@@ -178,7 +178,6 @@ function test-k8s() {
         delete-kind
     else
         start-kind
-        install-chart postgres
         install-chart odoo
     fi
 }
@@ -224,7 +223,7 @@ function list() {
     helm list
 }
 
-function package-repo() {
+function pacage-repo() {
     echo "Package Helm Charts."
     helm package postgres
     helm package odoo

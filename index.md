@@ -58,7 +58,7 @@ psotgres:
   enabled: false
 ```
 
-Confirm with *Create*
+Confirm with *Create*.
 
 ## Develop
 
@@ -94,6 +94,12 @@ task start-minikube
 ### Deploy Odoo to Kubernetes
 
 Ensure you have `kubectl` installed and can access the cluster.
+
+Add this repo for Chart dependencies.
+
+```bash
+task add-repo
+```
 
 The following command applies the Odoo chart:
 
