@@ -34,13 +34,18 @@ function help() {
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
     printf "$COLUMN" "setup-hosts" "" "Update hosts file."
     printf "$COLUMN" "add-ingress-nginx" "" "Add the ingress-nginx repo."
+    printf "$COLUMN" "add-haproxy-ingress" "" "Add the haproxy-ingress repo."
 
     printf "$COLUMN" "install-chart" "[name]" "Install Helm Charts from local source."
+    printf "$COLUMN" "upgrade-chart" "[name]" "Upgrade Helm Charts from local source."
     printf "$COLUMN" "uninstall-chart" "[name]" "Uninstall Helm Charts from local source."
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
     printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
+    printf "$COLUMN" "install-haproxy-ingress" "" "Install haproxy ingress controller."
     printf "$COLUMN" "uninstall-ingress-nginx" "" "Install ingress-nginx controller."
-    printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingres-nginx port."
+    printf "$COLUMN" "uninstall-haproxy-ingress" "" "Install haproxy ingress controller."
+    printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingress-nginx port."
+    printf "$COLUMN" "forward-haproxy-ingress" "" "Forward haproxy-ingress port."
     printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
 
     printf "$COLUMN" "template" "" "Template all charts with Helm."
@@ -114,6 +119,9 @@ function install-chart() {
         exit 1; 
     fi
 
+    echo "Install dependencies."
+    helm dependency build "$1"
+
     echo "Install release $1 with helm."
     helm install "$1" "$1"
     sleep 8
@@ -126,12 +134,30 @@ function install-chart() {
     kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
 }
 
+function upgrade-chart() {
+    if test -z "$1"; then 
+        echo "\$1 is empty."
+        exit 1; 
+    fi
+
+    echo "Upgrade release $1 with helm."
+    helm upgrade "$1" "$1"
+}
+
 function install-ingress-nginx() {
     helm install ingress-nginx ingress-nginx/ingress-nginx --create-namespace --namespace ingress-nginx
 }
 
+function install-haproxy-ingress() {
+    helm install haproxy-ingress haproxy-ingress/haproxy-ingress --create-namespace --namespace haproxy-ingress
+}
+
 function uninstall-ingress-nginx() {
     helm uninstall ingress-nginx --namespace ingress-nginx
+}
+
+function uninstall-haproxy-ingress() {
+    helm uninstall haproxy-ingress --namespace haproxy-ingress
 }
 
 
@@ -156,6 +182,17 @@ function test-k8s() {
     fi
 }
 
+# Kubectl Commands
+
+function logs() {
+    POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
+    kubectl logs "$POD_ID"
+}
+
+function list-pods() {
+    kubectl get pods
+}
+
 function forward-odoo() {
     PORT=8080
     echo "Open http://localhost:$PORT url in your browser."
@@ -168,19 +205,13 @@ function forward-ingress-nginx() {
     kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller $PORT:80
 }
 
-# Kubectl Commands
-
-function logs() {
-    POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
-    kubectl logs "$POD_ID"
+function forward-haproxy-ingress() {
+    PORT=8080
+    echo "Open http://odoo.cloud.local:$PORT url in your browser."
+    kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $PORT:80
 }
 
-function list-pods() {
-    kubectl get pods
-}
-
-
-# Helm Commands
+# Helm Repo Commands
 
 function template() {
     echo "Template charts into manifest.yaml."
@@ -216,6 +247,10 @@ function add-repo(){
 
 function add-ingress-nginx() {
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+}
+
+function add-haproxy-ingress() {
+    helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
 }
 
 function remove-repo(){

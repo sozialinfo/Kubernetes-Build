@@ -1,12 +1,20 @@
+ingress:
+  host: odoo.cloud.local
+
+vshnpostgresql:
+  enabled: false
+
 postgres:
+  enabled: true
   host: postgres
   user: odoo
   password: odoo
 
 odoo:
-  image: mintsystem/odoo:18.0.20250311
+  image: mintsystem/odoo:18.0.20250401
   host: odoo
-  proxyMode: "True"
+  proxyMode: True
   addonsGitRepos: "https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0,https://github.com/OCA/Server-Tools.git#18.0"
   database: "odoo"
   initLang: de_CH
+  listDB: False

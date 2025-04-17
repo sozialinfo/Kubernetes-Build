@@ -47,42 +47,18 @@ In your zone open *Helm > Repositories > Create > Repository* and enter:
 * **Description**: The Mint System collection of Helm Charts.
 * **URL**: <https://kubernetes.build>
 
-### Apply Postgres
-
-Depending on your zone setup the Postgres template:
-
-* ExoScale: <https://docs.appcat.ch/exoscale-dbaas/postgresql/create.html>
-* cloudscale.ch: <https://docs.appcat.ch/vshn-managed/postgresql/create.html>
-
-Use `postgres-creds` as Name for the secrets.
-
 ### Create Odoo release
 
-In your zone open *Helm > Helm Releases > Create > Helm Release* and filter `Odoo`. Click on the Hem Chart and select *Create* and confirm with *Create*.
+In your zone open *Helm > Helm Releases > Create > Helm Release* and filter `Odoo`. Click on the Helm Chart and select *Create*.
 
-```yml
-env:
-- name: PGHOST
-    valueFrom:
-    secretKeyRef:
-        name: postgresql-credentials
-        key: POSTGRESQL_HOST
-- name: PGUSER
-    valueFrom:
-    secretKeyRef:
-        name: postgresql-credentials
-        key: POSTGRESQL_USER
-- name: PGPASSWORD
-    valueFrom:
-    secretKeyRef:
-        name: postgresql-credentials
-        key: POSTGRESQL_PASSWORD
-- name: ODOO_DATABASE
-    valueFrom:
-    secretKeyRef:
-        name: postgresql-credentials
-        key: POSTGRESQL_DB
+```yaml
+vshnpostgresql:
+  enabled: true
+psotgres:
+  enabled: false
 ```
+
+Confirm with *Create*
 
 ## Develop
 
@@ -119,10 +95,9 @@ task start-minikube
 
 Ensure you have `kubectl` installed and can access the cluster.
 
-The following command applies the Postgres and Odoo charts:
+The following command applies the Odoo chart:
 
 ```bash
-task install-chart postgres
 task install-chart odoo
 ```
 
@@ -136,7 +111,7 @@ Once the pod is ready, run this command to port forward the service:
 task forward-odoo
 ```
 
-### Setup ingress controller
+### Setup ingress nginx controller
 
 Add and install the ingress-nginx repo.
 
@@ -150,6 +125,22 @@ Forward the ingress-nginx port.
 
 ```bash
 task forward-ingress-nginx
+```
+
+### Setup haproxy ingress controller
+
+Add and install the haproxy ingress repo.
+
+```bash
+task setup-hosts
+task add-haproxy-ingress
+task install-haproxy-ingress
+```
+
+Forward the ingress-nginx port.
+
+```bash
+task forward-haproxy-ingress
 ```
 
 ### Release

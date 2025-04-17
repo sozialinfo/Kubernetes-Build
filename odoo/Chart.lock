@@ -1,0 +1,6 @@
+dependencies:
+- name: postgres
+  repository: https://kubernetes.build
+  version: 0.1.0
+digest: sha256:3bd8fef428f459ac75bb6006b5510510a81466a27486969ec955b4c9bff6725c
+generated: "2025-04-17T07:39:14.090329073+02:00"

@@ -8,13 +8,13 @@ Mint System Odoo
 
 Prefix: `postgres`
 
-| Key      | Type   | Default              |
-| -------- | ------ | -------------------- |
-| image    | string | `postgres:16-alpine` |
-| host     | string | `postgres`           |
-| db       | string | `odoo`               |
-| user     | string | `odoo`               |
-| password | string | `odoo`               |
+| Key      | Type    | Default              |
+| -------- | ------- | -------------------- |
+| enabled  | boolean | `true` |
+| host     | string  | `postgres`           |
+| db       | string  | `odoo`               |
+| user     | string  | `odoo`               |
+| password | string  | `odoo`               |
 
 Prefix: `odoo`
 
@@ -25,4 +25,4 @@ Prefix: `odoo`
 | addonsGitRepos | string | `https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0,https://github.com/OCA/Server-Tools.git#18.0` |
 | database       | string | `odoo`                                                                                                        |
 | initLang       | string | `de_CH`                                                                                                       |
-
+| listDB         | string | `False`                                                                                                       |
