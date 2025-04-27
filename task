@@ -224,7 +224,7 @@ function list() {
     helm list
 }
 
-function pacage-repo() {
+function package-repo() {
     echo "Package Helm Charts."
     helm package postgres
     helm package odoo
