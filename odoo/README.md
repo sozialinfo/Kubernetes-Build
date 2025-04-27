@@ -6,24 +6,30 @@ Mint System Odoo
 
 ## Values
 
-Prefix: `ingress`
+Domain: `ingress`
 
-| Key     | Type    | Default            |
-| ------- | ------- | ------------------ |
-| enabled | boolean | `haproxy`          |
-| host    | string  | `odoo.cloud.local` |
+| Key       | Type   | Default            |
+| --------- | ------ | ------------------ |
+| className | string | `haproxy`          |
+| host      | string | `odoo.cloud.local` |
 
-Prefix: `postgres`
+Domain: `vshnpostgresql`
 
-| Key      | Type    | Default              |
-| -------- | ------- | -------------------- |
-| enabled  | boolean | `true` |
-| host     | string  | `postgres`           |
-| db       | string  | `odoo`               |
-| user     | string  | `odoo`               |
-| password | string  | `odoo`               |
+| Key     | Type    | Default |
+| ------- | ------- | ------- |
+| enabled | boolean | `false` |
 
-Prefix: `odoo`
+Domain: `postgres`
+
+| Key      | Type    | Default    |
+| -------- | ------- | ---------- |
+| enabled  | boolean | `true`     |
+| host     | string  | `postgres` |
+| db       | string  | `odoo`     |
+| user     | string  | `odoo`     |
+| password | string  | `odoo`     |
+
+Domain: `odoo`
 
 | Key                       | Type   | Default                                                                                                       |
 | ------------------------- | ------ | ------------------------------------------------------------------------------------------------------------- |

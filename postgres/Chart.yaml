@@ -14,4 +14,3 @@ templates:
   - postgres-deploy.yaml
   - postgres-svc.yaml
   - postgres-pvc.yaml
-

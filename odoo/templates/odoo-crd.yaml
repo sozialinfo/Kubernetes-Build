@@ -1,0 +1,21 @@
+---
+apiVersion: vshn.appcat.vshn.io/v1
+kind: VSHNPostgreSQL
+metadata:
+  name: postgres
+spec:
+  parameters:
+    service:
+      majorVersion: "16"
+      pgBouncerSettings:
+        pgbouncer:
+          admin_users: postgres
+      pgSettings:
+        timezone: Europe/Zurich
+    size:
+      plan: standard-4
+    backup:
+      schedule: "30 23 * * *"
+      retention: 12
+  writeConnectionSecretToRef:
+    name: postgres-creds

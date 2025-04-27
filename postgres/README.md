@@ -6,7 +6,7 @@ Mint System Postgres
 
 ## Values
 
-Prefix: `postgres`
+Domain: `postgres`
 
 | Key      | Type   | Default              |
 | -------- | ------ | -------------------- |
