@@ -6,7 +6,8 @@ metadata:
   labels:
     app: odoo
 data:
-  PROXY_MODE: {{ .Values.odoo.proxyMode | quote }}
+  GITHUB_USERNAME: {{ .Values.odoo.githubUsername | quote }}
   ADDONS_GIT_REPOS: {{ .Values.odoo.addonsGitRepos | quote }}
   ODOO_INIT_LANG: {{ .Values.odoo.initLang | quote }}
+  PROXY_MODE: {{ .Values.odoo.proxyMode | quote }}
   LIST_DB: {{ .Values.odoo.listDB | quote }}

@@ -21,6 +21,7 @@ spec:
             - /bin/bash
             - -c
             - |
+              {{- if .Values.odoo.downloadOdooEnterprise }}/entrypoint.sh download-odoo-enterprise && \{{- end }}
               /entrypoint.sh git-clone-addons && \
               /entrypoint.sh init-db
           envFrom:
