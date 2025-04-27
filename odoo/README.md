@@ -8,10 +8,11 @@ Mint System Odoo
 
 Domain: `ingress`
 
-| Key       | Type   | Default            |
-| --------- | ------ | ------------------ |
-| className | string | `haproxy`          |
-| host      | string | `odoo.cloud.local` |
+| Key       | Type    | Default            |
+| --------- | ------- | ------------------ |
+| className | string  | `haproxy`          |
+| host      | string  | `odoo.cloud.local` |
+| secure    | booelan | `false`            |
 
 Domain: `vshnpostgresql`
 
