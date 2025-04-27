@@ -51,11 +51,16 @@ In your zone open *Helm > Repositories > Create > Repository* and enter:
 
 In your zone open *Helm > Helm Releases > Create > Helm Release* and filter `Odoo`. Click on the Helm Chart and select *Create*.
 
+Change these values:
+
 ```yaml
+ingress:
+	host: odoo.exo.mint-cloud.ch
+	secure: true
 vshnpostgresql:
-  enabled: true
-psotgres:
-  enabled: false
+	enabled: true
+postgres:
+	enabled: false
 ```
 
 Confirm with *Create*.
