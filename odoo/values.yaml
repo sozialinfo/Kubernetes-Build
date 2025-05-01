@@ -4,13 +4,12 @@ ingress:
   secure: false
 vshnPostgres:
   enabled: false
+  secretRef: postgres-credentials
 postgres:
   enabled: true
-  configMapRef: postgres-config
-  secretsRef: postgres-creds
 odoo:
   configMapRef: odoo-config
-  secretsRef: odoo-creds
+  secretRef: odoo-creds
   image: mintsystem/odoo:18.0.20250401
   host: odoo
   proxyMode: True

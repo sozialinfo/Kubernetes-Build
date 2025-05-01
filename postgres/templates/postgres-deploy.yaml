@@ -20,9 +20,7 @@ spec:
             - containerPort: 5432
           envFrom:
             - secretRef:
-                name: {{ .Values.postgres.secretsRef }}
-            - configMapRef:
-                name: {{ .Values.postgres.configMapRef }}
+                name: {{ .Values.postgres.secretRef }}
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgredb

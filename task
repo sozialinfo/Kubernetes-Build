@@ -122,7 +122,7 @@ function install-chart() {
     echo "Install dependencies."
     helm dependency build "$1"
 
-    echo "Install chart $1 with release $1."
+    echo "Install chart $1 as release $1."
     helm install "$1" "$1"
     sleep 8
     

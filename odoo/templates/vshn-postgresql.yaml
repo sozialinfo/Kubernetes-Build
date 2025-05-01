@@ -18,5 +18,5 @@ spec:
       schedule: "30 23 * * *"
       retention: 12
   writeConnectionSecretToRef:
-    name: {{ .Values.postgres.secretRef }}
+    name: {{ .Values.vshnPostgres.secretRef }}
 {{- end }}
