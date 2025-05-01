@@ -7,6 +7,7 @@ vshnPostgres:
   secretRef: postgres-credentials
 postgres:
   enabled: true
+  secretRef: postgres-creds
 odoo:
   configMapRef: odoo-config
   secretRef: odoo-creds

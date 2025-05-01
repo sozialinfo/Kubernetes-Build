@@ -8,10 +8,12 @@ Mint System Postgres
 
 Domain: `postgres`
 
-| Key      | Type   | Default              |
-| -------- | ------ | -------------------- |
-| image    | string | `postgres:16-alpine` |
-| host     | string | `postgres`           |
-| db       | string | `odoo`               |
-| user     | string | `odoo`               |
-| password | string | `odoo`               |
+| Key          | Type   | Default              |
+| ------------ | ------ | -------------------- |
+| configMapRef | string | `postgres-config`    |
+| secretRef    | string | `postgres-creds`     |
+| image        | string | `postgres:16-alpine` |
+| host         | string | `postgres`           |
+| db           | string | `odoo`               |
+| user         | string | `odoo`               |
+| password     | string | `odoo`               |

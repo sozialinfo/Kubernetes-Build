@@ -14,26 +14,30 @@ Domain: `ingress`
 | host      | string  | `odoo.cloud.local` |
 | secure    | booelan | `false`            |
 
-Domain: `vshnpostgresql`
+Domain: `vshnPostgres`
 
-| Key     | Type    | Default |
-| ------- | ------- | ------- |
-| enabled | boolean | `false` |
+| Key       | Type    | Default                |
+| --------- | ------- | ---------------------- |
+| enabled   | boolean | `false`                |
+| secretRef | string  | `postgres-credentials` |
 
 Domain: `postgres`
 
-| Key      | Type    | Default    |
-| -------- | ------- | ---------- |
-| enabled  | boolean | `true`     |
-| host     | string  | `postgres` |
-| db       | string  | `odoo`     |
-| user     | string  | `odoo`     |
-| password | string  | `odoo`     |
+| Key       | Type    | Default          |
+| --------- | ------- | ---------------- |
+| enabled   | boolean | `true`           |
+| secretRef | string  | `postgres-creds` |
+| host      | string  | `postgres`       |
+| db        | string  | `odoo`           |
+| user      | string  | `odoo`           |
+| password  | string  | `odoo`           |
 
 Domain: `odoo`
 
 | Key                       | Type   | Default                                                                                                       |
 | ------------------------- | ------ | ------------------------------------------------------------------------------------------------------------- |
+| configMapRef              | string | `odoo-config`                                                                                                 |
+| secretRef                 | string | `odoo-creds`                                                                                                  |
 | image                     | string | `mintsystem/odoo:18.0.20250401`                                                                               |
 | proxyMode                 | bool   | `True`                                                                                                        |
 | githubUserame             | string | `""`                                                                                                          |

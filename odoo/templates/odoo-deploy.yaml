@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,12 +25,32 @@ spec:
               /entrypoint.sh init-db
           envFrom:
             - secretRef:
-                name: {{ .Values.postgres.secretRef }}
-            - secretRef:
                 name: {{ .Values.odoo.secretRef }}
             - configMapRef:
                 name: {{ .Values.odoo.configMapRef }}
           env:
+            {{- if .Values.postgres.enabled }}
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: POSTGRES_HOST
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: POSTGRES_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: POSTGRES_PASSWORD
+            - name: ODOO_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: POSTGRES_DB
+            {{- end }}
             {{- if .Values.vshnPostgres.enabled }}
             - name: PGHOST
               valueFrom:
@@ -61,12 +80,32 @@ spec:
           - containerPort: 8069
           envFrom:
             - secretRef:
-                name: {{ .Values.postgres.secretRef }}
-            - secretRef:
                 name: {{ .Values.odoo.secretRef }}
             - configMapRef:
                 name: {{ .Values.odoo.configMapRef }}
           env:
+            {{- if .Values.postgres.enabled }}
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: POSTGRES_HOST
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: POSTGRES_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: POSTGRES_PASSWORD
+            - name: ODOO_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: POSTGRES_DB
+            {{- end }}
             {{- if .Values.vshnPostgres.enabled }}
             - name: PGHOST
               valueFrom:
