@@ -57,7 +57,7 @@ Change these values:
 ingress:
 	host: odoo.exo.mint-cloud.ch
 	secure: true
-vshnpostgresql:
+vshnPostgres:
 	enabled: true
 postgres:
 	enabled: false
