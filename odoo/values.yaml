@@ -2,14 +2,15 @@ ingress:
   className: haproxy
   host: odoo.cloud.local
   secure: false
-vshnpostgresql:
+vshnPostgres:
   enabled: false
 postgres:
   enabled: true
-  host: postgres
-  user: odoo
-  password: odoo
+  configMapRef: postgres-config
+  secretsRef: postgres-creds
 odoo:
+  configMapRef: odoo-config
+  secretsRef: odoo-creds
   image: mintsystem/odoo:18.0.20250401
   host: odoo
   proxyMode: True

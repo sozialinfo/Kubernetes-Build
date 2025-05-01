@@ -1,5 +1,4 @@
-{{- if .Values.vshnpostgresql.enabled }}
----
+{{- if .Values.vshnPostgres.enabled }}
 apiVersion: vshn.appcat.vshn.io/v1
 kind: VSHNPostgreSQL
 metadata:
@@ -19,5 +18,5 @@ spec:
       schedule: "30 23 * * *"
       retention: 12
   writeConnectionSecretToRef:
-    name: postgres-creds
+    name: {{ .Values.postgres.secretRef }}
 {{- end }}

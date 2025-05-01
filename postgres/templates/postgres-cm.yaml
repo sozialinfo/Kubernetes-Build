@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-config
+  name: {{ .Values.postgres.configMapRef }}
   labels:
     app: postgres
 data:

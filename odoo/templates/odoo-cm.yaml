@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: odoo-config
+  name: {{ .Values.odoo.configMapRef }}
   labels:
     app: odoo
 data:

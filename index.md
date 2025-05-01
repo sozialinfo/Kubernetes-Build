@@ -40,7 +40,7 @@ Setup and deploy the Helm charts with [APPUiO](https://portal.appuio.cloud/).
 
 ### Setup Helm repository
 
-In your zone open *Helm > Repositories > Create > Repository* and enter:
+In your zone open *Helm > Tab Repositories > Create > Repository* and enter:
 
 * **Name**: kubernetes-build
 * **Display name**: Kubernetes Build
@@ -49,7 +49,7 @@ In your zone open *Helm > Repositories > Create > Repository* and enter:
 
 ### Create Odoo release
 
-In your zone open *Helm > Helm Releases > Create > Helm Release* and filter `Odoo`. Click on the Helm Chart and select *Create*.
+In your zone open *Helm > Tab Helm Releases > Create > Helm Release* and filter `Odoo`. Click on the Helm Chart and select *Create*.
 
 Change these values:
 

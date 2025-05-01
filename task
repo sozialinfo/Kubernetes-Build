@@ -36,9 +36,9 @@ function help() {
     printf "$COLUMN" "add-ingress-nginx" "" "Add the ingress-nginx repo."
     printf "$COLUMN" "add-haproxy-ingress" "" "Add the haproxy-ingress repo."
 
-    printf "$COLUMN" "install-chart" "[name]" "Install Helm Charts from local source."
-    printf "$COLUMN" "upgrade-chart" "[name]" "Upgrade Helm Charts from local source."
-    printf "$COLUMN" "uninstall-chart" "[name]" "Uninstall Helm Charts from local source."
+    printf "$COLUMN" "install-chart" "[name]" "Install Helm Chart release."
+    printf "$COLUMN" "upgrade-chart" "[name]" "Upgrade Helm Chart release."
+    printf "$COLUMN" "uninstall-release" "[name]" "Uninstall Helm release."
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
     printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
     printf "$COLUMN" "install-haproxy-ingress" "" "Install haproxy ingress controller."
@@ -122,7 +122,7 @@ function install-chart() {
     echo "Install dependencies."
     helm dependency build "$1"
 
-    echo "Install release $1 with helm."
+    echo "Install chart $1 with release $1."
     helm install "$1" "$1"
     sleep 8
     
@@ -162,13 +162,13 @@ function uninstall-haproxy-ingress() {
 }
 
 
-function uninstall-chart() {
+function uninstall-release() {
     if test -z "$1"; then 
         echo "\$1 is empty."
         exit 1; 
     fi
 
-    echo "Uninstall release $1 with helm."
+    echo "Uninstall release $1."
     helm uninstall "$1"
 }
 

@@ -9,12 +9,12 @@ type: application
 version: 0.1.0
 appVersion: "1.0.0"
 templates:
-  - odoo-crd.yaml
   - odoo-cm.yaml
   - odoo-secret.yaml
   - odoo-svc.yaml
   - odoo-deploy.yaml
   - odoo-ingress.yaml
+  - vshn-postgesql.yaml
 dependencies:
   - name: postgres
     version: 0.1.0

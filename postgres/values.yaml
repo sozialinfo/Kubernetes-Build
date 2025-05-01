@@ -1,4 +1,6 @@
 postgres:
+  configMapRef: postgres-config
+  secretsRef: postgres-creds
   image: postgres:16-alpine
   host: postgres
   db: odoo
