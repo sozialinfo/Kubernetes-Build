@@ -124,11 +124,16 @@ task forward-odoo
 
 ### Setup ingress nginx controller
 
-Add and install the ingress-nginx repo.
+If not already done setup the hosts and add the ingress-nginx repo.
 
 ```bash
 task setup-hosts
 task add-ingress-nginx
+```
+
+Install ingress-nginx in the current cluster.
+
+```bash
 task install-ingress-nginx
 ```
 
@@ -140,15 +145,20 @@ task forward-ingress-nginx
 
 ### Setup haproxy ingress controller
 
-Add and install the haproxy ingress repo.
+If not already done setup the hosts and add the haprox-ingress repo.
 
 ```bash
 task setup-hosts
 task add-haproxy-ingress
+```
+
+Install haproxy-ingress in the current cluster.
+
+```bash
 task install-haproxy-ingress
 ```
 
-Forward the ingress-nginx port.
+Forward the haproxy-ingress port.
 
 ```bash
 task forward-haproxy-ingress

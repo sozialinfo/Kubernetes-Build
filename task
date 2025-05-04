@@ -13,7 +13,7 @@ function help() {
     echo
 
     # Define column widths
-    CMD_WIDTH=24
+    CMD_WIDTH=26
     OPT_WIDTH=14
     DESC_WIDTH=42
     COLUMN="| %-${CMD_WIDTH}s | %-${OPT_WIDTH}s | %-${DESC_WIDTH}s |\n"
