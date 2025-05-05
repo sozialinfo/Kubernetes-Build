@@ -7,3 +7,4 @@ manifest.yaml
 .obsidian/graph.json
 .obsidian/workspace.json
 odoo/charts
+.env
