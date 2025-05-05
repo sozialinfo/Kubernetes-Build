@@ -96,7 +96,7 @@ function test-k8s() {
     else
         start-kind
         add-repos
-        install-chart odoo
+        install-chart-odoo
     fi
 }
 
