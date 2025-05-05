@@ -55,12 +55,12 @@ Change these values:
 
 ```yaml
 ingress:
-	host: odoo.exo.mint-cloud.ch
-	secure: true
+  host: odoo.exo.mintcloud.ch
+  secure: true
 vshnPostgres:
-	enabled: true
+  enabled: true
 postgres:
-	enabled: false
+  enabled: false
 ```
 
 Confirm with *Create*.
