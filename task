@@ -32,9 +32,8 @@ function help() {
     printf "$COLUMN" "start-kind" "" "Start kind Kubernetes cluster."
     printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
+    printf "$COLUMN" "add-repos" "" "Add the selected repos."
     printf "$COLUMN" "setup-hosts" "" "Update hosts file."
-    printf "$COLUMN" "add-ingress-nginx" "" "Add the ingress-nginx repo."
-    printf "$COLUMN" "add-haproxy-ingress" "" "Add the haproxy-ingress repo."
 
     printf "$COLUMN" "install-chart" "[name]" "Install Helm Chart release."
     printf "$COLUMN" "upgrade-chart" "[name]" "Upgrade Helm Chart release."
@@ -46,6 +45,7 @@ function help() {
     printf "$COLUMN" "uninstall-haproxy-ingress" "" "Install haproxy ingress controller."
     printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingress-nginx port."
     printf "$COLUMN" "forward-haproxy-ingress" "" "Forward haproxy-ingress port."
+    printf "$COLUMN" "logs-haproxy-ingress" "" "Show haproxy-ingress logs."
     printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
 
     printf "$COLUMN" "template" "" "Template all charts with Helm."
@@ -55,7 +55,6 @@ function help() {
     printf "$COLUMN" "package-repo" "" "Package Helm Charts."
     printf "$COLUMN" "index-repo" "" "Index Helm Chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm Chart files to dist."
-    printf "$COLUMN" "add-repo" "" "Add the kubernetes-build repo."
     printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-build repo."
     printf "$COLUMN" "install-repo" "[name]" "Install Chart from kubernetes-build repo."
 
@@ -150,10 +149,20 @@ function upgrade-chart() {
 }
 
 function install-ingress-nginx() {
-    helm install ingress-nginx ingress-nginx/ingress-nginx --create-namespace --namespace ingress-nginx
+    helm install ingress-nginx ingress-nginx/ingress-nginx \
+        --create-namespace --namespace ingress-nginx
 }
 
 function install-haproxy-ingress() {
+    kubectl apply -f - <<EOF
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: haproxy
+spec:
+  controller: ingress.haproxy.org/ingress-controller
+EOF
+
     helm install haproxy-ingress haproxy-ingress/haproxy-ingress \
         --create-namespace --namespace haproxy-ingress
 }
@@ -217,6 +226,11 @@ function forward-haproxy-ingress() {
     kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $PORT:80
 }
 
+function logs-haproxy-ingress() {
+    POD_ID=$(kubectl get pods -o=name -n haproxy-ingress | grep "haproxy-ingress")
+    kubectl logs "$POD_ID" -n haproxy-ingress
+}
+
 # Helm Repo Commands
 
 function template() {
@@ -247,16 +261,14 @@ function publish-repo() {
     cp index.yaml .vitepress/dist
 }
 
-function add-repo(){
+function add-repos(){
     echo "Add the kubernetes-build repo."
     helm repo add kubernetes-build https://kubernetes.build
-}
 
-function add-ingress-nginx() {
+    echo "Add the ingress-nginx repo."
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-}
 
-function add-haproxy-ingress() {
+    echo "Add the haproxy-ingress repo."
     helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
 }
 

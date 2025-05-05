@@ -103,7 +103,7 @@ Ensure you have `kubectl` installed and can access the cluster.
 Add this repo for Chart dependencies.
 
 ```bash
-task add-repo
+task add-repos
 ```
 
 The following command applies the Odoo chart:
@@ -124,11 +124,10 @@ task forward-odoo
 
 ### Setup ingress nginx controller
 
-If not already done setup the hosts and add the ingress-nginx repo.
+If not already done setup the hosts.
 
 ```bash
 task setup-hosts
-task add-ingress-nginx
 ```
 
 Install ingress-nginx in the current cluster.
@@ -145,11 +144,10 @@ task forward-ingress-nginx
 
 ### Setup haproxy ingress controller
 
-If not already done setup the hosts and add the haprox-ingress repo.
+If not already done setup the hosts.
 
 ```bash
 task setup-hosts
-task add-haproxy-ingress
 ```
 
 Install haproxy-ingress in the current cluster.
