@@ -168,7 +168,7 @@ function install-chart-odoo() {
 }
 
 function install-chart-odoo-appuio() {
-    echo "Set oc project."
+    echo "Set oc project to $OC_PROJECT."
     oc project "$OC_PROJECT"
 
     echo "Install dependencies."
@@ -176,7 +176,6 @@ function install-chart-odoo-appuio() {
 
     echo "Install chart odoo as release odoo with Appuio-specific values."
     helm install odoo odoo \
-        --set namespace="$OC_PROJECT" \
         --set ingress.host=odoo.exo.mintcloud.ch \
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
@@ -261,7 +260,6 @@ function template() {
 function template-appuio() {
     echo "Template charts into manifest.yaml."
     helm template odoo odoo \
-        --set namespace="$OC_PROJECT" \
         --set ingress.host=odoo.exo.mintcloud.ch \
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \

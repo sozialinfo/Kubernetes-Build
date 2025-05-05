@@ -3,7 +3,6 @@ apiVersion: vshn.appcat.vshn.io/v1
 kind: VSHNPostgreSQL
 metadata:
   name: postgres
-  namespace: {{ .Values.namespace }} 
 spec:
   parameters:
     service:
