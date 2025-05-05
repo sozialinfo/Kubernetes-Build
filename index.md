@@ -42,9 +42,9 @@ Setup and deploy the Helm charts with [APPUiO](https://portal.appuio.cloud/).
 
 In your zone open *Helm > Tab Repositories > Create > Repository* and enter:
 
-* **Name**: kubernetes-build
-* **Display name**: Kubernetes Build
-* **Description**: The Mint System collection of Helm Charts.
+* **Name**: `kubernetes-build`
+* **Display name**: `Kubernetes Build`
+* **Description**: `The Mint System collection of Helm Charts.`
 * **URL**: <https://kubernetes.build>
 
 ### Create Odoo release

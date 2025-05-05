@@ -1,4 +1,5 @@
 ingress:
+  enabled: true
   className: haproxy
   host: odoo.cloud.local
   secure: false
