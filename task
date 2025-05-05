@@ -160,7 +160,7 @@ kind: IngressClass
 metadata:
   name: haproxy
 spec:
-  controller: ingress.haproxy.org/ingress-controller
+  controller: haproxy-ingress.github.io/controller
 EOF
 
     helm install haproxy-ingress haproxy-ingress/haproxy-ingress \
