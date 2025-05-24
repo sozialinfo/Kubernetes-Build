@@ -40,9 +40,10 @@ function help() {
     printf "$COLUMN" "forward-haproxy-ingress" "" "Forward haproxy-ingress port."
     # Chart, Release and Forwarding
     printf "$COLUMN" "install-chart-odoo" "" "Install Odoo Chart."
+    printf "$COLUMN" "install-chart-postgres" "" "Install Postgres Chart."
     printf "$COLUMN" "install-chart-odoo-appuio" "" "Install Odoo Chart to APPUiO."
     printf "$COLUMN" "upgrade-chart-odoo" "" "Upgrade Odoo Chart release."
-    printf "$COLUMN" "uninstall-release" "[name]" "Uninstall Helm release."
+    printf "$COLUMN" "uninstall-release-odoo" "" "Uninstall Odoo Helm release."
     printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
     printf "$COLUMN" "install-haproxy-ingress" "" "Install haproxy ingress controller."
     printf "$COLUMN" "uninstall-ingress-nginx" "" "Install ingress-nginx controller."
@@ -151,6 +152,11 @@ function forward-haproxy-ingress() {
 
 # Helm, Release Commands
 
+function install-chart-postgres() {
+    echo "Install chart postgres as release odoo."
+    helm install odoo postgres
+}
+
 function install-chart-odoo() {
     echo "Install dependencies."
     helm dependency build odoo
@@ -223,14 +229,9 @@ function uninstall-haproxy-ingress() {
     helm uninstall haproxy-ingress --namespace haproxy-ingress
 }
 
-function uninstall-release() {
-    if test -z "$1"; then 
-        echo "\$1 is empty."
-        exit 1; 
-    fi
-
-    echo "Uninstall release $1."
-    helm uninstall "$1"
+function uninstall-release-odoo() {
+    echo "Uninstall release odoo."
+    helm uninstall odoo
 }
 
 # kubectl Commands
@@ -272,6 +273,7 @@ function list() {
 
 function package-repo() {
     echo "Package Helm Charts."
+    index-repo
     helm package postgres
     cp postgres-0.1.0.tgz odoo/charts/
     helm package odoo
