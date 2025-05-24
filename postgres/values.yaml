@@ -3,6 +3,7 @@ postgres:
   secretRef: postgres-creds
   image: postgres:16-alpine
   host: postgres
+  port: 5432
   db: odoo
   user: odoo
   password: odoo

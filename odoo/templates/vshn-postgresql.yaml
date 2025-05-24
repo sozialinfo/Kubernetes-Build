@@ -12,6 +12,8 @@ spec:
           admin_users: postgres
       pgSettings:
         timezone: Europe/Zurich
+    security:
+      deletionProtection: false
     size:
       plan: standard-4
     backup:

@@ -109,7 +109,7 @@ task add-repos
 The following command applies the Odoo chart:
 
 ```bash
-task install-chart odoo
+task install-chart-odoo
 ```
 
 The Odoo database will initialized automtically.
