@@ -38,14 +38,23 @@ List of charts:
 
 Setup and deploy the Helm charts with [APPUiO](https://portal.appuio.cloud/).
 
-### Setup Helm repository
+### Login with OpenShift
 
-In your zone open *Helm > Tab Repositories > Create > Repository* and enter:
+Open the OpenShift console in your zone.
 
-* **Name**: `kubernetes-build`
-* **Display name**: `Kubernetes Build`
-* **Description**: `The Mint System collection of Helm Charts.`
-* **URL**: <https://kubernetes.build>
+Click on the username on the top right and select *Copy login command*.
+
+In the new tab click *Display token* and copy the *Login with this token* command.
+
+Run the command in your shell.
+
+### Setup project
+
+Create a project with the oc cli.
+
+```bash
+oc new-project odoo
+```
 
 ### Create Odoo release
 
@@ -172,8 +181,13 @@ Create new packages for all charts.
 task package-repo
 ```
 
-Update index file.
+Commit and push the files.
 
-```bash
-task index-repo
-```
+### Publish Helm Charts on APPUiO
+
+In your zone open *Helm > Tab Repositories > Create > Repository* and enter:
+
+* **Name**: `kubernetes-build`
+* **Display name**: `Kubernetes Build`
+* **Description**: `The Mint System collection of Helm Charts.`
+* **URL**: <https://kubernetes.build>

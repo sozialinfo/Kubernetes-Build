@@ -13,7 +13,7 @@ postgres:
 odoo:
   configMapRef: odoo-config
   secretRef: odoo-creds
-  image: mintsystem/odoo:18.0.20250401
+  image: mintsystem/odoo:18.0.20250520
   host: odoo
   proxyMode: True
   githubUsername: ""
