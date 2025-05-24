@@ -58,6 +58,29 @@ oc new-project odoo
 
 ### Create Odoo release
 
+Add this Helm repo to the local index.
+
+```
+task add-repos
+```
+
+Install the Helm release.
+
+```bash
+task install-chart-odoo-appuio
+```
+
+### Publish Helm Charts
+
+In your zone open *Helm > Tab Repositories > Create > Repository* and enter:
+
+* **Name**: `kubernetes-build`
+* **Display name**: `Kubernetes Build`
+* **Description**: `The Mint System collection of Helm Charts.`
+* **URL**: <https://kubernetes.build>
+
+### Create release from web console
+
 In your zone open *Helm > Tab Helm Releases > Create > Helm Release* and filter `Odoo`. Click on the Helm Chart and select *Create*.
 
 Change these values:
@@ -182,12 +205,3 @@ task package-repo
 ```
 
 Commit and push the files.
-
-### Publish Helm Charts on APPUiO
-
-In your zone open *Helm > Tab Repositories > Create > Repository* and enter:
-
-* **Name**: `kubernetes-build`
-* **Display name**: `Kubernetes Build`
-* **Description**: `The Mint System collection of Helm Charts.`
-* **URL**: <https://kubernetes.build>

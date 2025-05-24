@@ -65,7 +65,7 @@ spec:
             - name: PGPORT
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.secretRef }}
                   key: POSTGRESQL_PORT
             - name: PGUSER
               valueFrom:
@@ -100,6 +100,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretRef }}
                   key: POSTGRES_HOST
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: POSTGRES_PORT
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
@@ -122,6 +127,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.vshnPostgres.secretRef }}
                   key: POSTGRESQL_HOST
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_PORT
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
