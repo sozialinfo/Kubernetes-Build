@@ -43,6 +43,7 @@ function help() {
     printf "$COLUMN" "install-chart-postgres" "" "Install Postgres Chart."
     printf "$COLUMN" "install-chart-odoo-appuio" "" "Install Odoo Chart to APPUiO."
     printf "$COLUMN" "upgrade-chart-odoo" "" "Upgrade Odoo Chart release."
+    printf "$COLUMN" "upgrade-chart-odoo--appuio" "" "Upgrade Odoo Chart release for AppUiO."
     printf "$COLUMN" "uninstall-release-odoo" "" "Uninstall Odoo Helm release."
     printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
     printf "$COLUMN" "install-haproxy-ingress" "" "Install haproxy ingress controller."
@@ -180,7 +181,7 @@ function install-chart-odoo-appuio() {
     echo "Install dependencies."
     helm dependency build odoo
 
-    echo "Install chart odoo as release odoo with Appuio-specific values."
+    echo "Install chart odoo as release odoo with APPUiO-specific values."
     helm install odoo odoo \
         --set ingress.host=odoo.exo.mintcloud.ch \
         --set ingress.secure=true \
@@ -201,6 +202,16 @@ function upgrade-chart-odoo() {
     echo "Upgrade release odoo with helm."
     helm upgrade odoo odoo
 }
+
+function upgrade-chart-odoo() {
+    echo "Upgrade release odoo with APPUiO-specific values."
+    helm upgrade odoo odoo \
+        --set ingress.host=odoo.exo.mintcloud.ch \
+        --set ingress.secure=true \
+        --set vshnPostgres.enabled=true \
+        --set postgres.enabled=false
+}
+
 
 function install-ingress-nginx() {
     helm install ingress-nginx ingress-nginx/ingress-nginx \

@@ -6,7 +6,9 @@ ingress:
   secure: false
 vshnPostgres:
   enabled: false
-  secretRef: postgres-credentials
+  secretRef: postgres-creds
+  namespace: odoo
+  odooSecretRef: postgres-odoo
 postgres:
   enabled: true
   secretRef: postgres-creds

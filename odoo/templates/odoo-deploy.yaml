@@ -60,27 +60,27 @@ spec:
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_HOST
             - name: PGPORT
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_PORT
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_USER
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_PASSWORD
             - name: ODOO_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_DB
             {{- end }}
       containers:
@@ -125,26 +125,26 @@ spec:
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_HOST
             - name: PGPORT
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_PORT
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_USER
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_PASSWORD
             - name: ODOO_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.secretRef }}
+                  name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_DB
             {{- end }}

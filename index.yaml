@@ -3,14 +3,14 @@ entries:
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-05-24T12:27:53.50005279+02:00"
+    created: "2025-05-24T14:10:05.823681119+02:00"
     dependencies:
     - condition: postgres.enabled
       name: postgres
       repository: https://kubernetes.build
       version: 0.1.0
     description: Mint System Odoo
-    digest: 3993340e1cbfb0dfef7eb0851fe5128e7dbe7e2c83975f2e945b858bcb9e5011
+    digest: 88ef5a91f7cafd81df86589575b088cb895c8309a0df07ee76aac7fe3ad0580a
     home: https://kubernetes.build/
     maintainers:
     - email: support@mint-system.ch
@@ -23,9 +23,9 @@ entries:
   postgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-05-24T12:27:53.500203888+02:00"
+    created: "2025-05-24T14:10:05.823943241+02:00"
     description: Mint System Postgres
-    digest: 3f85e5995e3df4db69cbb73815f5dffa4074481c0782ce618cb1faa610a761f4
+    digest: a70b28fe70950bfb5e88b6587418dc46974b9de03fc1c5d02f1c447cb82f73ee
     home: https://kubernetes.build/
     maintainers:
     - email: support@mint-system.ch
@@ -35,4 +35,4 @@ entries:
     urls:
     - postgres-0.1.0.tgz
     version: 0.1.0
-generated: "2025-05-24T12:27:53.499121868+02:00"
+generated: "2025-05-24T14:10:05.822728429+02:00"

@@ -16,10 +16,12 @@ Domain: `ingress`
 
 Domain: `vshnPostgres`
 
-| Key       | Type    | Default                |
-| --------- | ------- | ---------------------- |
-| enabled   | boolean | `false`                |
-| secretRef | string  | `postgres-credentials` |
+| Key           | Type    | Default          |
+| ------------- | ------- | ---------------- |
+| enabled       | boolean | `false`          |
+| secretRef     | string  | `postgres-creds` |
+| namespace     | string  | `odoo`           |
+| odooSecretRef | string  | `postgres-odoo`  |
 
 Domain: `postgres`
 
