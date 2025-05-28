@@ -50,7 +50,7 @@ Run the command in your shell.
 
 ### Setup project
 
-Create a project with the oc cli.
+If not alrady done, create a project with the oc cli.
 
 ```bash
 oc new-project odoo
@@ -60,7 +60,7 @@ oc new-project odoo
 
 Add this Helm repo to the local index.
 
-```
+```bash
 task add-repos
 ```
 
