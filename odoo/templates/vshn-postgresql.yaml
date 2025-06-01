@@ -28,7 +28,6 @@ spec:
       retention: 12
   writeConnectionSecretToRef:
     name: {{ .Values.vshnPostgres.secretRef }}
-{{- end }}
 ---
 apiVersion: v1
 kind: Pod
@@ -56,3 +55,4 @@ spec:
       defaultMode: 0600
       secretName: {{ .Values.vshnPostgres.odooSecretRef }}
   restartPolicy: OnFailure
+{{- end }}
