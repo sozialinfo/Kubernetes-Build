@@ -43,7 +43,7 @@ function help() {
     printf "$COLUMN" "install-chart-postgres" "" "Install Postgres Chart."
     printf "$COLUMN" "install-chart-odoo-appuio" "" "Install Odoo Chart to APPUiO."
     printf "$COLUMN" "upgrade-chart-odoo" "" "Upgrade Odoo Chart release."
-    printf "$COLUMN" "upgrade-chart-odoo--appuio" "" "Upgrade Odoo Chart release for AppUiO."
+    printf "$COLUMN" "upgrade-chart-odoo-appuio" "" "Upgrade Odoo Chart release for AppUiO."
     printf "$COLUMN" "uninstall-release-odoo" "" "Uninstall Odoo Helm release."
     printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
     printf "$COLUMN" "install-haproxy-ingress" "" "Install haproxy ingress controller."
@@ -203,7 +203,7 @@ function upgrade-chart-odoo() {
     helm upgrade odoo odoo
 }
 
-function upgrade-chart-odoo() {
+function upgrade-chart-odoo-appuio() {
     echo "Upgrade release odoo with APPUiO-specific values."
     helm upgrade odoo odoo \
         --set ingress.host=odoo.exo.mintcloud.ch \

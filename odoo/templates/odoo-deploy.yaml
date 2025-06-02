@@ -13,6 +13,13 @@ spec:
       labels:
         app: odoo
     spec:
+      {{- if .Values.vshnPostgres.enabled }}
+      volumes:
+      - name: {{ .Values.vshnPostgres.odooSecretRef }}
+        secret:
+          defaultMode: 0600
+          secretName: {{ .Values.vshnPostgres.odooSecretRef }}
+      {{- end }}
       initContainers:
         - name: init
           image: {{ .Values.odoo.image }}
@@ -82,7 +89,17 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_DB
+            - name: PGSSLMODE
+              value: verify-ca
+            - name: PGSSLROOTCERT
+              value: "/mnt/{{ .Values.vshnPostgres.odooSecretRef }}/ca.crt"
             {{- end }}
+          {{- if .Values.vshnPostgres.enabled }}
+          volumeMounts:
+          - name: {{ .Values.vshnPostgres.odooSecretRef }}
+            readOnly: true
+            mountPath: "/mnt/{{ .Values.vshnPostgres.odooSecretRef }}"
+          {{- end }}
       containers:
         - name: {{ .Values.odoo.host }}
           image: {{ .Values.odoo.image }}
@@ -147,4 +164,14 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.vshnPostgres.odooSecretRef }}
                   key: POSTGRESQL_DB
+            - name: PGSSLMODE
+              value: verify-ca
+            - name: PGSSLROOTCERT
+              value: "/mnt/{{ .Values.vshnPostgres.odooSecretRef }}/ca.crt"
             {{- end }}
+          {{- if .Values.vshnPostgres.enabled }}
+          volumeMounts:
+          - name: {{ .Values.vshnPostgres.odooSecretRef }}
+            readOnly: true
+            mountPath: "/mnt/{{ .Values.vshnPostgres.odooSecretRef }}"
+          {{- end }}
