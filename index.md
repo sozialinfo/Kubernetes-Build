@@ -205,3 +205,47 @@ task package-repo
 ```
 
 Commit and push the files.
+
+## Troubleshooting
+
+### Run interactive postgres container
+
+Run this command to delete the postgres test container and open an interactive shell.
+
+```bash
+kubectl delete pod postgres-client
+echo "
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres-client
+spec:
+  containers:
+  - name: postgres
+    image: postgres:16
+    command:
+      - tail
+      - -f
+      - /dev/null
+    envFrom:
+      - secretRef:
+          name: postgres-odoo
+    volumeMounts:
+    - name: secret-volume
+      readOnly: true
+      mountPath: /etc/secret-volume
+  volumes:
+  - name: secret-volume
+    secret:
+      defaultMode: 0600
+      secretName: postgres-odoo
+  restartPolicy: Never
+" | kubectl apply -f -
+kubectl exec -it postgres-client -- /bin/bash
+```
+
+In the shell try to connect to the cluster.
+
+```bash
+psql --set=sslmode=verify-ca --set=sslrootcert=/etc/secret-volume/ca.crt -h $POSTGRES_HOST -d odoo -U odoo
+```
