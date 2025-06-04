@@ -221,7 +221,7 @@ metadata:
   name: postgres-client
 spec:
   containers:
-  - name: postgres
+  - name: postgres-client
     image: postgres:16
     command:
       - tail
@@ -241,11 +241,12 @@ spec:
       secretName: postgres-odoo
   restartPolicy: Never
 " | kubectl apply -f -
+
 kubectl exec -it postgres-client -- /bin/bash
 ```
 
 In the shell try to connect to the cluster.
 
 ```bash
-psql --set=sslmode=verify-ca --set=sslrootcert=/etc/secret-volume/ca.crt -h $POSTGRES_HOST -d odoo -U odoo
+psql --set=sslmode=verify-ca --set=sslrootcert=/etc/secret-volume/ca.crt -h $POSTGRESQL_HOST -d $POSTGRESQL_DB -U $POSTGRESQL_USER
 ```
