@@ -20,7 +20,6 @@ spec:
             namespace: {{ .Values.vshnPostgres.namespace }} 
     security:
       deletionProtection: false
-      allowAllNamespaces: true
     size:
       plan: standard-4
     backup:
