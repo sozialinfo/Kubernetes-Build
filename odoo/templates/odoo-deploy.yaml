@@ -23,6 +23,7 @@ spec:
       initContainers:
         - name: init
           image: {{ .Values.odoo.image }}
+          imagePullPolicy: Always
           command:
             - /bin/bash
             - -c

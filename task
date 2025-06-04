@@ -54,6 +54,7 @@ function help() {
     printf "$COLUMN" "logs-haproxy-ingress" "" "Show haproxy-ingress logs."
     printf "$COLUMN" "list" "" "List Helm deployments."
     printf "$COLUMN" "list-pods" "" "List all pods."
+    printf "$COLUMN" "login-oc" "" "Refresh the auth token for OpenShift."
     # Helm
     printf "$COLUMN" "template" "" "Template all charts with Helm."
     printf "$COLUMN" "template-appuio" "" "Template all charts for APPUiO."
