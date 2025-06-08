@@ -4,6 +4,8 @@
 
 Mint System Postgres
 
+This chart deploys a Postgres container and stores the credentials in a secret.
+
 ## Values
 
 Domain: `postgres`
