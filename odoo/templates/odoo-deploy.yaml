@@ -28,7 +28,6 @@ spec:
             - /bin/bash
             - -c
             - |
-              psql -d postgres -c "CREATE DATABASE IF NOT EXISTS $ODOO_DATABASE;" && \
               {{- if .Values.odoo.downloadOdooEnterprise }}/entrypoint.sh download-odoo-enterprise && \{{- end }}
               /entrypoint.sh git-clone-addons && \
               /entrypoint.sh init-db
