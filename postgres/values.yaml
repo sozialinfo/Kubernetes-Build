@@ -3,6 +3,3 @@ postgres:
   host: postgres
   port: 5432
   secretRef: postgres-creds
-  db: odoo
-  user: odoo
-  appSecretRef: postgres-odoo

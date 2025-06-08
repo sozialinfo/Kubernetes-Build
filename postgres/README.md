@@ -14,6 +14,3 @@ Domain: `postgres`
 | host         | string  | `postgres`           |
 | port         | integer | `5432`               |
 | secretRef    | string  | `postgres-creds`     |
-| db           | string  | `odoo`               |
-| user         | string  | `odoo`               |
-| appSecretRef | string  | `postges-odoo`       |
