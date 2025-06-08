@@ -4,6 +4,8 @@
 
 Mint System Odoo
 
+Sets up Odoo with a Postgres container. The connection credentials are mapped from the Postgres secret.
+
 ## Values
 
 Domain: `ingress`
