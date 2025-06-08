@@ -1,9 +1,8 @@
 postgres:
-  configMapRef: postgres-config
-  secretRef: postgres-creds
   image: postgres:16-alpine
   host: postgres
   port: 5432
+  secretRef: postgres-creds
   db: odoo
   user: odoo
-  password: odoo
+  appSecretRef: postgres-odoo

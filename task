@@ -43,6 +43,7 @@ function help() {
     printf "$COLUMN" "install-chart-postgres" "" "Install Postgres Chart."
     printf "$COLUMN" "install-chart-odoo-appuio" "" "Install Odoo Chart to APPUiO."
     printf "$COLUMN" "upgrade-chart-odoo" "" "Upgrade Odoo Chart release."
+    printf "$COLUMN" "upgrade-chart-postgres" "" "Upgrade Postgres Chart release."
     printf "$COLUMN" "upgrade-chart-odoo-appuio" "" "Upgrade Odoo Chart release for AppUiO."
     printf "$COLUMN" "uninstall-release-odoo" "" "Uninstall Odoo Helm release."
     printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
@@ -65,14 +66,13 @@ function help() {
     printf "$COLUMN" "install-repo" "[name]" "Install Chart from kubernetes-build repo."
     # LLM
     printf "$COLUMN" "commit-with-llm" "" "Commit with llm generated commit message."
-    printf "$COLUMN" "update-with-llm" "[path][prompt]" "Update files with LLM prompt."
-
-    echo
+    printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
 }
 
 # Import commands
 
 [ -f ~/taskfile.build/bin/commit-with-llm ] && source ~/taskfile.build/bin/commit-with-llm
+[ -f ~/taskfile.build/bin/update-with-llm ] && source ~/taskfile.build/bin/update-with-llm
 
 # Env Commands
 
@@ -204,6 +204,11 @@ function upgrade-chart-odoo() {
     helm upgrade odoo odoo
 }
 
+function upgrade-chart-postgres() {
+    echo "Upgrade release odoo with helm."
+    helm upgrade odoo postgres
+}
+
 function upgrade-chart-odoo-appuio() {
     echo "Upgrade release odoo with APPUiO-specific values."
     helm upgrade odoo odoo \
@@ -212,7 +217,6 @@ function upgrade-chart-odoo-appuio() {
         --set vshnPostgres.enabled=true \
         --set postgres.enabled=false
 }
-
 
 function install-ingress-nginx() {
     helm install ingress-nginx ingress-nginx/ingress-nginx \

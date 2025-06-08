@@ -12,12 +12,6 @@ spec:
           admin_users: postgres
       pgSettings:
         timezone: Europe/Zurich
-      access:
-        - user: {{ .Values.vshnPostgres.namespace }} 
-          database: {{ .Values.vshnPostgres.namespace }} 
-          writeConnectionSecretToRef: 
-            name: {{ .Values.vshnPostgres.odooSecretRef }}
-            namespace: {{ .Values.vshnPostgres.namespace }} 
     security:
       deletionProtection: false
     size:
@@ -27,31 +21,4 @@ spec:
       retention: 12
   writeConnectionSecretToRef:
     name: {{ .Values.vshnPostgres.secretRef }}
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: postgres-client
-spec:
-  containers:
-  - name: postgres
-    image: postgres:16
-    command:
-      - /bin/sh
-      - -c
-    args:
-      - PGPASSWORD=$POSTGRESQL_PASSWORD psql "sslmode=verify-ca sslrootcert=/etc/secret-volume/ca.crt host=$POSTGRESQL_HOST port=$POSTGRESQL_PORT dbname=$POSTGRESQL_DB" -U $POSTGRESQL_USER -l
-    envFrom:
-      - secretRef:
-          name: {{ .Values.vshnPostgres.odooSecretRef }}
-    volumeMounts:
-    - name: secret-volume
-      readOnly: true
-      mountPath: "/etc/secret-volume"
-  volumes:
-  - name: secret-volume
-    secret:
-      defaultMode: 0600
-      secretName: {{ .Values.vshnPostgres.odooSecretRef }}
-  restartPolicy: OnFailure
 {{- end }}

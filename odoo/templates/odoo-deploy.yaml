@@ -15,10 +15,10 @@ spec:
     spec:
       {{- if .Values.vshnPostgres.enabled }}
       volumes:
-      - name: {{ .Values.vshnPostgres.odooSecretRef }}
+      - name: {{ .Values.vshnPostgres.secretRef }}
         secret:
           defaultMode: 0600
-          secretName: {{ .Values.vshnPostgres.odooSecretRef }}
+          secretName: {{ .Values.vshnPostgres.secretRef }}
       {{- end }}
       initContainers:
         - name: init
@@ -28,6 +28,7 @@ spec:
             - /bin/bash
             - -c
             - |
+              psql -d postgres -c "CREATE DATABASE IF NOT EXISTS $ODOO_DATABASE;" && \
               {{- if .Values.odoo.downloadOdooEnterprise }}/entrypoint.sh download-odoo-enterprise && \{{- end }}
               /entrypoint.sh git-clone-addons && \
               /entrypoint.sh init-db
@@ -58,48 +59,38 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretRef }}
                   key: POSTGRES_PASSWORD
-            - name: ODOO_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_DB
             {{- end }}
             {{- if .Values.vshnPostgres.enabled }}
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.odooSecretRef }}
+                  name: {{ .Values.vshnPostgres.secretRef }}
                   key: POSTGRESQL_HOST
             - name: PGPORT
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.odooSecretRef }}
+                  name: {{ .Values.vshnPostgres.secretRef }}
                   key: POSTGRESQL_PORT
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.odooSecretRef }}
+                  name: {{ .Values.vshnPostgres.secretRef }}
                   key: POSTGRESQL_USER
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.odooSecretRef }}
+                  name: {{ .Values.vshnPostgres.secretRef }}
                   key: POSTGRESQL_PASSWORD
-            - name: ODOO_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.vshnPostgres.odooSecretRef }}
-                  key: POSTGRESQL_DB
             - name: PGSSLMODE
               value: verify-ca
             - name: PGSSLROOTCERT
-              value: "/mnt/{{ .Values.vshnPostgres.odooSecretRef }}/ca.crt"
+              value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
             {{- end }}
           {{- if .Values.vshnPostgres.enabled }}
           volumeMounts:
-          - name: {{ .Values.vshnPostgres.odooSecretRef }}
+          - name: {{ .Values.vshnPostgres.secretRef }}
             readOnly: true
-            mountPath: "/mnt/{{ .Values.vshnPostgres.odooSecretRef }}"
+            mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
           {{- end }}
       containers:
         - name: {{ .Values.odoo.host }}
@@ -133,46 +124,36 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretRef }}
                   key: POSTGRES_PASSWORD
-            - name: ODOO_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_DB
             {{- end }}
             {{- if .Values.vshnPostgres.enabled }}
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.odooSecretRef }}
+                  name: {{ .Values.vshnPostgres.secretRef }}
                   key: POSTGRESQL_HOST
             - name: PGPORT
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.odooSecretRef }}
+                  name: {{ .Values.vshnPostgres.secretRef }}
                   key: POSTGRESQL_PORT
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.odooSecretRef }}
+                  name: {{ .Values.vshnPostgres.secretRef }}
                   key: POSTGRESQL_USER
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.vshnPostgres.odooSecretRef }}
+                  name: {{ .Values.vshnPostgres.secretRef }}
                   key: POSTGRESQL_PASSWORD
-            - name: ODOO_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.vshnPostgres.odooSecretRef }}
-                  key: POSTGRESQL_DB
             - name: PGSSLMODE
               value: verify-ca
             - name: PGSSLROOTCERT
-              value: "/mnt/{{ .Values.vshnPostgres.odooSecretRef }}/ca.crt"
+              value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
             {{- end }}
           {{- if .Values.vshnPostgres.enabled }}
           volumeMounts:
-          - name: {{ .Values.vshnPostgres.odooSecretRef }}
+          - name: {{ .Values.vshnPostgres.secretRef }}
             readOnly: true
-            mountPath: "/mnt/{{ .Values.vshnPostgres.odooSecretRef }}"
+            mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
           {{- end }}

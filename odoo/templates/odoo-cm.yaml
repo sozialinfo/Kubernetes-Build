@@ -5,6 +5,8 @@ metadata:
   labels:
     app: odoo
 data:
+  ODOO_DATABASE: odoo
+  GITHUB_USERNAME: {{ .Values.odoo.githubUsername | quote }}
   GITHUB_USERNAME: {{ .Values.odoo.githubUsername | quote }}
   ADDONS_GIT_REPOS: {{ .Values.odoo.addonsGitRepos | quote }}
   ODOO_INIT_LANG: {{ .Values.odoo.initLang | quote }}

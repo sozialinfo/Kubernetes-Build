@@ -6,7 +6,7 @@ metadata:
     app: postgres
 spec:
   ports:
-    - port: {{ .Values.postgres.port }}
-      targetPort: {{ .Values.postgres.port }}
+    - port: {{.Values.postgres.port }}
+      targetPort: {{.Values.postgres.port }}
   selector:
     app: postgres

@@ -19,27 +19,19 @@ Domain: `vshnPostgres`
 | Key           | Type    | Default          |
 | ------------- | ------- | ---------------- |
 | enabled       | boolean | `false`          |
-| secretRef     | string  | `postgres-creds` |
-| namespace     | string  | `odoo`           |
-| odooSecretRef | string  | `postgres-odoo`  |
+| secretRef | string  | `postgres-creds`  |
 
 Domain: `postgres`
 
-| Key       | Type    | Default          |
-| --------- | ------- | ---------------- |
-| enabled   | boolean | `true`           |
-| secretRef | string  | `postgres-creds` |
-| host      | string  | `postgres`       |
-| db        | string  | `odoo`           |
-| user      | string  | `odoo`           |
-| password  | string  | `odoo`           |
+| Key          | Type    | Default          |
+| ------------ | ------- | ---------------- |
+| enabled      | boolean | `true`           |
+| secretRef | string  | `postgres-creds`  |
 
 Domain: `odoo`
 
 | Key                       | Type   | Default                                                                                                       |
 | ------------------------- | ------ | ------------------------------------------------------------------------------------------------------------- |
-| configMapRef              | string | `odoo-config`                                                                                                 |
-| secretRef                 | string | `odoo-creds`                                                                                                  |
 | image                     | string | `mintsystem/odoo:18.0.20250401`                                                                               |
 | proxyMode                 | bool   | `True`                                                                                                        |
 | githubUserame             | string | `""`                                                                                                          |
@@ -49,3 +41,5 @@ Domain: `odoo`
 | database                  | string | `odoo`                                                                                                        |
 | initLang                  | string | `de_CH`                                                                                                       |
 | listDB                    | string | `False`                                                                                                       |
+| configMapRef              | string | `odoo-config`                                                                                                 |
+| secretRef                 | string | `odoo-creds`                                                                                                  |

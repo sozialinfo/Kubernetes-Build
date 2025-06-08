@@ -13,10 +13,10 @@ spec:
         app: postgres
     spec:
       containers:
-        - name: {{ .Values.postgres.host }}
-          image: {{ .Values.postgres.image }}
+        - name: {{.Values.postgres.host }}
+          image: {{.Values.postgres.image }}
           ports:
-            - containerPort: {{ .Values.postgres.port }}
+            - containerPort: {{.Values.postgres.port }}
           envFrom:
             - secretRef:
                 name: {{ .Values.postgres.secretRef }}
@@ -27,4 +27,3 @@ spec:
         - name: postgredb
           persistentVolumeClaim:
             claimName: postgresql-data-claim
-
