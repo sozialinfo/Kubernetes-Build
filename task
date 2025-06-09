@@ -45,6 +45,7 @@ function help() {
     printf "$COLUMN" "install-chart-odoo-appuio" "" "Install Odoo Chart to APPUiO."
     printf "$COLUMN" "upgrade-chart-odoo" "" "Upgrade Odoo Chart release."
     printf "$COLUMN" "upgrade-chart-postgres" "" "Upgrade Postgres Chart release."
+    printf "$COLUMN" "upgrade-chart-vshnpostgres" "" "Upgrade Postgres Chart release."
     printf "$COLUMN" "upgrade-chart-odoo-appuio" "" "Upgrade Odoo Chart release for AppUiO."
     printf "$COLUMN" "uninstall-release" "" "Uninstall Odoo Helm release."
     printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
@@ -213,17 +214,24 @@ function upgrade-chart-odoo() {
     echo "Update dependencies."
     helm dependency update odoo
 
-    echo "Upgrade release $RELEASE_NAME with helm."
+    echo "Upgrade odoo chart for release $RELEASE_NAME."
     helm upgrade "$RELEASE_NAME" odoo
 }
 
 function upgrade-chart-postgres() {
-    echo "Upgrade release $RELEASE_NAME with helm."
+    echo "Upgrade postgres chart for release $RELEASE_NAME."
     helm upgrade "$RELEASE_NAME" postgres
 }
 
+function upgrade-chart-vshnpostgres() {
+    echo "Upgrade vshnPostgres chart for release $RELEASE_NAME."
+    helm upgrade "$RELEASE_NAME" vshnPostgres \
+        --set vshnPostgres.enabled=true \
+        --set vshnPostgres.client.enabled=true
+}
+
 function upgrade-chart-odoo-appuio() {
-    echo "Upgrade release $RELEASE_NAME with APPUiO-specific values."
+    echo "Upgrade odoo chart for release $RELEASE_NAME with APPUiO-specific values."
     helm upgrade "$RELEASE_NAME" odoo \
         --set ingress.host="$NAMESPACE.exo.mintcloud.ch" \
         --set ingress.secure=true \
