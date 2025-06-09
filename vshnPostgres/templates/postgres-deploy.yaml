@@ -14,7 +14,10 @@ spec:
       pgSettings:
         timezone: Europe/Zurich
       access:
-        - user: {{ .Values.namespace }} 
+        - user: {{ .Values.namespace }}
+          writeConnectionSecretToRef: 
+            name: postgres-{{ .Values.namespace }}
+            namespace: {{ .Values.namespace }}
     security:
       deletionProtection: false
       allowedNamespaces:
