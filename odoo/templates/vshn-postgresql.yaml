@@ -22,4 +22,36 @@ spec:
       retention: 12
   writeConnectionSecretToRef:
     name: {{ .Values.vshnPostgres.secretRef }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres-client
+  namespace: {{ .Values.namespace }}
+spec:
+  containers:
+  - name: postgres
+    image: postgres:16
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    command:
+      - /bin/sh
+      - -c
+    args:
+      - PGPASSWORD=$POSTGRESQL_PASSWORD psql "sslmode=verify-ca sslrootcert=/etc/secret-volume/ca.crt host=$POSTGRESQL_HOST port=$POSTGRESQL_PORT dbname=$POSTGRESQL_DB" -U $POSTGRESQL_USER -l
+    envFrom:
+      - secretRef:
+          name: {{ .Values.vshnPostgres.secretRef }}
+    volumeMounts:
+    - name: secret-volume
+      readOnly: true
+      mountPath: "/etc/secret-volume"
+  volumes:
+  - name: secret-volume
+    secret:
+      defaultMode: 0600
+      secretName: {{ .Values.vshnPostgres.secretRef }}
+  restartPolicy: OnFailure
 {{- end }}
