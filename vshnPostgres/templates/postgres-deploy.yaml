@@ -13,8 +13,12 @@ spec:
           admin_users: postgres
       pgSettings:
         timezone: Europe/Zurich
+      access:
+        - user: {{ .Values.namespace }} 
     security:
       deletionProtection: false
+      allowedNamespaces:
+        - {{ .Values.namespace }}
     size:
       plan: standard-4
     backup:
@@ -22,6 +26,8 @@ spec:
       retention: 12
   writeConnectionSecretToRef:
     name: {{ .Values.vshnPostgres.secretRef }}
+{{- end }}
+{{- if .Values.vshnPostgres.client.enabled }}
 ---
 apiVersion: v1
 kind: Pod
@@ -30,7 +36,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   containers:
-  - name: postgres
+  - name: postgres-client
     image: postgres:16
     resources:
       limits:

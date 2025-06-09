@@ -33,6 +33,7 @@ List of charts:
 
 * [odoo](/odoo/README.md)
 * [postgres](/postgres/README.md)
+* [vshnPostgres](/vshnPostgres/README.md)
 
 ## APPUiO
 
@@ -208,47 +209,28 @@ Commit and push the files.
 
 ## Troubleshooting
 
-### Run interactive Postgres container
+### Debug the Postgres instance
 
-Run this command to create Postgres container.
+When deploying the Postgres container with this project the client options is enabled.
 
-```bash
-echo "
-apiVersion: v1
-kind: Pod
-metadata:
-  name: postgres-client
-spec:
-  containers:
-  - name: postgres
-    image: postgres:16
-    command:
-      - tail
-      - -f
-      - /dev/null
-    envFrom:
-      - secretRef:
-          name: postgres-creds
-    volumeMounts:
-    - name: secret-volume
-      readOnly: true
-      mountPath: /etc/secret-volume
-  volumes:
-  - name: secret-volume
-    secret:
-      defaultMode: 0600
-      secretName: postgres-creds
-  restartPolicy: Never
-" | kubectl apply -f -
+```yml
+postgres.client.enabled=true
+vshnPostgres.client.enabled=true
 ```
 
-Open an interactive shell in the container.
+You can enter an interactive shell on the client container.
 
 ```bash
 kubectl exec -it postgres-client -- bash
 ```
 
 In the shell try to connect to the cluster.
+
+```bash
+PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -d $POSTGRES_DB -U $POSTGRES_USER
+```
+
+When connection from APPUiO use this command:
 
 ```bash
 psql --set=sslmode=verify-ca --set=sslrootcert=/etc/secret-volume/ca.crt -h $POSTGRESQL_HOST -d $POSTGRESQL_DB -U $POSTGRESQL_USER

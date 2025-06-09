@@ -57,3 +57,31 @@ spec:
         - name: postgredb
           persistentVolumeClaim:
             claimName: postgresql-data-claim
+{{- if .Values.postgres.client.enabled }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres-client
+spec:
+  containers:
+  - name: postgres-client
+    image: {{.Values.postgres.image }}
+    command:
+      - tail
+      - -f
+      - /dev/null
+    envFrom:
+      - secretRef:
+          name: {{ .Values.postgres.secretRef }}
+    volumeMounts:
+    - name: secret-volume
+      readOnly: true
+      mountPath: "/etc/secret-volume"
+  volumes:
+  - name: secret-volume
+    secret:
+      defaultMode: 0600
+      secretName: {{ .Values.postgres.secretRef }}
+  restartPolicy: OnFailure
+{{- end }}

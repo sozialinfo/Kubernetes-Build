@@ -22,6 +22,7 @@ Domain: `vshnPostgres`
 | ------------- | ------- | ---------------- |
 | enabled       | boolean | `false`          |
 | secretRef | string  | `postgres-creds`  |
+| client.enabled | boolean  | `false`     |
 
 Domain: `postgres`
 
@@ -29,11 +30,13 @@ Domain: `postgres`
 | ------------ | ------- | ---------------- |
 | enabled      | boolean | `true`           |
 | secretRef | string  | `postgres-creds`  |
+| client.enabled | boolean  | `false`     |
 
 Domain: `odoo`
 
 | Key                       | Type   | Default                                                                                                       |
 | ------------------------- | ------ | ------------------------------------------------------------------------------------------------------------- |
+| enabled      | boolean | `true`           |
 | image                     | string | `mintsystem/odoo:18.0.20250401`                                                                               |
 | proxyMode                 | bool   | `True`                                                                                                        |
 | githubUserame             | string | `""`                                                                                                          |

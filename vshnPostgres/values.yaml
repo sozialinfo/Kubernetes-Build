@@ -1,0 +1,6 @@
+namespace: odoo
+vshnPostgres:
+  enabled: false
+  secretRef: postgres-creds
+  client:
+    enabled: false

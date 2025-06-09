@@ -41,11 +41,12 @@ function help() {
     # Chart, Release and Forwarding
     printf "$COLUMN" "install-chart-odoo" "" "Install Odoo Chart."
     printf "$COLUMN" "install-chart-postgres" "" "Install Postgres Chart."
+    printf "$COLUMN" "install-chart-vshnpostgres" "" "Install vshnPostgres Chart."
     printf "$COLUMN" "install-chart-odoo-appuio" "" "Install Odoo Chart to APPUiO."
     printf "$COLUMN" "upgrade-chart-odoo" "" "Upgrade Odoo Chart release."
     printf "$COLUMN" "upgrade-chart-postgres" "" "Upgrade Postgres Chart release."
     printf "$COLUMN" "upgrade-chart-odoo-appuio" "" "Upgrade Odoo Chart release for AppUiO."
-    printf "$COLUMN" "uninstall-release-odoo" "" "Uninstall Odoo Helm release."
+    printf "$COLUMN" "uninstall-release" "" "Uninstall Odoo Helm release."
     printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
     printf "$COLUMN" "install-haproxy-ingress" "" "Install haproxy ingress controller."
     printf "$COLUMN" "uninstall-ingress-nginx" "" "Install ingress-nginx controller."
@@ -69,6 +70,12 @@ function help() {
     printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
 }
 
+# Default vars
+
+OC_PROJECT=${OC_PROJECT:="odoo"}
+NAMESPACE=${NAMESPACE:="odoo"}
+RELEASE_NAME=${RELEASE_NAME:="odoo"}
+
 # Import commands
 
 [ -f ~/taskfile.build/bin/commit-with-llm ] && source ~/taskfile.build/bin/commit-with-llm
@@ -89,7 +96,7 @@ function install() {
 function setup-hosts() {
     echo "Adding entries to /etc/hosts ..."
     grep -qxF '127.0.0.1 cloud.local' /etc/hosts || echo "127.0.0.1 cloud.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF '127.0.0.1 odoo.cloud.local' /etc/hosts || echo "127.0.0.1 odoo.cloud.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 $NAMESPACE.cloud.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.cloud.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
 function test-k8s() {
@@ -155,16 +162,17 @@ function forward-haproxy-ingress() {
 # Helm, Release Commands
 
 function install-chart-postgres() {
-    echo "Install chart postgres as release odoo."
-    helm install odoo postgres
+    echo "Install chart postgres as release $RELEASE_NAME."
+    helm install "$RELEASE_NAME" postgres \
+        --set postgres.client.enabled=true
 }
 
 function install-chart-odoo() {
     echo "Install dependencies."
     helm dependency build odoo
 
-    echo "Install chart odoo as release odoo."
-    helm install odoo odoo
+    echo "Install odoo chart as release $RELEASE_NAME."
+    helm install "$RELEASE_NAME" odoo
     sleep 8
     
     echo "Get pods with name $1:"
@@ -175,6 +183,16 @@ function install-chart-odoo() {
     kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
 }
 
+function install-chart-vshnpostgres() {
+    echo "Set oc project to $OC_PROJECT."
+    oc project "$OC_PROJECT"
+
+    echo "Install vshnPostgres chart as release odoo with APPUiO-specific values."
+    helm install "$RELEASE_NAME" vshnPostgres \
+        --set vshnPostgres.enabled=true \
+        --set vshnPostgres.client.enabled=false
+}
+
 function install-chart-odoo-appuio() {
     echo "Set oc project to $OC_PROJECT."
     oc project "$OC_PROJECT"
@@ -182,39 +200,32 @@ function install-chart-odoo-appuio() {
     echo "Install dependencies."
     helm dependency build odoo
 
-    echo "Install chart odoo as release odoo with APPUiO-specific values."
-    helm install odoo odoo \
-        --set ingress.host=odoo.exo.mintcloud.ch \
+    echo "Install odoo chart as release $RELEASE_NAME with APPUiO-specific values."
+    helm install "$RELEASE_NAME" odoo \
+        --set ingress.host="$NAMESPACE.exo.mintcloud.ch" \
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
+        --set vshnPostgres.client.enabled=true \
         --set postgres.enabled=false
-
-    sleep 8
-
-    echo "Get pods with name odoo:"
-    kubectl get pods -o=name --all-namespaces | grep "odoo"
-    POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
-
-    echo -e "\nWait for $POD_ID pods to be running:"
-    kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
 }
 
 function upgrade-chart-odoo() {
-    echo "Upgrade release odoo with helm."
-    helm upgrade odoo odoo
+    echo "Upgrade release $RELEASE_NAME with helm."
+    helm upgrade "$RELEASE_NAME" odoo
 }
 
 function upgrade-chart-postgres() {
-    echo "Upgrade release odoo with helm."
-    helm upgrade odoo postgres
+    echo "Upgrade release $RELEASE_NAME with helm."
+    helm upgrade "$RELEASE_NAME" postgres
 }
 
 function upgrade-chart-odoo-appuio() {
-    echo "Upgrade release odoo with APPUiO-specific values."
-    helm upgrade odoo odoo \
-        --set ingress.host=odoo.exo.mintcloud.ch \
+    echo "Upgrade release $RELEASE_NAME with APPUiO-specific values."
+    helm upgrade "$RELEASE_NAME" odoo \
+        --set ingress.host="$NAMESPACE.exo.mintcloud.ch" \
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
+        --set vshnPostgres.client.enabled=true \
         --set postgres.enabled=false
 }
 
@@ -245,9 +256,9 @@ function uninstall-haproxy-ingress() {
     helm uninstall haproxy-ingress --namespace haproxy-ingress
 }
 
-function uninstall-release-odoo() {
-    echo "Uninstall release odoo."
-    helm uninstall odoo
+function uninstall-release() {
+    echo "Uninstall release $RELEASE_NAME."
+    helm uninstall "$RELEASE_NAME"
 }
 
 # kubectl Commands
@@ -270,16 +281,16 @@ function logs-haproxy-ingress() {
 
 function template() {
     echo "Template charts into manifest.yaml."
-    helm template odoo odoo > manifest.yaml
-    helm template postgres postgres >> manifest.yaml
+    helm template "$RELEASE_NAME" odoo > manifest.yaml
 }
 
 function template-appuio() {
     echo "Template charts into manifest.yaml."
-    helm template odoo odoo \
-        --set ingress.host=odoo.exo.mintcloud.ch \
+    helm template "$RELEASE_NAME" odoo \
+        --set ingress.host=$NAMESPACE.exo.mintcloud.ch \
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
+        --set vshnPostgres.client.enabled=true \
         --set postgres.enabled=false > manifest.yaml
 }
 
@@ -291,7 +302,9 @@ function package-repo() {
     echo "Package Helm Charts."
     index-repo
     helm package postgres
+        helm package vshnPostgres
     cp postgres-0.1.0.tgz odoo/charts/
+    cp vshnPostgres-0.1.0.tgz odoo/charts/
     helm package odoo
 }
 

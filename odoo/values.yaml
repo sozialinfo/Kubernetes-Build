@@ -7,10 +7,13 @@ ingress:
 vshnPostgres:
   enabled: false
   secretRef: postgres-creds
+  client:
+    enabled: false
 postgres:
   enabled: true
   secretRef: postgres-creds
 odoo:
+  enabled: true
   image: mintsystem/odoo:18.0.20250520
   host: odoo
   proxyMode: True

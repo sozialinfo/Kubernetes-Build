@@ -13,3 +13,7 @@ dependencies:
     version: 0.1.0
     repository: https://kubernetes.build
     condition: postgres.enabled
+  - name: vshnPostgres
+    version: 0.1.0
+    repository: https://kubernetes.build
+    condition: vshnPostgres.enabled
