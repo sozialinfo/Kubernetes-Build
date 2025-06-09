@@ -213,7 +213,6 @@ Commit and push the files.
 Run this command to create Postgres container.
 
 ```bash
-kubectl delete pod postgres-client
 echo "
 apiVersion: v1
 kind: Pod
@@ -221,7 +220,7 @@ metadata:
   name: postgres-client
 spec:
   containers:
-  - name: postgres-client
+  - name: postgres
     image: postgres:16
     command:
       - tail
@@ -246,7 +245,7 @@ spec:
 Open an interactive shell in the container.
 
 ```bash
-kubectl exec -it postgres-client -- /bin/bash
+kubectl exec -it postgres-client -- bash
 ```
 
 In the shell try to connect to the cluster.
