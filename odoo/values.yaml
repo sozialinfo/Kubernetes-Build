@@ -1,4 +1,4 @@
-namespace: default
+namespace: odoo
 ingress:
   enabled: true
   className: haproxy

@@ -208,9 +208,9 @@ Commit and push the files.
 
 ## Troubleshooting
 
-### Run interactive postgres container
+### Run interactive Postgres container
 
-Run this command to delete the postgres test container and open an interactive shell.
+Run this command to create Postgres container.
 
 ```bash
 kubectl delete pod postgres-client
@@ -229,7 +229,7 @@ spec:
       - /dev/null
     envFrom:
       - secretRef:
-          name: postgres-odoo
+          name: postgres-creds
     volumeMounts:
     - name: secret-volume
       readOnly: true
@@ -238,10 +238,14 @@ spec:
   - name: secret-volume
     secret:
       defaultMode: 0600
-      secretName: postgres-odoo
+      secretName: postgres-creds
   restartPolicy: Never
 " | kubectl apply -f -
+```
 
+Open an interactive shell in the container.
+
+```bash
 kubectl exec -it postgres-client -- /bin/bash
 ```
 
