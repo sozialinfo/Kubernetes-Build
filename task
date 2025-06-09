@@ -190,7 +190,7 @@ function install-chart-vshnpostgres() {
     echo "Install vshnPostgres chart as release odoo with APPUiO-specific values."
     helm install "$RELEASE_NAME" vshnPostgres \
         --set vshnPostgres.enabled=true \
-        --set vshnPostgres.client.enabled=false
+        --set vshnPostgres.client.enabled=true
 }
 
 function install-chart-odoo-appuio() {
@@ -210,6 +210,9 @@ function install-chart-odoo-appuio() {
 }
 
 function upgrade-chart-odoo() {
+    echo "Update dependencies."
+    helm dependency update odoo
+
     echo "Upgrade release $RELEASE_NAME with helm."
     helm upgrade "$RELEASE_NAME" odoo
 }
@@ -302,7 +305,7 @@ function package-repo() {
     echo "Package Helm Charts."
     index-repo
     helm package postgres
-        helm package vshnPostgres
+    helm package vshnPostgres
     cp postgres-0.1.0.tgz odoo/charts/
     cp vshnPostgres-0.1.0.tgz odoo/charts/
     helm package odoo

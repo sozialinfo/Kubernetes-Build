@@ -211,7 +211,7 @@ Commit and push the files.
 
 ### Debug the Postgres instance
 
-When deploying the Postgres container with this project the client options is enabled.
+When deploying the Postgres container with this project the client option is enabled.
 
 ```yml
 postgres.client.enabled=true
