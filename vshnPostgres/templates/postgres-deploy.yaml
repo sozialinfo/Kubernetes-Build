@@ -13,11 +13,12 @@ spec:
           admin_users: postgres
       pgSettings:
         timezone: Europe/Zurich
-      access:
-        - user: {{ .Values.namespace }}
-          writeConnectionSecretToRef: 
-            name: postgres-{{ .Values.namespace }}
-            namespace: {{ .Values.namespace }}
+      # FIXME: If enabled instead of the postgres-creds the postgres-odoo secret will be written.
+      # access:
+      #   - user: {{ .Values.namespace }}
+      #     writeConnectionSecretToRef: 
+      #       name: postgres-{{ .Values.namespace }}
+      #       namespace: {{ .Values.namespace }}
     security:
       deletionProtection: false
       allowedNamespaces:
