@@ -98,6 +98,7 @@ function setup-hosts() {
     echo "Adding entries to /etc/hosts ..."
     grep -qxF '127.0.0.1 cloud.local' /etc/hosts || echo "127.0.0.1 cloud.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 $NAMESPACE.cloud.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.cloud.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 restic.cloud.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.cloud.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
 function test-k8s() {
@@ -175,7 +176,7 @@ function install-chart-odoo() {
     echo "Install odoo chart as release $RELEASE_NAME."
     helm install "$RELEASE_NAME" odoo
     sleep 8
-    
+
     echo "Get pods with name $1:"
     kubectl get pods -o=name --all-namespaces | grep "odoo"
     POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
@@ -354,10 +355,10 @@ function install-repo(){
 # LLM Commands
 
 function update-with-llm() {
-    if test -z "$1"; then 
+    if test -z "$1"; then
         echo "\$1 is empty. Usage:";
         help | grep "${FUNCNAME[0]}"
-        exit 1; 
+        exit 1;
     fi
 
     # Get files from path
@@ -397,8 +398,8 @@ Look at the code files below and do the following:
 
 $TASK_DESCRIPTION
 
-Output all files that you need to change in full again, including your changes. 
-In the same format as I provide the files below. Under no circumstances output any other text, 
+Output all files that you need to change in full again, including your changes.
+In the same format as I provide the files below. Under no circumstances output any other text,
 no additional infos, no code formatting chars. Only the code in the given format.
 
 Here are the files:
