@@ -104,7 +104,7 @@ Setup a local Kubernetes cluster and deploy the Helm charts locally.
 
 ### Requirements
 
-* Install [Helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) 
+* Install [Helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 * Setup [kind](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/docs/)
 * Optional: bash/zsh alias `task='./task'` with [completion](https://taskfile.build/#completion).
 
@@ -139,6 +139,12 @@ Add this repo for Chart dependencies.
 task add-repos
 ```
 
+If not already done setup the hosts.
+
+```bash
+task setup-hosts
+```
+
 The following command applies the Odoo chart:
 
 ```bash
@@ -157,12 +163,6 @@ task forward-odoo
 
 ### Setup ingress nginx controller
 
-If not already done setup the hosts.
-
-```bash
-task setup-hosts
-```
-
 Install ingress-nginx in the current cluster.
 
 ```bash
@@ -176,12 +176,6 @@ task forward-ingress-nginx
 ```
 
 ### Setup haproxy ingress controller
-
-If not already done setup the hosts.
-
-```bash
-task setup-hosts
-```
 
 Install haproxy-ingress in the current cluster.
 

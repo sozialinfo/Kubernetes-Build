@@ -98,7 +98,7 @@ function setup-hosts() {
     echo "Adding entries to /etc/hosts ..."
     grep -qxF '127.0.0.1 cloud.local' /etc/hosts || echo "127.0.0.1 cloud.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 $NAMESPACE.cloud.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.cloud.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 restic.cloud.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.cloud.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 restic.cloud.local" /etc/hosts || echo "127.0.0.1 restic.cloud.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
 function test-k8s() {
