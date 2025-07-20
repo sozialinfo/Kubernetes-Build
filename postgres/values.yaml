@@ -2,6 +2,8 @@ postgres:
   image: postgres:16-alpine
   host: postgres
   port: 5432
+  db: odoo
+  user: odoo
   secretRef: postgres-creds
   client:
     enabled: false

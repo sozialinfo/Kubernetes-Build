@@ -23,6 +23,7 @@ function help() {
 
     # Env
     printf "$COLUMN" "version" "" "Show version of required tools."
+    printf "$COLUMN" "template-dotenv" "" "Generate .env from .env.template."
     printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
     # Docs
     printf "$COLUMN" "install" "" "Install node dependencies."
@@ -82,6 +83,7 @@ RELEASE_NAME=${RELEASE_NAME:="odoo"}
 
 [ -f ~/taskfile.build/bin/commit-with-llm ] && source ~/taskfile.build/bin/commit-with-llm
 [ -f ~/taskfile.build/bin/update-with-llm ] && source ~/taskfile.build/bin/update-with-llm
+[ -f ~/taskfile.build/bin/template-dotenv ] && source ~/taskfile.build/bin/template-dotenv
 
 # Env Commands
 
@@ -213,7 +215,8 @@ function install-chart-odoo-appuio() {
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
         --set vshnPostgres.client.enabled=true \
-        --set postgres.enabled=false
+        --set postgres.enabled=false \
+        --set postgres.password="$POSTGRES_PASSWORD"
 }
 
 function upgrade-chart-odoo() {
@@ -233,7 +236,8 @@ function upgrade-chart-vshnpostgres() {
     echo "Upgrade vshnPostgres chart for release $RELEASE_NAME."
     helm upgrade "$RELEASE_NAME" vshnPostgres \
         --set vshnPostgres.enabled=true \
-        --set vshnPostgres.client.enabled=true
+        --set vshnPostgres.client.enabled=true \
+        --set postgres.password="$POSTGRES_PASSWORD"
 }
 
 function upgrade-chart-odoo-appuio() {

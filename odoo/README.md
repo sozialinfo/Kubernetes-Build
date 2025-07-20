@@ -12,7 +12,7 @@ Domain: `ingress`
 
 | Key       | Type    | Default            |
 | --------- | ------- | ------------------ |
-| className | string  | `haproxy`          |
+| className | string  | `nginx`          |
 | host      | string  | `odoo.cloud.local` |
 | secure    | booelan | `false`            |
 

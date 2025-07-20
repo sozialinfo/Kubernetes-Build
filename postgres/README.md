@@ -15,5 +15,8 @@ Domain: `postgres`
 | image        | string  | `postgres:16-alpine` |
 | host         | string  | `postgres`           |
 | port         | integer | `5432`               |
+| db         | string | `odoo`               |
+| user         | string | `odoo`               |
+| password         | string |  |
 | secretRef    | string  | `postgres-creds`     |
 | client.enabled | boolean  | `false`     |

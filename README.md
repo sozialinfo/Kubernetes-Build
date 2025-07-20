@@ -145,6 +145,12 @@ If not already done setup the hosts.
 task setup-hosts
 ```
 
+Template the .env file.
+
+```bash
+task template-dotenv
+```
+
 The following command applies the Odoo chart:
 
 ```bash
