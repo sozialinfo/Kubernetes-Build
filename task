@@ -172,7 +172,8 @@ function forward-haproxy-ingress() {
 function install-chart-postgres() {
     echo "Install chart postgres as release $RELEASE_NAME."
     helm install "$RELEASE_NAME" postgres \
-        --set postgres.client.enabled=true
+        --set postgres.client.enabled=true \
+        --set postgres.password="$POSTGRES_PASSWORD"
 }
 
 function install-chart-odoo() {

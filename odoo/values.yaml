@@ -1,7 +1,7 @@
 namespace: odoo
 ingress:
   enabled: true
-  className: ingress
+  className: nginx
   host: odoo.cloud.local
   secure: false
 vshnPostgres:
