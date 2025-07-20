@@ -15,7 +15,7 @@ function help() {
     # Define column widths
     CMD_WIDTH=26
     OPT_WIDTH=14
-    DESC_WIDTH=42
+    DESC_WIDTH=50
     COLUMN="| %-${CMD_WIDTH}s | %-${OPT_WIDTH}s | %-${DESC_WIDTH}s |\n"
     # Print table header
     printf "$COLUMN" "Command" "Option" "Description"
@@ -55,6 +55,7 @@ function help() {
     # kubectl
     printf "$COLUMN" "logs-odoo" "" "Show pod logs."
     printf "$COLUMN" "logs-haproxy-ingress" "" "Show haproxy-ingress logs."
+    printf "$COLUMN" "logs-ingress-nginx" "" "Show ingress-nginx logs."
     printf "$COLUMN" "list" "" "List Helm deployments."
     printf "$COLUMN" "list-pods" "" "List all pods."
     printf "$COLUMN" "login-oc" "" "Refresh the auth token for OpenShift."
@@ -205,6 +206,7 @@ function install-chart-odoo-appuio() {
     echo "Install odoo chart as release $RELEASE_NAME with APPUiO-specific values."
     helm install "$RELEASE_NAME" odoo \
         --set ingress.host="$NAMESPACE.exo.mintcloud.ch" \
+        --set ingress.className=haproxy \
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
         --set vshnPostgres.client.enabled=true \
@@ -235,6 +237,7 @@ function upgrade-chart-odoo-appuio() {
     echo "Upgrade odoo chart for release $RELEASE_NAME with APPUiO-specific values."
     helm upgrade "$RELEASE_NAME" odoo \
         --set ingress.host="$NAMESPACE.exo.mintcloud.ch" \
+        --set ingress.className=haproxy \
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
         --set vshnPostgres.client.enabled=true \
@@ -289,6 +292,11 @@ function logs-haproxy-ingress() {
     kubectl logs "$POD_ID" -n haproxy-ingress
 }
 
+function logs-ingress-nginx() {
+    POD_ID=$(kubectl get pods -o=name -n ingress-nginx | grep "ingress-nginx")
+    kubectl logs "$POD_ID" -n ingress-nginx
+}
+
 # Helm Commands
 
 function template() {
@@ -300,6 +308,7 @@ function template-appuio() {
     echo "Template charts into manifest.yaml."
     helm template "$RELEASE_NAME" odoo \
         --set ingress.host=$NAMESPACE.exo.mintcloud.ch \
+        --set ingress.className=haproxy \
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
         --set vshnPostgres.client.enabled=true \

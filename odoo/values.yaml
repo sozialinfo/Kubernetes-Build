@@ -1,7 +1,7 @@
 namespace: odoo
 ingress:
   enabled: true
-  className: haproxy
+  className: ingress
   host: odoo.cloud.local
   secure: false
 vshnPostgres:

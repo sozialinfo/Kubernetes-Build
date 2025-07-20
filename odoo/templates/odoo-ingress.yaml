@@ -22,7 +22,9 @@ spec:
             name: odoo
             port:
               number: 8069
-  tls: 
+  {{- if .Values.ingress.secure }}
+  tls:
     - hosts:
       - {{ .Values.ingress.host }}
-      secretName: ingress-cert 
+      secretName: ingress-cert
+  {{- end }}
