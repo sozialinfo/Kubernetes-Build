@@ -110,16 +110,19 @@ function test-k8s() {
         start-kind
         add-repos
         install-chart-odoo
+        install-ingress-nginx
     fi
 }
 
 # Docs Commands
 
 function dev-vitepress() {
+    cp README.md index.md
     pnpm run docs:dev
 }
 
 function build-vitepress() {
+    cp README.md index.md
     pnpm run docs:build
 }
 
