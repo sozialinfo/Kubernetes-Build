@@ -3,6 +3,7 @@ ingress:
   enabled: true
   className: nginx
   host: odoo.cloud.local
+  customDomain: odoo.local
   secure: false
 vshnPostgres:
   enabled: false
@@ -12,6 +13,8 @@ vshnPostgres:
 postgres:
   enabled: true
   secretRef: postgres-creds
+  client:
+    enabled: false
 odoo:
   enabled: true
   image: mintsystem/odoo:18.0.20250520

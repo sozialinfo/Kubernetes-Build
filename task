@@ -115,7 +115,9 @@ function setup-hosts() {
     echo "Adding entries to /etc/hosts ..."
     grep -qxF '127.0.0.1 cloud.local' /etc/hosts || echo "127.0.0.1 cloud.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 $NAMESPACE.cloud.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.cloud.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 $NAMESPACE.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 restic.cloud.local" /etc/hosts || echo "127.0.0.1 restic.cloud.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 restic.local" /etc/hosts || echo "127.0.0.1 restic.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
 function test-k8s() {
@@ -171,13 +173,13 @@ function forward-odoo() {
 
 function forward-ingress-nginx() {
     PORT=8080
-    echo "Open http://odoo.cloud.local:$PORT url in your browser."
+    echo "Open http://$NAMESPACE.cloud.local:$PORT or http://$NAMESPACE.local:$PORT url in your browser."
     kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller $PORT:80
 }
 
 function forward-haproxy-ingress() {
     PORT=8080
-    echo "Open http://odoo.cloud.local:$PORT url in your browser."
+    echo "Open http://$NAMESPACE.cloud.local:$PORT or http://$NAMESPACE.local:$POR url in your browser."
     kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $PORT:80
 }
 
@@ -195,7 +197,8 @@ function install-chart-odoo() {
     helm dependency build odoo
 
     echo "Install odoo chart as release $RELEASE_NAME."
-    helm install "$RELEASE_NAME" odoo
+    helm install "$RELEASE_NAME" odoo \
+        --set postgres.password="$POSTGRES_PASSWORD"
     sleep 8
 
     echo "Get pods with name $1:"

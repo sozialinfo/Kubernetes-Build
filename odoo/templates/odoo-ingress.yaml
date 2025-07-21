@@ -22,9 +22,20 @@ spec:
             name: odoo
             port:
               number: 8069
+  - host: {{ .Values.ingress.customDomain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: odoo
+            port:
+              number: 8069
   {{- if .Values.ingress.secure }}
   tls:
     - hosts:
       - {{ .Values.ingress.host }}
+      - {{ .Values.ingress.custom_domain }}
       secretName: ingress-cert
   {{- end }}

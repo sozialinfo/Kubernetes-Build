@@ -10,11 +10,12 @@ Sets up Odoo with a Postgres container. The connection credentials are mapped fr
 
 Domain: `ingress`
 
-| Key       | Type    | Default            |
-| --------- | ------- | ------------------ |
-| className | string  | `nginx`          |
-| host      | string  | `odoo.cloud.local` |
-| secure    | booelan | `false`            |
+| Key          | Type    | Default            |
+| ------------ | ------- | ------------------ |
+| className    | string  | `nginx`            |
+| host         | string  | `odoo.cloud.local` |
+| customDomain | string  | `odoo.local`       |
+| secure       | booelan | `false`            |
 
 Domain: `vshnPostgres`
 
