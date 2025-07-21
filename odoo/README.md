@@ -35,17 +35,17 @@ Domain: `postgres`
 
 Domain: `odoo`
 
-| Key                       | Type   | Default                                                                                                       |
-| ------------------------- | ------ | ------------------------------------------------------------------------------------------------------------- |
-| enabled      | boolean | `true`           |
-| image                     | string | `mintsystem/odoo:18.0.20250401`                                                                               |
-| proxyMode                 | bool   | `True`                                                                                                        |
-| githubUserame             | string | `""`                                                                                                          |
-| githubPersonalAccessToken | string | `""`                                                                                                          |
-| downloadOdooEnterprise    | bool   | `False`                                                                                                       |
-| addonsGitRepos            | string | `https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0,https://github.com/OCA/Server-Tools.git#18.0` |
-| database                  | string | `odoo`                                                                                                        |
-| initLang                  | string | `de_CH`                                                                                                       |
-| listDB                    | string | `False`                                                                                                       |
-| configMapRef              | string | `odoo-config`                                                                                                 |
-| secretRef                 | string | `odoo-creds`                                                                                                  |
+| Key                       | Type    | Default                                                                                                       |
+| ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| enabled                   | boolean | `true`                                                                                                        |
+| image                     | string  | `mintsystem/odoo:18.0.20250401`                                                                               |
+| proxyMode                 | bool    | `True`                                                                                                        |
+| githubUserame             | string  | `""`                                                                                                          |
+| githubPersonalAccessToken | string  | `""`                                                                                                          |
+| downloadOdooEnterprise    | bool    | `False`                                                                                                       |
+| addonsGitRepos            | string  | `https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0,https://github.com/OCA/Server-Tools.git#18.0` |
+| database                  | string  | `odoo`                                                                                                        |
+| initLang                  | string  | `de_CH`                                                                                                       |
+| listDB                    | string  | `False`                                                                                                       |
+| configMapRef              | string  | `odoo-config`                                                                                                 |
+| secretRef                 | string  | `odoo-creds`                                                                                                  |
