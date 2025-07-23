@@ -8,7 +8,7 @@ Sets up Odoo with a Postgres container. The connection credentials are mapped fr
 
 ## Values
 
-Domain: `ingress`
+Chart: `ingress`
 
 | Key          | Type    | Default            |
 | ------------ | ------- | ------------------ |
@@ -17,7 +17,7 @@ Domain: `ingress`
 | customDomain | string  | `odoo.local`       |
 | secure       | booelan | `false`            |
 
-Domain: `vshnPostgres`
+Chart: `vshnPostgres`
 
 | Key           | Type    | Default          |
 | ------------- | ------- | ---------------- |
@@ -25,7 +25,7 @@ Domain: `vshnPostgres`
 | secretRef | string  | `postgres-creds`  |
 | client.enabled | boolean  | `false`     |
 
-Domain: `postgres`
+Chart: `postgres`
 
 | Key          | Type    | Default          |
 | ------------ | ------- | ---------------- |
@@ -33,12 +33,12 @@ Domain: `postgres`
 | secretRef | string  | `postgres-creds`  |
 | client.enabled | boolean  | `false`     |
 
-Domain: `odoo`
+Chart: `odoo`
 
 | Key                       | Type    | Default                                                                                                       |
 | ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
 | enabled                   | boolean | `true`                                                                                                        |
-| image                     | string  | `mintsystem/odoo:18.0.20250401`                                                                               |
+| image                     | string  | `mintsystem/odoo:18.0.20250520`                                                                               |
 | proxyMode                 | bool    | `True`                                                                                                        |
 | githubUserame             | string  | `""`                                                                                                          |
 | githubPersonalAccessToken | string  | `""`                                                                                                          |
