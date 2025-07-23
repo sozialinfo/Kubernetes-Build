@@ -318,12 +318,12 @@ function install-ingress-nginx() {
 }
 
 function install-cert-manager() {
-    # helm install \
-    #   cert-manager jetstack/cert-manager \
-    #   --namespace cert-manager \
-    #   --create-namespace \
-    #   --version v1.18.2 \
-    #   --set crds.enabled=true
+    helm install \
+      cert-manager jetstack/cert-manager \
+      --namespace cert-manager \
+      --create-namespace \
+      --version v1.18.2 \
+      --set crds.enabled=true
 
     helm install \
         cluster-issuer cluster-issuer \
