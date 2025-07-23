@@ -34,25 +34,25 @@ function help() {
     printf "$COLUMN" "start-kind" "" "Start kind Kubernetes cluster."
     printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
-    printf "$COLUMN" "add-repos" "" "Add the selected repos."
+    printf "$COLUMN" "add-repos" "" "Add the required Helm repos."
     printf "$COLUMN" "setup-hosts" "" "Update hosts file."
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
     printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingress-nginx port."
     printf "$COLUMN" "forward-haproxy-ingress" "" "Forward haproxy-ingress port."
     # Chart, Release and Forwarding
-    printf "$COLUMN" "install-chart-odoo" "" "Install Odoo Chart."
-    printf "$COLUMN" "install-chart-postgres" "" "Install Postgres Chart."
-    printf "$COLUMN" "install-chart-vshnpostgres" "" "Install vshnPostgres Chart."
-    printf "$COLUMN" "install-chart-odoo-appuio" "" "Install Odoo Chart to APPUiO."
-    printf "$COLUMN" "upgrade-chart-odoo" "" "Upgrade Odoo Chart release."
-    printf "$COLUMN" "upgrade-chart-postgres" "" "Upgrade Postgres Chart release."
-    printf "$COLUMN" "upgrade-chart-vshnpostgres" "" "Upgrade Postgres Chart release."
-    printf "$COLUMN" "upgrade-chart-odoo-appuio" "" "Upgrade Odoo Chart release for AppUiO."
-    printf "$COLUMN" "uninstall-release" "" "Uninstall Odoo Helm release."
-    printf "$COLUMN" "install-ingress-nginx" "" "Install ingress-nginx controller."
-    printf "$COLUMN" "install-haproxy-ingress" "" "Install haproxy ingress controller."
-    printf "$COLUMN" "uninstall-ingress-nginx" "" "Install ingress-nginx controller."
-    printf "$COLUMN" "uninstall-haproxy-ingress" "" "Install haproxy ingress controller."
+    printf "$COLUMN" "install-odoo" "[env]" "Install Odoo chart. Optionally set env."
+    printf "$COLUMN" "install-postgres" "" "Install Postgres chart."
+    printf "$COLUMN" "install-vshnpostgres" "" "Install vshnPostgres chart."
+    printf "$COLUMN" "install-cert-manager" "" "Install cert manager."
+    printf "$COLUMN" "install-ingress-nginx" "" "Install ingress nginx."
+    printf "$COLUMN" "install-haproxy-ingress" "" "Install haproxy ingress."
+    printf "$COLUMN" "upgrade-odoo" "[env]" "Upgrade Odoo chart release. Optionally set env."
+    printf "$COLUMN" "upgrade-cert-manager" "" "Upgrade cert manager release."
+    printf "$COLUMN" "upgrade-postgres" "" "Upgrade Postgres release."
+    printf "$COLUMN" "upgrade-vshnpostgres" "" "Upgrade Postgres  release."
+    printf "$COLUMN" "uninstall-release" "[env]" "Uninstall Odoo Helm release."
+    printf "$COLUMN" "uninstall-ingress-nginx" "" "Install ingress nginx."
+    printf "$COLUMN" "uninstall-haproxy-ingress" "" "Install haproxy ingress."
     # kubectl
     printf "$COLUMN" "logs-odoo" "" "Show pod logs."
     printf "$COLUMN" "logs-haproxy-ingress" "" "Show haproxy-ingress logs."
@@ -63,18 +63,17 @@ function help() {
     # Helm
     printf "$COLUMN" "template" "" "Template all charts with Helm."
     printf "$COLUMN" "template-appuio" "" "Template all charts for APPUiO."
-    printf "$COLUMN" "package-repo" "" "Package Helm Charts."
-    printf "$COLUMN" "index-repo" "" "Index Helm Chart."
-    printf "$COLUMN" "publish-repo" "" "Copy Helm Chart files to dist."
+    printf "$COLUMN" "package-repo" "" "Package Helm charts."
+    printf "$COLUMN" "index-repo" "" "Index Helm chart."
+    printf "$COLUMN" "publish-repo" "" "Copy Helm chart files to dist."
     printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-build repo."
-    printf "$COLUMN" "install-repo" "[name]" "Install Chart from kubernetes-build repo."
+    printf "$COLUMN" "install-repo" "[name]" "Install chart from kubernetes-build repo."
     # LLM
     printf "$COLUMN" "commit-with-llm" "" "Commit with llm generated commit message."
     printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
 }
 
 # Default vars
-
 OC_PROJECT=${OC_PROJECT:="odoo"}
 NAMESPACE=${NAMESPACE:="odoo"}
 RELEASE_NAME=${RELEASE_NAME:="odoo"}
@@ -127,7 +126,7 @@ function test-k8s() {
     else
         start-kind
         add-repos
-        install-chart-odoo
+        install-odoo
         install-ingress-nginx
     fi
 }
@@ -185,30 +184,36 @@ function forward-haproxy-ingress() {
 
 # Helm, Release Commands
 
-function install-chart-postgres() {
+function install-postgres() {
     echo "Install chart postgres as release $RELEASE_NAME."
     helm install "$RELEASE_NAME" postgres \
         --set postgres.client.enabled=true \
         --set postgres.password="$POSTGRES_PASSWORD"
 }
 
-function install-chart-odoo() {
-    echo "Install dependencies."
-    helm dependency build odoo
-    echo "Install odoo chart as release $RELEASE_NAME."
-    helm install "$RELEASE_NAME" odoo \
-        --set postgres.password="$POSTGRES_PASSWORD"
-    sleep 8
+function install-odoo() {
+    if [ "$1" = "appuio"]; then
+        install-odoo-appuio
+    elif [ "$1" = "infomaniak"]; then
+        install-odoo-infomaniak
+    else:
+        echo "Install dependencies."
+        helm dependency build odoo
+        echo "Install odoo chart as release $RELEASE_NAME."
+        helm install "$RELEASE_NAME" odoo \
+            --set postgres.password="$POSTGRES_PASSWORD"
+        sleep 8
 
-    echo "Get pods with name $1:"
-    kubectl get pods -o=name --all-namespaces | grep "odoo"
-    POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
+        echo "Get pods with name $1:"
+        kubectl get pods -o=name --all-namespaces | grep "odoo"
+        POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
 
-    echo -e "\nWait for $POD_ID pods to be running:"
-    kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
+        echo -e "\nWait for $POD_ID pods to be running:"
+        kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
+    fi
 }
 
-function install-chart-vshnpostgres() {
+function install-vshnpostgres() {
     echo "Set oc project to $OC_PROJECT."
     oc project "$OC_PROJECT"
 
@@ -218,7 +223,7 @@ function install-chart-vshnpostgres() {
         --set vshnPostgres.client.enabled=true
 }
 
-function install-chart-odoo-appuio() {
+function install-odoo-appuio() {
     echo "Set oc project to $OC_PROJECT."
     oc project "$OC_PROJECT"
 
@@ -232,24 +237,41 @@ function install-chart-odoo-appuio() {
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
         --set vshnPostgres.client.enabled=true \
-        --set postgres.enabled=false \
+        --set postgres.enabled=false
+}
+
+function install-odoo-infomaniak() {
+    echo "Install dependencies."
+    helm dependency build odoo
+
+    echo "Install odoo chart as release $RELEASE_NAME with Infomaniak-specific values."
+    helm install "$RELEASE_NAME" odoo \
+        --set ingress.host="$NAMESPACE.chk.mintcloud.ch" \
+        --set ingress.className=nginx \
+        --set ingress.secure=true \
         --set postgres.password="$POSTGRES_PASSWORD"
 }
 
-function upgrade-chart-odoo() {
-    echo "Update dependencies."
-    helm dependency update odoo
+function upgrade-odoo() {
+    if [ "$1" = "appuio"]; then
+        upgrade-odoo-appuio
+    elif [ "$1" = "infomaniak"]; then
+        upgrade-odoo-infomaniak
+    else:
+        echo "Update dependencies."
+        helm dependency update odoo
 
-    echo "Upgrade odoo chart for release $RELEASE_NAME."
-    helm upgrade "$RELEASE_NAME" odoo
+        echo "Upgrade odoo chart for release $RELEASE_NAME."
+        helm upgrade "$RELEASE_NAME" odoo
+    fi
 }
 
-function upgrade-chart-postgres() {
+function upgrade-postgres() {
     echo "Upgrade postgres chart for release $RELEASE_NAME."
     helm upgrade "$RELEASE_NAME" postgres
 }
 
-function upgrade-chart-vshnpostgres() {
+function upgrade-vshnpostgres() {
     echo "Upgrade vshnPostgres chart for release $RELEASE_NAME."
     helm upgrade "$RELEASE_NAME" vshnPostgres \
         --set vshnPostgres.enabled=true \
@@ -257,7 +279,7 @@ function upgrade-chart-vshnpostgres() {
         --set postgres.password="$POSTGRES_PASSWORD"
 }
 
-function upgrade-chart-odoo-appuio() {
+function upgrade-odoo-appuio() {
     echo "Upgrade odoo chart for release $RELEASE_NAME with APPUiO-specific values."
     helm upgrade "$RELEASE_NAME" odoo \
         --set ingress.host="$NAMESPACE.exo.mintcloud.ch" \
@@ -268,9 +290,45 @@ function upgrade-chart-odoo-appuio() {
         --set postgres.enabled=false
 }
 
+function upgrade-odoo-infomaniak() {
+    echo "Upgrade odoo chart for release $RELEASE_NAME with Infomaniak-specific values."
+    helm upgrade "$RELEASE_NAME" odoo \
+        --set ingress.host="$NAMESPACE.chk.mintcloud.ch" \
+        --set ingress.className=nginx \
+        --set ingress.secure=true \
+        --set postgres.password="$POSTGRES_PASSWORD"
+}
+
+function upgrade-cert-manager() {
+    helm upgrade \
+      cert-manager jetstack/cert-manager \
+      --namespace cert-manager \
+      --version v1.18.2 \
+      --set crds.enabled=true
+
+    helm upgrade \
+        cluster-issuer cluster-issuer \
+        --namespace cert-manager \
+        --set acme.email=$ACME_EMAIL
+}
+
 function install-ingress-nginx() {
     helm install ingress-nginx ingress-nginx/ingress-nginx \
         --create-namespace --namespace ingress-nginx
+}
+
+function install-cert-manager() {
+    # helm install \
+    #   cert-manager jetstack/cert-manager \
+    #   --namespace cert-manager \
+    #   --create-namespace \
+    #   --version v1.18.2 \
+    #   --set crds.enabled=true
+
+    helm install \
+        cluster-issuer cluster-issuer \
+        --namespace cert-manager \
+        --set acme.email=$ACME_EMAIL
 }
 
 function install-haproxy-ingress() {
@@ -345,7 +403,7 @@ function list() {
 }
 
 function package-repo() {
-    echo "Package Helm Charts."
+    echo "Package Helm charts."
     index-repo
     helm package postgres
     helm package vshnPostgres
@@ -374,6 +432,9 @@ function add-repos(){
 
     echo "Add the haproxy-ingress repo."
     helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
+
+    echo "Add the jetstack repo."
+    helm repo add jetstack https://charts.jetstack.io
 }
 
 function remove-repo(){
@@ -384,99 +445,6 @@ function remove-repo(){
 function install-repo(){
     echo "Install release odoo from kubernetes-build repo."
     helm install odoo kubernetes-build/odoo
-}
-
-# LLM Commands
-
-function update-with-llm() {
-    if test -z "$1"; then
-        echo "\$1 is empty. Usage:";
-        help | grep "${FUNCNAME[0]}"
-        exit 1;
-    fi
-
-    # Get files from path
-    if [ -f "$1" ]; then
-        FILES="$1"
-    elif [ -d "$1" ]; then
-        FILES=$(find "$1" -type f \( -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.conf" -o -name "*.nginx" \) \
-            | grep -vFf <(git -C "$1" ls-files --ignored --exclude-standard --others))
-    else
-        echo "$1 is neither a file nor a directory."
-        exit 1
-    fi
-    echo -e "Loaded these files into prompt:\n\n$FILES\n"
-
-    # Prompt task description
-    if [ -z "$2" ]; then
-        read -p "Enter the task description: " TASK_DESCRIPTION
-    else
-        TASK_DESCRIPTION="$2"
-    fi
-
-    # Prepare the files content for prompt
-    FILE_CONTENTS=""
-    for FILE in $FILES; do
-        FILE_CONTENTS+="<<<$FILE>>>
-$(cat "$FILE")
-
-"
-    done
-
-    # Define prompt content
-    mkdir -p tmp
-    PROMPT_FILE="tmp/llm_update"
-    echo -e "\nWrite prompt to $PROMPT_FILE."
-    cat << EOF > "$PROMPT_FILE"
-Look at the code files below and do the following:
-
-$TASK_DESCRIPTION
-
-Output all files that you need to change in full again, including your changes.
-In the same format as I provide the files below. Under no circumstances output any other text,
-no additional infos, no code formatting chars. Only the code in the given format.
-
-Here are the files:
-
-$FILE_CONTENTS
-EOF
-
-    # Run the llm command
-    echo -e "Send prompt and wait for the response of the $LLM_MODEL LLM."
-    RESULT=$(cat "$PROMPT_FILE" | llm -m "$LLM_MODEL")
-
-    # Check if result is empty
-    if [ -z "$RESULT" ]; then
-        echo "No response from the model. Exiting."
-        exit 1
-    fi
-
-    # Save the result to a file
-    RESULT_FILE="tmp/llm_update_result"
-    echo "$RESULT" > "$RESULT_FILE"
-    echo -e "Saved response to $RESULT_FILE.\n"
-
-    # Show a preview of result file
-    less "$RESULT_FILE"
-
-    # Ask for confirmation before updating files
-    read -p "Do you want to apply these updates to the files? (y/n): " CONFIRM
-    if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
-        exit 0
-    fi
-
-    # Parse the response from the file and update the files directly
-    echo -e "Parsing the response and updating files...\n"
-    CURRENT_FILE=""
-    while IFS= read -r LINE; do
-        if [[ $LINE =~ ^"<<<"(.*)">>>" ]]; then
-            CURRENT_FILE="${BASH_REMATCH[1]}"
-            echo "Update file $CURRENT_FILE."
-            > "$CURRENT_FILE"
-        elif [[ -n $CURRENT_FILE ]]; then
-            echo "$LINE" >> "$CURRENT_FILE"
-        fi
-    done < "$RESULT_FILE"
 }
 
 if declare -f "$1" > /dev/null; then

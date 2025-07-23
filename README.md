@@ -31,6 +31,7 @@ helm install "$NAME" "kubernetes-build/$NAME"
 
 List of charts:
 
+* [cluster-issuer](/cluster-issuer/README.md)
 * [odoo](/odoo/README.md)
 * [postgres](/postgres/README.md)
 * [vshnPostgres](/vshnPostgres/README.md)
@@ -91,7 +92,7 @@ task template-dotenv
 Install the Odoo chart:
 
 ```bash
-task install-chart-odoo
+task install-odoo
 ```
 
 The Odoo database will be initialized automtically.
@@ -102,7 +103,7 @@ Once the pod is ready, run this command to port forward the service:
 task forward-odoo
 ```
 
-### Setup ingress nginx controller
+### Setup ingress nginx
 
 Install ingress-nginx in the current cluster.
 
@@ -116,7 +117,7 @@ Forward the ingress-nginx port.
 task forward-ingress-nginx
 ```
 
-### Setup haproxy ingress controller
+### Setup haproxy ingress
 
 Install haproxy-ingress in the current cluster.
 
@@ -177,7 +178,7 @@ task add-repos
 Install the Helm release.
 
 ```bash
-task install-chart-odoo-appuio
+task install-odoo appuio
 ```
 
 #### Publish Helm charts
@@ -209,9 +210,41 @@ Confirm with *Create*.
 
 ### Infomaniak
 
+Deploy the Helm charts to [Infomaniak Managed Kubernetes service](https://www.infomaniak.com/en/hosting/public-cloud/kubernetes).
+
 #### Setup project
 
+Create new Kubernetes cluster in the Infomaniak manager. Then add an instance group.
+
+Download the Kubeconfig file and merge it.
+
+```bash
+KUBECONFIG=~/Downloads/pck-XXXXXXX-kubeconfig:$KUBECONFIG kubectl config view --merge --flatten > ~/.kube/config
+kubectl config get-contexts
+```
+
+#### Setup ingress nginx
+
+Add all repos and install the ingress nginx.
+
+```bash
+task add-repos
+task install-ingress-nginx
+```
+
+Manage certificate with cert manager.
+
+```bash
+task install-cert-manager
+```
+
 #### Create Odoo release
+
+Install the Odoo chart.
+
+```bash
+task install-odoo infomaniak
+```
 
 ## Troubleshooting
 

@@ -14,7 +14,7 @@ Chart: `ingress`
 | ------------ | ------- | ------------------ |
 | className    | string  | `nginx`            |
 | host         | string  | `odoo.cloud.local` |
-| customDomain | string  | `odoo.local`       |
+| customDomain | string  | ``       |
 | secure       | booelan | `false`            |
 
 Chart: `vshnPostgres`

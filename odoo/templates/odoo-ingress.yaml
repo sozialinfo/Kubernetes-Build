@@ -10,7 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     {{- end }}
 spec:
-  ingressClassName: {{ .Values.ingress.className }}
+  ingressClassName: {{.Values.ingress.className }}
   rules:
   - host: {{ .Values.ingress.host }}
     http:
@@ -22,7 +22,8 @@ spec:
             name: odoo
             port:
               number: 8069
-  - host: {{ .Values.ingress.customDomain }}
+  {{- if .Values.ingress.customDomain }}
+  - host: {{.Values.ingress.customDomain }}
     http:
       paths:
       - path: /
@@ -32,10 +33,13 @@ spec:
             name: odoo
             port:
               number: 8069
+  {{- end }}
   {{- if .Values.ingress.secure }}
   tls:
     - hosts:
-      - {{ .Values.ingress.host }}
-      - {{ .Values.ingress.custom_domain }}
+      - {{.Values.ingress.host }}
+      {{- if .Values.ingress.customDomain }}
+      - {{ .Values.ingress.customDomain }}
+      {{- end }}
       secretName: ingress-cert
   {{- end }}
