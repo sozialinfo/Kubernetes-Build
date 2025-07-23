@@ -7,11 +7,11 @@ Kubernetes Build
 
 [![matrix-badge](https://matrix.to/img/matrix-badge.svg)](https://matrix.to/#/#odoo-build:mint-system.ch)
 
-The Mint System collection of Helm Charts.
+The Mint System collection of Helm charts.
 
 * 🚀 **Install**: Install Helm repository and get started with Odoo.
 * 🛠️ **Develop**: Deploy Odoo and Postgres to a local Kubernetes cluster.
-* 🏗️ **Build**: Fork and build your own Helm Charts.
+* 🏗️ **Build**: Fork and build your own Helm charts.
 
 ## Usage
 
@@ -35,72 +35,9 @@ List of charts:
 * [postgres](/postgres/README.md)
 * [vshnPostgres](/vshnPostgres/README.md)
 
-## APPUiO
-
-Setup and deploy the Helm charts with [APPUiO](https://portal.appuio.cloud/).
-
-### Login with OpenShift
-
-Open the OpenShift console in your zone.
-
-Click on the username on the top right and select *Copy login command*.
-
-In the new tab click *Display token* and copy the *Login with this token* command.
-
-Run the command in your shell.
-
-### Setup project
-
-If not alrady done, create a project with the oc cli.
-
-```bash
-oc new-project odoo
-```
-
-### Create Odoo release
-
-Add this Helm repo to the local index.
-
-```bash
-task add-repos
-```
-
-Install the Helm release.
-
-```bash
-task install-chart-odoo-appuio
-```
-
-### Publish Helm Charts
-
-In your zone open *Helm > Tab Repositories > Create > Repository* and enter:
-
-* **Name**: `kubernetes-build`
-* **Display name**: `Kubernetes Build`
-* **Description**: `The Mint System collection of Helm Charts.`
-* **URL**: <https://kubernetes.build>
-
-### Create release from web console
-
-In your zone open *Helm > Tab Helm Releases > Create > Helm Release* and filter `Odoo`. Click on the Helm Chart and select *Create*.
-
-Change these values:
-
-```yaml
-ingress:
-  host: odoo.exo.mintcloud.ch
-  secure: true
-vshnPostgres:
-  enabled: true
-postgres:
-  enabled: false
-```
-
-Confirm with *Create*.
-
 ## Develop
 
-Setup a local Kubernetes cluster and deploy the Helm charts locally.
+Setup a local Kubernetes cluster and deploy the Helm charts.
 
 ### Requirements
 
@@ -129,17 +66,17 @@ Or start Kubernetes with `minikube`.
 task start-minikube
 ```
 
-### Deploy Odoo to Kubernetes
+### Deploy Odoo chart
 
 Ensure you have `kubectl` installed and can access the cluster.
 
-Add this repo for Chart dependencies.
+Add chart dependencies.
 
 ```bash
 task add-repos
 ```
 
-If not already done setup the hosts.
+If not already done setup the local hostnames.
 
 ```bash
 task setup-hosts
@@ -151,15 +88,13 @@ Template the .env file.
 task template-dotenv
 ```
 
-The following command applies the Odoo chart:
+Install the Odoo chart:
 
 ```bash
 task install-chart-odoo
 ```
 
-The Odoo database will initialized automtically.
-
-### Forward Odoo service
+The Odoo database will be initialized automtically.
 
 Once the pod is ready, run this command to port forward the service:
 
@@ -195,7 +130,7 @@ Forward the haproxy-ingress port.
 task forward-haproxy-ingress
 ```
 
-### Release
+### Release charts
 
 Adjust the version in the `Chart.yaml` files.
 
@@ -206,6 +141,77 @@ task package-repo
 ```
 
 Commit and push the files.
+
+## Usage
+
+### APPUiO
+
+Setup and deploy the Helm charts with [APPUiO](https://portal.appuio.cloud/).
+
+#### Login with OpenShift
+
+Open the OpenShift console in your zone.
+
+Click on the username on the top right and select *Copy login command*.
+
+In the new tab click *Display token* and copy the *Login with this token* command.
+
+Run the command in your shell.
+
+#### Setup project
+
+If not alrady done, create a project with the oc cli.
+
+```bash
+oc new-project odoo
+```
+
+#### Create Odoo release
+
+Add this Helm repo to the local index.
+
+```bash
+task add-repos
+```
+
+Install the Helm release.
+
+```bash
+task install-chart-odoo-appuio
+```
+
+#### Publish Helm charts
+
+In your zone open *Helm > Tab Repositories > Create > Repository* and enter:
+
+* **Name**: `kubernetes-build`
+* **Display name**: `Kubernetes Build`
+* **Description**: `The Mint System collection of Helm charts.`
+* **URL**: <https://kubernetes.build>
+
+#### Create release from web console
+
+In your zone open *Helm > Tab Helm Releases > Create > Helm Release* and filter `Odoo`. Click on the Helm chart and select *Create*.
+
+Change these values:
+
+```yaml
+ingress:
+  host: odoo.exo.mintcloud.ch
+  secure: true
+vshnPostgres:
+  enabled: true
+postgres:
+  enabled: false
+```
+
+Confirm with *Create*.
+
+### Infomaniak
+
+#### Setup project
+
+#### Create Odoo release
 
 ## Troubleshooting
 
