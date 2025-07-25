@@ -4,7 +4,8 @@ metadata:
   name: odoo-ingress
   annotations:
     {{- if .Values.ingress.secure }}
-    cert-manager.io/cluster-issuer: letsencrypt-production
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/acme-http01-edit-in-place: "true"
     {{- end }}
     {{- if eq .Values.ingress.className "nginx" }}
     nginx.ingress.kubernetes.io/rewrite-target: /

@@ -178,7 +178,7 @@ task add-repos
 Install the Helm release.
 
 ```bash
-task install-odoo appuio
+task install-odoo exo
 ```
 
 #### Publish Helm charts
@@ -243,7 +243,7 @@ task install-cert-manager
 Install the Odoo chart.
 
 ```bash
-task install-odoo infomaniak
+task install-odoo chk
 ```
 
 ## Troubleshooting
