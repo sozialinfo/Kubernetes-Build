@@ -148,11 +148,12 @@ function save-kubeconfig() {
 }
 
 function load-kubeconfig() {
-    if [ -f "$HOME/.kube/config" ]; then
+    if pass find "$PASS_KUBECONFIG_ENTRY" >/dev/null; then
         echo "Load ~/.kube/config file from pass: $PASS_KUBECONFIG_ENTRY"
+        mkdir -p "$HOME/.kube/"
         pass show "$PASS_KUBECONFIG_ENTRY" > "$HOME/.kube/config"
     else
-        echo "No ~/.kube/config file found."
+        echo "Pass entry not found."
     fi
 }
 
