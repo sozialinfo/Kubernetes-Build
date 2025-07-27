@@ -25,6 +25,8 @@ function help() {
     printf "$COLUMN" "version" "" "Show version of required tools."
     printf "$COLUMN" "template-dotenv" "" "Generate .env from .env.template."
     printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
+    printf "$COLUMN" "load-kubeconfig" "" "Load kubeconfig file from pass."
+    printf "$COLUMN" "save-kubeconfig" "" "Save kubeconfig file in pass."
     # Docs
     printf "$COLUMN" "install" "" "Install node dependencies."
     printf "$COLUMN" "dev-vitepress" "" "Start VitePress dev server."
@@ -81,7 +83,7 @@ RELEASE_NAME=${RELEASE_NAME:="odoo"}
 
 # Dynamic vars
 
-PASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
 
 # Import commands
 
@@ -137,20 +139,20 @@ function test-k8s() {
 }
 
 function save-kubeconfig() {
-    if [ -f .env ]; then
-        echo "Store .env file in pass: $PASS_ENTRY"
-        cat .env | pass insert -m -f "$PASS_ENTRY"
+    if [ -f "$HOME/.kube/config" ]; then
+        echo "Store ~/.kube/config file in pass: $PASS_KUBECONFIG_ENTRY"
+        cat "$HOME/.kube/config" | pass insert -m -f "$PASS_KUBECONFIG_ENTRY"
     else
-        echo "No .env file found."
+        echo "No ~/.kube/config file found."
     fi
 }
 
-function save-kubeconfig() {
-    if [ -f .env ]; then
-        echo "Store .env file in pass: $PASS_ENTRY"
-        cat .env | pass insert -m -f "$PASS_ENTRY"
+function load-kubeconfig() {
+    if [ -f "$HOME/.kube/config" ]; then
+        echo "Load ~/.kube/config file from pass: $PASS_KUBECONFIG_ENTRY"
+        pass show "$PASS_KUBECONFIG_ENTRY" > "$HOME/.kube/config"
     else
-        echo "No .env file found."
+        echo "No ~/.kube/config file found."
     fi
 }
 
