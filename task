@@ -43,7 +43,7 @@ function help() {
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
     printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingress-nginx port."
     printf "$COLUMN" "forward-haproxy-ingress" "" "Forward haproxy-ingress port."
-    # Chart, Release and Forwarding
+    # Charts
     printf "$COLUMN" "install-odoo" "[env]" "Install Odoo chart. Optionally set env."
     printf "$COLUMN" "install-postgres" "" "Install Postgres chart."
     printf "$COLUMN" "install-vshnpostgres" "" "Install vshnPostgres chart."
@@ -75,6 +75,8 @@ function help() {
     # LLM
     printf "$COLUMN" "commit-with-llm" "" "Commit with llm generated commit message."
     printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
+    # Test
+    printf "$COLUMN" "test-cert-issuer" "" "Test cert manager Infomaniak webhook."
 }
 
 # Default vars
@@ -281,6 +283,24 @@ function install-odoo-infomaniak() {
         --set postgres.password="$POSTGRES_PASSWORD"
 }
 
+function test-cert-issuer() {
+    echo ""
+    cat <<EOF | kubectl apply -f -
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: test-chk-mintcloud-ch
+spec:
+    secretName: test-chk-mintcloud-ch
+    issuerRef:
+        name: letsencrypt-int
+        kind: ClusterIssuer
+    dnsNames:
+    - test.chk.mintcloud.ch
+EOF
+}
+
 function upgrade-odoo() {
     if [ "$1" = "axo" ]; then
         upgrade-odoo-appuio
@@ -359,6 +379,9 @@ function install-cert-manager() {
       --version v1.18.2 \
       --set crds.enabled=true
 
+    echo "Apply Infomaniak webhook"
+    kubectl apply -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
+
     echo "Install cluster-issuer."
     helm install \
         cluster-issuer cluster-issuer \
@@ -401,6 +424,9 @@ function uninstall-odoo() {
 function uninstall-cert-manager() {
     echo "Uninstall release cert-manager."
     helm uninstall cert-manager --namespace cert-manager
+
+    echo "Delete Infomaniak webhook"
+    kubectl delete -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
 
     echo "Uninstall release cluster-issuer."
     helm uninstall cluster-issuer --namespace cert-manager
@@ -485,16 +511,16 @@ function publish-repo() {
 }
 
 function add-repos(){
-    echo "Add the kubernetes-build repo."
+    echo "Add kubernetes-build."
     helm repo add kubernetes-build https://kubernetes.build
 
-    echo "Add the ingress-nginx repo."
+    echo "Add ingress-nginx."
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
-    echo "Add the haproxy-ingress repo."
+    echo "Add haproxy-ingress."
     helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
 
-    echo "Add the jetstack repo."
+    echo "Add jetstack."
     helm repo add jetstack https://charts.jetstack.io
 }
 

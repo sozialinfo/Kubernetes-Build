@@ -234,7 +234,7 @@ task add-repos
 task install-ingress-nginx
 ```
 
-Manage certificate with cert manager.
+Manage certificates with cert manager.
 
 ```bash
 task install-cert-manager

@@ -1,0 +1,3 @@
+[submodule "cert-manager-webhook-infomaniak"]
+	path = cert-manager-webhook-infomaniak
+	url = https://github.com/Infomaniak/cert-manager-webhook-infomaniak.git

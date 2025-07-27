@@ -13,3 +13,7 @@ Domain: `acme`
 | email              | string | `login@example.com` |
 | solver             | string | `infomaniak`        |
 | InfomaniakApiToken | string |                     |
+
+### Infomaniak
+
+The `infomaniak` solver uses <https://github.com/Infomaniak/cert-manager-webhook-infomaniak>.
