@@ -221,7 +221,7 @@ function install-postgres() {
 }
 
 function install-odoo() {
-    if [ "$1" = "exo" ]; then
+    if [ "$1" = "axo" ]; then
         install-odoo-appuio
     elif [ "$1" = "chk" ]; then
         install-odoo-infomaniak
@@ -261,7 +261,7 @@ function install-odoo-appuio() {
 
     echo "Install odoo chart as release $RELEASE_NAME with APPUiO-specific values."
     helm install "$RELEASE_NAME" odoo \
-        --set ingress.host="$NAMESPACE.exo.mintcloud.ch" \
+        --set ingress.host="$NAMESPACE.axo.mintcloud.ch" \
         --set ingress.className=haproxy \
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
@@ -282,7 +282,7 @@ function install-odoo-infomaniak() {
 }
 
 function upgrade-odoo() {
-    if [ "$1" = "exo" ]; then
+    if [ "$1" = "axo" ]; then
         upgrade-odoo-appuio
     elif [ "$1" = "chk" ]; then
         upgrade-odoo-infomaniak
@@ -311,7 +311,7 @@ function upgrade-vshnpostgres() {
 function upgrade-odoo-appuio() {
     echo "Upgrade odoo chart for release $RELEASE_NAME with APPUiO-specific values."
     helm upgrade "$RELEASE_NAME" odoo \
-        --set ingress.host="$NAMESPACE.exo.mintcloud.ch" \
+        --set ingress.host="$NAMESPACE.axo.mintcloud.ch" \
         --set ingress.className=haproxy \
         --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
@@ -431,9 +431,9 @@ function logs-ingress-nginx() {
 
 function template() {
     echo "Template charts into manifest.yaml."
-    if [ "$1" = "exo" ]; then
+    if [ "$1" = "axo" ]; then
         helm --debug template "$RELEASE_NAME" odoo \
-            --set ingress.host=$NAMESPACE.exo.mintcloud.ch \
+            --set ingress.host=$NAMESPACE.axo.mintcloud.ch \
             --set ingress.className=haproxy \
             --set ingress.secure=true \
             --set vshnPostgres.enabled=true \

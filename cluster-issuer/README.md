@@ -8,8 +8,8 @@ This chart deploys a cluster issuer.
 
 Domain: `acme`
 
-| Key            | Type    | Default              |
-| -------------- | ------- | -------------------- |
-| email           | string  | `login@example.com` |
-| solver           | string  | `infomaniak` |
-| InfomaniakApiToken           | string  |  |
+| Key                | Type   | Default             |
+| ------------------ | ------ | ------------------- |
+| email              | string | `login@example.com` |
+| solver             | string | `infomaniak`        |
+| InfomaniakApiToken | string |                     |
