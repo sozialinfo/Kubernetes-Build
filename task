@@ -74,9 +74,14 @@ function help() {
 }
 
 # Default vars
+
 OC_PROJECT=${OC_PROJECT:="odoo"}
 NAMESPACE=${NAMESPACE:="odoo"}
 RELEASE_NAME=${RELEASE_NAME:="odoo"}
+
+# Dynamic vars
+
+PASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
 
 # Import commands
 
@@ -128,6 +133,24 @@ function test-k8s() {
         add-repos
         install-odoo
         install-ingress-nginx
+    fi
+}
+
+function save-kubeconfig() {
+    if [ -f .env ]; then
+        echo "Store .env file in pass: $PASS_ENTRY"
+        cat .env | pass insert -m -f "$PASS_ENTRY"
+    else
+        echo "No .env file found."
+    fi
+}
+
+function save-kubeconfig() {
+    if [ -f .env ]; then
+        echo "Store .env file in pass: $PASS_ENTRY"
+        cat .env | pass insert -m -f "$PASS_ENTRY"
+    else
+        echo "No .env file found."
     fi
 }
 
@@ -435,8 +458,10 @@ function list() {
 function package-repo() {
     echo "Package Helm charts."
     index-repo
+    helm package cluster-issuer
     helm package postgres
     helm package vshnPostgres
+    mkdir -p ./odoo/charts
     cp postgres-0.1.0.tgz odoo/charts/
     cp vshnPostgres-0.1.0.tgz odoo/charts/
     helm package odoo

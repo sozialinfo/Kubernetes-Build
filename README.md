@@ -219,7 +219,9 @@ Create new Kubernetes cluster in the Infomaniak manager. Then add an instance gr
 Download the Kubeconfig file and merge it.
 
 ```bash
-KUBECONFIG=~/Downloads/pck-XXXXXXX-kubeconfig:$KUBECONFIG kubectl config view --merge --flatten > ~/.kube/config
+KUBECONFIG_FILE=~/Downloads/pck-XXXXXXX-kubeconfig
+mkdir -p ~/.kube
+KUBECONFIG=$KUBECONFIG_FILE:$KUBECONFIG kubectl config view --merge --flatten > ~/.kube/config
 kubectl config get-contexts
 ```
 

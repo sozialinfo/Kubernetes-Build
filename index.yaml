@@ -1,9 +1,24 @@
 apiVersion: v1
 entries:
+  cert-manager:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-07-27T17:02:24.463571197+02:00"
+    description: Mint System Cert Manager
+    digest: bbb17ee2e05e223ca6e83dcf46fe01e9fc1f439d393473cfa436614a531ad96b
+    home: https://kubernetes.build/
+    maintainers:
+    - email: support@mint-system.ch
+      name: Mint System GmbH
+    name: cert-manager
+    type: application
+    urls:
+    - cert-manager-0.1.0.tgz
+    version: 0.1.0
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-07-21T16:07:39.840924749+02:00"
+    created: "2025-07-27T17:02:24.464576832+02:00"
     dependencies:
     - condition: postgres.enabled
       name: postgres
@@ -14,7 +29,7 @@ entries:
       repository: https://kubernetes.build
       version: 0.1.0
     description: Mint System Odoo
-    digest: 7bb3733c427339973f1c3b16714332fad8a753d29dc6ecce107b1488ea9e9486
+    digest: 10123e282596730e2c0f39334d553183a298ca220c9e50f9c2bfb89cf3bbec56
     home: https://kubernetes.build/
     maintainers:
     - email: support@mint-system.ch
@@ -27,9 +42,9 @@ entries:
   postgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-07-21T16:07:39.842608066+02:00"
+    created: "2025-07-27T17:02:24.464873834+02:00"
     description: Mint System Postgres
-    digest: 79802a313f6fb7d3895f07b0e188276f4bbd1bd2286ae6ad4d08f135379915ee
+    digest: 24bdf919376073baef14cbbb1242b30d85aa25bc0adf75acac6c2b0542de9911
     home: https://kubernetes.build/
     maintainers:
     - email: support@mint-system.ch
@@ -42,9 +57,9 @@ entries:
   vshnPostgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-07-21T16:07:39.842874916+02:00"
+    created: "2025-07-27T17:02:24.465113325+02:00"
     description: VSHN Postgres
-    digest: f35c899eabb108d96e48327cf90fbf9f3439ee311e320326a9f4156d6bcf1240
+    digest: cdc10a3e031abcbe61361797fca27ed26676be0b89e14fcfdf4f74b0737d493d
     home: https://kubernetes.build/
     maintainers:
     - email: support@mint-system.ch
@@ -54,4 +69,4 @@ entries:
     urls:
     - vshnPostgres-0.1.0.tgz
     version: 0.1.0
-generated: "2025-07-21T16:07:39.838065425+02:00"
+generated: "2025-07-27T17:02:24.463077755+02:00"
