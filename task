@@ -294,10 +294,10 @@ metadata:
 spec:
     secretName: test-chk-mintcloud-ch
     issuerRef:
-        name: letsencrypt-int
+        name: letsencrypt-staging
         kind: ClusterIssuer
     dnsNames:
-    - test.chk.mintcloud.ch
+    - chk.mintcloud.ch
 EOF
 }
 
