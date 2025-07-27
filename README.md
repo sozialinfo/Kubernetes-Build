@@ -234,7 +234,16 @@ task add-repos
 task install-ingress-nginx
 ```
 
-Manage certificates with cert manager.
+#### Setup cert manager
+
+Create an api token with domain scope: <https://manager.infomaniak.com/v3/infomaniak-api>
+
+```bash
+ACME_EMAIL="syadmin@example.com"
+INFOMANIAK_API_TOKEN="YOUR_API_TOKEN"
+```
+
+Install cert manager with Infomaniak webhook.
 
 ```bash
 task install-cert-manager
