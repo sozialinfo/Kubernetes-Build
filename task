@@ -215,11 +215,46 @@ function list-chart() {
     echo "cert-issuer"
     echo "ingress-nginx"
     echo "haproxy-ingress"
+    echo "kuard"
 }
 
 function install-chart() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
     "install-$1"
+}
+
+function install-kuard() {
+    echo "Apply kuard deployment and service."
+    kubectl apply -f https://raw.githubusercontent.com/cert-manager/website/master/content/docs/tutorials/acme/example/deployment.yaml
+    kubectl apply -f https://raw.githubusercontent.com/cert-manager/website/master/content/docs/tutorials/acme/example/service.yaml
+
+    echo "Apply kuard ingress"
+    cat <<EOF | kubectl apply -f -
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kuard
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-http-staging"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - kuard.chk.mintcloud.ch
+    secretName: kuard-chk-mintcloud-ch
+  rules:
+  - host: kuard.chk.mintcloud.ch
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kuard
+            port:
+              number: 80
+EOF
 }
 
 function install-postgres() {
@@ -320,20 +355,20 @@ function install-cluster-issuer() {
 }
 
 function test-cluster-issuer() {
-    echo ""
+    echo "Apply certificate."
     cat <<EOF | kubectl apply -f -
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-    name: test-chk-mintcloud-ch
+    name: chk-mintcloud-ch
 spec:
-    secretName: test-chk-mintcloud-ch
+    secretName: chk-mintcloud-ch
     issuerRef:
-        name: letsencrypt-http-staging
+        name: letsencrypt-dns-staging
         kind: ClusterIssuer
     dnsNames:
-    - test.chk.mintcloud.ch
+    - chk.mintcloud.ch
 EOF
 }
 

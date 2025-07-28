@@ -17,7 +17,7 @@ postgres:
     enabled: false
 odoo:
   enabled: true
-  image: mintsystem/odoo:18.0.20250520
+  image: mintsystem/odoo:18.0.20250725
   host: odoo
   proxyMode: True
   githubUsername: ""
