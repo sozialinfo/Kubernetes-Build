@@ -108,7 +108,7 @@ task forward-odoo
 Install ingress-nginx in the current cluster.
 
 ```bash
-task install-ingress-nginx
+task install-chart ingress-nginx
 ```
 
 Forward the ingress-nginx port.
@@ -122,7 +122,7 @@ task forward-ingress-nginx
 Install haproxy-ingress in the current cluster.
 
 ```bash
-task install-haproxy-ingress
+task install-chart haproxy-ingress
 ```
 
 Forward the haproxy-ingress port.
@@ -231,7 +231,7 @@ Add all repos and install the ingress nginx.
 
 ```bash
 task add-repos
-task install-ingress-nginx
+task install-chart ingress-nginx
 ```
 
 #### Setup cert manager
@@ -246,7 +246,13 @@ INFOMANIAK_API_TOKEN="YOUR_API_TOKEN"
 Install cert manager with Infomaniak webhook.
 
 ```bash
-task install-cert-manager
+task install-chart cert-manager
+```
+
+Install cluster issuer.
+
+```bash
+task install-chart cluster-issuer
 ```
 
 #### Create Odoo release
@@ -254,7 +260,7 @@ task install-cert-manager
 Install the Odoo chart.
 
 ```bash
-task install-odoo chk
+task install--odoo chk
 ```
 
 ## Troubleshooting

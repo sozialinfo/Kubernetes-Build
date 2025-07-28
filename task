@@ -44,20 +44,13 @@ function help() {
     printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingress-nginx port."
     printf "$COLUMN" "forward-haproxy-ingress" "" "Forward haproxy-ingress port."
     # Charts
+    printf "$COLUMN" "list-chart" "[env]" "List available Helm charts."
     printf "$COLUMN" "install-odoo" "[env]" "Install Odoo chart. Optionally set env."
-    printf "$COLUMN" "install-postgres" "" "Install Postgres chart."
-    printf "$COLUMN" "install-vshnpostgres" "" "Install vshnPostgres chart."
-    printf "$COLUMN" "install-cert-manager" "" "Install cert manager."
-    printf "$COLUMN" "install-ingress-nginx" "" "Install ingress nginx."
-    printf "$COLUMN" "install-haproxy-ingress" "" "Install haproxy ingress."
+    printf "$COLUMN" "install-chart" "[name]" "Install Helm chart."
     printf "$COLUMN" "upgrade-odoo" "[env]" "Upgrade Odoo chart release. Optionally set env."
-    printf "$COLUMN" "upgrade-cert-manager" "" "Upgrade cert manager release."
-    printf "$COLUMN" "upgrade-postgres" "" "Upgrade Postgres release."
-    printf "$COLUMN" "upgrade-vshnpostgres" "" "Upgrade Postgres  release."
+    printf "$COLUMN" "upgrade-release" "[name]" "Upgrade Helm release."
     printf "$COLUMN" "uninstall-odoo" "" "Uninstall Odoo Helm release."
-    printf "$COLUMN" "uninstall-cert-manager" "" "Uninstall cert manager release."
-    printf "$COLUMN" "uninstall-ingress-nginx" "" "Install ingress nginx."
-    printf "$COLUMN" "uninstall-haproxy-ingress" "" "Install haproxy ingress."
+    printf "$COLUMN" "uninstall-release" "" "Uninstall Helm release."
     # kubectl
     printf "$COLUMN" "logs-odoo" "" "Show pod logs."
     printf "$COLUMN" "logs-haproxy-ingress" "" "Show haproxy-ingress logs."
@@ -76,7 +69,7 @@ function help() {
     printf "$COLUMN" "commit-with-llm" "" "Commit with llm generated commit message."
     printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
     # Test
-    printf "$COLUMN" "test-cert-issuer" "" "Test cert manager Infomaniak webhook."
+    printf "$COLUMN" "test-cluster-issuer" "" "Test cert isser."
 }
 
 # Default vars
@@ -213,7 +206,21 @@ function forward-haproxy-ingress() {
     kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $PORT:80
 }
 
-# Helm, Release Commands
+# Helm Commands
+
+function list-chart() {
+    echo "postgres"
+    echo "vshnpostgres"
+    echo "cert-manager"
+    echo "cert-issuer"
+    echo "ingress-nginx"
+    echo "haproxy-ingress"
+}
+
+function install-chart() {
+    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+    "install-$1"
+}
 
 function install-postgres() {
     echo "Install chart postgres as release $RELEASE_NAME."
@@ -244,7 +251,7 @@ function install-odoo() {
     fi
 }
 
-function install-vshnpostgres() {
+function install-vshnPostgres() {
     echo "Set oc project to $OC_PROJECT."
     oc project "$OC_PROJECT"
 
@@ -283,7 +290,36 @@ function install-odoo-infomaniak() {
         --set postgres.password="$POSTGRES_PASSWORD"
 }
 
-function test-cert-issuer() {
+function install-ingress-nginx() {
+    echo "Install ingress-nginx/ingress-nginx."
+    helm install ingress-nginx ingress-nginx/ingress-nginx \
+        --create-namespace --namespace ingress-nginx
+}
+
+function install-cert-manager() {
+    echo "Install jetstack/cert-manager."
+    helm install \
+      cert-manager jetstack/cert-manager \
+      --namespace cert-manager \
+      --create-namespace \
+      --version v1.18.2 \
+      --set crds.enabled=true
+
+    # https://github.com/Infomaniak/cert-manager-webhook-infomaniak
+    echo "Apply Infomaniak webhook"
+    kubectl apply -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
+}
+
+function install-cluster-issuer() {
+    echo "Install cluster-issuer."
+    helm install \
+        cluster-issuer cluster-issuer \
+        --namespace cert-manager \
+        --set acme.email="$ACME_EMAIL" \
+        --set acme.infomaniakApiToken="$INFOMANIAK_API_TOKEN"
+}
+
+function test-cluster-issuer() {
     echo ""
     cat <<EOF | kubectl apply -f -
 ---
@@ -294,11 +330,32 @@ metadata:
 spec:
     secretName: test-chk-mintcloud-ch
     issuerRef:
-        name: letsencrypt-staging
+        name: letsencrypt-http-staging
         kind: ClusterIssuer
     dnsNames:
-    - chk.mintcloud.ch
+    - test.chk.mintcloud.ch
 EOF
+}
+
+function install-haproxy-ingress() {
+    echo "Install haproxy-ingress/haproxy-ingress."
+
+    kubectl apply -f - <<EOF
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: haproxy
+spec:
+  controller: haproxy-ingress.github.io/controller
+EOF
+
+    helm install haproxy-ingress haproxy-ingress/haproxy-ingress \
+        --create-namespace --namespace haproxy-ingress
+}
+
+function upgrade-release() {
+    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+    "upgrade-$1"
 }
 
 function upgrade-odoo() {
@@ -355,7 +412,9 @@ function upgrade-cert-manager() {
       --namespace cert-manager \
       --version v1.18.2 \
       --set crds.enabled=true
+}
 
+function upgrade-cluster-issuer() {
     echo "Upgrade cluster-issuer."
     helm upgrade \
         cluster-issuer cluster-issuer \
@@ -364,47 +423,14 @@ function upgrade-cert-manager() {
         --set acme.infomaniakApiToken="$INFOMANIAK_API_TOKEN"
 }
 
-function install-ingress-nginx() {
-    echo "Install ingress-nginx/ingress-nginx."
-    helm install ingress-nginx ingress-nginx/ingress-nginx \
-        --create-namespace --namespace ingress-nginx
+function uninstall-release() {
+    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+    "uninstall-$1"
 }
 
-function install-cert-manager() {
-    echo "Install jetstack/cert-manager."
-    helm install \
-      cert-manager jetstack/cert-manager \
-      --namespace cert-manager \
-      --create-namespace \
-      --version v1.18.2 \
-      --set crds.enabled=true
-
-    # https://github.com/Infomaniak/cert-manager-webhook-infomaniak
-    echo "Apply Infomaniak webhook"
-    kubectl apply -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
-
-    echo "Install cluster-issuer."
-    helm install \
-        cluster-issuer cluster-issuer \
-        --namespace cert-manager \
-        --set acme.email="$ACME_EMAIL" \
-        --set acme.infomaniakApiToken="$INFOMANIAK_API_TOKEN"
-}
-
-function install-haproxy-ingress() {
-    echo "Install haproxy-ingress/haproxy-ingress."
-
-    kubectl apply -f - <<EOF
-apiVersion: networking.k8s.io/v1
-kind: IngressClass
-metadata:
-  name: haproxy
-spec:
-  controller: haproxy-ingress.github.io/controller
-EOF
-
-    helm install haproxy-ingress haproxy-ingress/haproxy-ingress \
-        --create-namespace --namespace haproxy-ingress
+function uninstall-odoo() {
+    echo "Uninstall release $RELEASE_NAME."
+    helm uninstall "$RELEASE_NAME"
 }
 
 function uninstall-ingress-nginx() {
@@ -417,18 +443,15 @@ function uninstall-haproxy-ingress() {
     helm uninstall haproxy-ingress --namespace haproxy-ingress
 }
 
-function uninstall-odoo() {
-    echo "Uninstall release $RELEASE_NAME."
-    helm uninstall "$RELEASE_NAME"
-}
-
 function uninstall-cert-manager() {
     echo "Uninstall release cert-manager."
     helm uninstall cert-manager --namespace cert-manager
 
     echo "Delete Infomaniak webhook"
     kubectl delete -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
+}
 
+function uninstall-cluster-issuer() {
     echo "Uninstall release cluster-issuer."
     helm uninstall cluster-issuer --namespace cert-manager
 }

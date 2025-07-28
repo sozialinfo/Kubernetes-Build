@@ -11,7 +11,6 @@ Domain: `acme`
 | Key                | Type   | Default             |
 | ------------------ | ------ | ------------------- |
 | email              | string | `login@example.com` |
-| solver             | string | `infomaniak`        |
 | InfomaniakApiToken | string |                     |
 
 ### Infomaniak
