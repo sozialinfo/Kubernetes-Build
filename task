@@ -32,6 +32,7 @@ function help() {
     # Docs
     printf "$COLUMN" "install" "" "Install node dependencies."
     printf "$COLUMN" "docs" "" "Generate Helm chart readmes."
+    printf "$COLUMN" "lint" "" "Lint Helm charts."
     printf "$COLUMN" "dev-vitepress" "" "Start VitePress dev server."
     printf "$COLUMN" "build-vitepress" "" "Build site with VitePress."
     printf "$COLUMN" "preview-vitepress" "" "Server VitePress build."
@@ -128,6 +129,7 @@ function test-k8s() {
     if [ "$1" = "clean" ]; then
         echo "Cleanup environment"
         delete-kind
+        rm values.yaml
     else
         start-kind
         add-repos
@@ -162,6 +164,13 @@ function docs() {
     pnpm run generate-readme --values odoo/values.yaml -r odoo/README.md
     pnpm run generate-readme --values postgres/values.yaml -r postgres/README.md
     pnpm run generate-readme --values vshnPostgres/values.yaml -r vshnPostgres/README.md
+}
+
+function lint() {
+    helm lint cluster-issuer
+    helm lint odoo
+    helm lint postgres
+    helm lint vshnPostgres
 }
 
 function dev-vitepress() {

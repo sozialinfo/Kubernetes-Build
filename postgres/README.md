@@ -8,6 +8,7 @@ This chart deploys a Postgres container and stores the credentials in a secret.
 
 | Name                      | Description                           | Value                |
 | ------------------------- | ------------------------------------- | -------------------- |
+| `postgres.enabled`        | Enable or disable Postgres            | `true`               |
 | `postgres.image`          | The Docker image for Postgres         | `postgres:16-alpine` |
 | `postgres.host`           | The host for Postgres                 | `postgres`           |
 | `postgres.port`           | The port for Postgres                 | `5432`               |

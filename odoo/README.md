@@ -6,13 +6,13 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ### Ingress parameters
 
-| Name                       | Description                                  | Value                   |
-| -------------------------- | -------------------------------------------- | ----------------------- |
-| `ingress.enabled`          | Enable or disable the ingress                | `true`                  |
-| `ingress.className`        | The class name for the ingress               | `nginx`                 |
-| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `letsencrypt-http-prod` |
-| `ingress.host`             | The host for the ingress                     | `odoo.cloud.local`      |
-| `ingress.customDomain`     | The custom domain for the ingress            | `""`                    |
+| Name                       | Description                                  | Value              |
+| -------------------------- | -------------------------------------------- | ------------------ |
+| `ingress.enabled`          | Enable or disable the ingress                | `true`             |
+| `ingress.className`        | The class name for the ingress               | `nginx`            |
+| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `nil`              |
+| `ingress.host`             | The host for the ingress                     | `odoo.cloud.local` |
+| `ingress.customDomain`     | The custom domain for the ingress            | `""`               |
 
 ### vshnPostgres parameters
 
@@ -32,10 +32,11 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ### PostgreSQL parameters
 
-| Name                   | Description                         | Value            |
-| ---------------------- | ----------------------------------- | ---------------- |
-| `postgresql.enabled`   | Enable or disable postgresql        | `false`          |
-| `postgresql.secretRef` | The secret reference for postgresql | `postgres-creds` |
+| Name                       | Description                                     | Value  |
+| -------------------------- | ----------------------------------------------- | ------ |
+| `postgresql.enabled`       | Enable or disable PostgreSQL                    | `true` |
+| `postgresql.auth.username` | The username for PostgreSQL authentication      | `odoo` |
+| `postgresql.auth.database` | The database name for PostgreSQL authentication | `odoo` |
 
 ### Odoo parameters
 
@@ -43,7 +44,6 @@ This Helm chart deploys Odoo with PostgreSQL.
 | -------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | `odoo.enabled`                   | Enable or disable odoo                        | `true`                                                                                                        |
 | `odoo.image`                     | The image for odoo                            | `mintsystem/odoo:18.0.20250725`                                                                               |
-| `odoo.host`                      | The host for odoo                             | `odoo`                                                                                                        |
 | `odoo.proxyMode`                 | Enable or disable proxy mode for odoo         | `true`                                                                                                        |
 | `odoo.githubUsername`            | The GitHub username for odoo                  | `""`                                                                                                          |
 | `odoo.githubPersonalAccessToken` | The GitHub personal access token for odoo     | `""`                                                                                                          |

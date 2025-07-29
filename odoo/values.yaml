@@ -48,7 +48,7 @@ postgres:
 ## @section PostgreSQL parameters
 ##
 postgresql:
-  ## @param postgres.enabled Enable or disable PostgreSQL
+  ## @param postgresql.enabled Enable or disable PostgreSQL
   ##
   enabled: true
   auth:
@@ -68,7 +68,7 @@ odoo:
   ## @param odoo.image The image for odoo
   ##
   image: mintsystem/odoo:18.0.20250725
-  ## @param odoo.host The host for odoo
+  ## @param odoo.proxyMode Enable or disable proxy mode for odoo
   ##
   proxyMode: true
   ## @param odoo.githubUsername The GitHub username for odoo
