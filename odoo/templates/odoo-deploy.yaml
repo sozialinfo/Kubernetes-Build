@@ -13,13 +13,13 @@ spec:
       labels:
         app: odoo
     spec:
-      {{- if .Values.vshnPostgres.enabled }}
-      volumes:
-      - name: {{ .Values.vshnPostgres.secretRef }}
-        secret:
-          defaultMode: 0600
-          secretName: {{ .Values.vshnPostgres.secretRef }}
-      {{- end }}
+      # {{- if .Values.vshnPostgres.enabled }}
+      # volumes:
+      # - name: {{ .Values.vshnPostgres.secretRef }}
+      #   secret:
+      #     defaultMode: 0600
+      #     secretName: {{ .Values.vshnPostgres.secretRef }}
+      # {{- end }}
       initContainers:
         - name: init
           image: {{ .Values.odoo.image }}
@@ -37,27 +37,16 @@ spec:
             - configMapRef:
                 name: {{ .Values.odoo.configMapRef }}
           env:
-            {{- if .Values.postgres.enabled }}
-            - name: PGHOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_HOST
-            - name: PGPORT
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_PORT
-            - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_USER
+            {{- if .Values.postgresql.enabled }}
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_PASSWORD
+                  name: odoo-postgresql
+                  key: postgres-password
+            - name: PGHOST
+              value: postgresql.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              value: {{ .Values.postgresql.auth.username }}
             {{- end }}
             {{- if .Values.vshnPostgres.enabled }}
             - name: PGHOST
@@ -102,27 +91,16 @@ spec:
             - configMapRef:
                 name: {{ .Values.odoo.configMapRef }}
           env:
-            {{- if .Values.postgres.enabled }}
-            - name: PGHOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_HOST
-            - name: PGPORT
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_PORT
-            - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_USER
+            {{- if .Values.postgresql.enabled }}
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_PASSWORD
+                  name: odoo-postgresql
+                  key: postgres-password
+            - name: PGHOST
+              value: postgresql.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGPORT
+            - name: PGUSER
             {{- end }}
             {{- if .Values.vshnPostgres.enabled }}
             - name: PGHOST
@@ -150,9 +128,9 @@ spec:
             - name: PGSSLROOTCERT
               value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
             {{- end }}
-          {{- if .Values.vshnPostgres.enabled }}
-          volumeMounts:
-          - name: {{ .Values.vshnPostgres.secretRef }}
-            readOnly: true
-            mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
-          {{- end }}
+          # {{- if .Values.vshnPostgres.enabled }}
+          # volumeMounts:
+          # - name: {{ .Values.vshnPostgres.secretRef }}
+          #   readOnly: true
+          #   mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
+          # {{- end }}

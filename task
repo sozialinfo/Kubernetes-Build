@@ -295,7 +295,7 @@ function install-odoo() {
 
 function install-postgresql() {
     echo "Install bitnami/postgresql"
-    helm install "$RELEASE_NAME" bitnami/postgresql
+    helm install "$RELEASE_NAME" oci://registry-1.docker.io/bitnamicharts/postgresql -f odoo/values.yaml
 }
 
 function install-vshnPostgres() {
@@ -424,7 +424,8 @@ function upgrade-postgres() {
 
 function upgrade-postgresql() {
     echo "Upgrade bitnami/postgresql"
-    helm upgrade "$RELEASE_NAME" bitnami/postgresql
+    helm upgrade "$RELEASE_NAME" oci://registry-1.docker.io/bitnamicharts/postgresql -f odoo/values.yaml
+
 }
 
 function upgrade-vshnpostgres() {

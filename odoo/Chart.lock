@@ -1,6 +1,12 @@
 dependencies:
+- name: postgres
+  repository: https://kubernetes.build
+  version: 0.1.0
+- name: vshnPostgres
+  repository: https://kubernetes.build
+  version: 0.1.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 16.7.13
-digest: sha256:285bb0d89f9d60fd48aca90e83fc63d7837dac2c52c6acfe6c3f96f512967b97
-generated: "2025-07-29T15:20:11.609917474+02:00"
+digest: sha256:00ada2f10b990f43b8df1da6b24eb6df9bf6499f14b3b69c77620c482eda64e8
+generated: "2025-07-29T18:32:39.729301039+02:00"

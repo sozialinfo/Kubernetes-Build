@@ -70,9 +70,6 @@ odoo:
   image: mintsystem/odoo:18.0.20250725
   ## @param odoo.host The host for odoo
   ##
-  host: odoo
-  ## @param odoo.proxyMode Enable or disable proxy mode for odoo
-  ##
   proxyMode: true
   ## @param odoo.githubUsername The GitHub username for odoo
   ##
