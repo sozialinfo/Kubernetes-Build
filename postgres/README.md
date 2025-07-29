@@ -1,22 +1,17 @@
-# postgres
-
-![Docker Image Version (tag)](https://img.shields.io/docker/v/_/postgres/16.0-alpine)
-
-Mint System Postgres
+# Postgres Helm Chart
 
 This chart deploys a Postgres container and stores the credentials in a secret.
 
-## Values
+## Parameters
 
-Domain: `postgres`
+### Postgres parameters
 
-| Key            | Type    | Default              |
-| -------------- | ------- | -------------------- |
-| image          | string  | `postgres:16-alpine` |
-| host           | string  | `postgres`           |
-| port           | integer | `5432`               |
-| db             | string  | `odoo`               |
-| user           | string  | `odoo`               |
-| password       | string  |                      |
-| secretRef      | string  | `postgres-creds`     |
-| client.enabled | boolean | `false`              |
+| Name                      | Description                           | Value                |
+| ------------------------- | ------------------------------------- | -------------------- |
+| `postgres.image`          | The Docker image for Postgres         | `postgres:16-alpine` |
+| `postgres.host`           | The host for Postgres                 | `postgres`           |
+| `postgres.port`           | The port for Postgres                 | `5432`               |
+| `postgres.db`             | The database name for Postgres        | `odoo`               |
+| `postgres.user`           | The username for Postgres             | `odoo`               |
+| `postgres.secretRef`      | The secret reference for Postgres     | `postgres-creds`     |
+| `postgres.client.enabled` | Enable or disable the Postgres client | `false`              |

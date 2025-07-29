@@ -1,51 +1,56 @@
-# odoo
+# Odoo Helm Chart
 
-![Docker Image Version (tag)](https://img.shields.io/docker/v/mintsystem/odoo/18.0)
+This Helm chart deploys Odoo with PostgreSQL.
 
-Mint System Odoo
+## Parameters
 
-Sets up Odoo with a Postgres container. The connection credentials are mapped from the Postgres secret.
+### Ingress parameters
 
-## Values
+| Name                       | Description                                  | Value                   |
+| -------------------------- | -------------------------------------------- | ----------------------- |
+| `ingress.enabled`          | Enable or disable the ingress                | `true`                  |
+| `ingress.className`        | The class name for the ingress               | `nginx`                 |
+| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `letsencrypt-http-prod` |
+| `ingress.host`             | The host for the ingress                     | `odoo.cloud.local`      |
+| `ingress.customDomain`     | The custom domain for the ingress            | `""`                    |
 
-Chart: `ingress`
+### vshnPostgres parameters
 
-| Key          | Type    | Default            |
-| ------------ | ------- | ------------------ |
-| className    | string  | `nginx`            |
-| host         | string  | `odoo.cloud.local` |
-| customDomain | string  | ``       |
-| secure       | booelan | `false`            |
+| Name                          | Description                               | Value            |
+| ----------------------------- | ----------------------------------------- | ---------------- |
+| `vshnPostgres.enabled`        | Enable or disable vshnPostgres            | `false`          |
+| `vshnPostgres.secretRef`      | The secret reference for vshnPostgres     | `postgres-creds` |
+| `vshnPostgres.client.enabled` | Enable or disable the vshnPostgres client | `false`          |
 
-Chart: `vshnPostgres`
+### Postgres parameters
 
-| Key           | Type    | Default          |
-| ------------- | ------- | ---------------- |
-| enabled       | boolean | `false`          |
-| secretRef | string  | `postgres-creds`  |
-| client.enabled | boolean  | `false`     |
+| Name                      | Description                           | Value            |
+| ------------------------- | ------------------------------------- | ---------------- |
+| `postgres.enabled`        | Enable or disable postgres            | `false`          |
+| `postgres.secretRef`      | The secret reference for postgres     | `postgres-creds` |
+| `postgres.client.enabled` | Enable or disable the postgres client | `false`          |
 
-Chart: `postgres`
+### PostgreSQL parameters
 
-| Key          | Type    | Default          |
-| ------------ | ------- | ---------------- |
-| enabled      | boolean | `true`           |
-| secretRef | string  | `postgres-creds`  |
-| client.enabled | boolean  | `false`     |
+| Name                   | Description                         | Value            |
+| ---------------------- | ----------------------------------- | ---------------- |
+| `postgresql.enabled`   | Enable or disable postgresql        | `false`          |
+| `postgresql.secretRef` | The secret reference for postgresql | `postgres-creds` |
 
-Chart: `odoo`
+### Odoo parameters
 
-| Key                       | Type    | Default                                                                                                       |
-| ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
-| enabled                   | boolean | `true`                                                                                                        |
-| image                     | string  | `mintsystem/odoo:18.0.20250520`                                                                               |
-| proxyMode                 | bool    | `True`                                                                                                        |
-| githubUserame             | string  | `""`                                                                                                          |
-| githubPersonalAccessToken | string  | `""`                                                                                                          |
-| downloadOdooEnterprise    | bool    | `False`                                                                                                       |
-| addonsGitRepos            | string  | `https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0,https://github.com/OCA/Server-Tools.git#18.0` |
-| database                  | string  | `odoo`                                                                                                        |
-| initLang                  | string  | `de_CH`                                                                                                       |
-| listDB                    | string  | `False`                                                                                                       |
-| configMapRef              | string  | `odoo-config`                                                                                                 |
-| secretRef                 | string  | `odoo-creds`                                                                                                  |
+| Name                             | Description                                   | Value                                                                                                         |
+| -------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `odoo.enabled`                   | Enable or disable odoo                        | `true`                                                                                                        |
+| `odoo.image`                     | The image for odoo                            | `mintsystem/odoo:18.0.20250725`                                                                               |
+| `odoo.host`                      | The host for odoo                             | `odoo`                                                                                                        |
+| `odoo.proxyMode`                 | Enable or disable proxy mode for odoo         | `true`                                                                                                        |
+| `odoo.githubUsername`            | The GitHub username for odoo                  | `""`                                                                                                          |
+| `odoo.githubPersonalAccessToken` | The GitHub personal access token for odoo     | `""`                                                                                                          |
+| `odoo.downloadOdooEnterprise`    | Enable or disable downloading Odoo Enterprise | `false`                                                                                                       |
+| `odoo.addonsGitRepos`            | The addons Git repositories for odoo          | `https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0,https://github.com/OCA/Server-Tools.git#18.0` |
+| `odoo.database`                  | The database for odoo                         | `odoo`                                                                                                        |
+| `odoo.initLang`                  | The initial language for odoo                 | `de_CH`                                                                                                       |
+| `odoo.listDB`                    | Enable or disable listing databases for odoo  | `false`                                                                                                       |
+| `odoo.configMapRef`              | The config map reference for odoo             | `odoo-config`                                                                                                 |
+| `odoo.secretRef`                 | The secret reference for odoo                 | `odoo-creds`                                                                                                  |

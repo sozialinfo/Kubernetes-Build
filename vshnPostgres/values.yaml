@@ -1,6 +1,13 @@
-namespace: odoo
+## @section vshnPostgres parameters
+##
 vshnPostgres:
+  ## @param vshnPostgres.enabled Enable or disable vshnPostgres
+  ##
   enabled: false
+  ## @param vshnPostgres.secretRef The secret reference for vshnPostgres
+  ##
   secretRef: postgres-creds
   client:
+    ## @param vshnPostgres.client.enabled Enable or disable the vshnPostgres client
+    ##
     enabled: false

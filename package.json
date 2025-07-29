@@ -3,8 +3,12 @@
     "vitepress": "^1.6.3"
   },
   "scripts": {
+    "generate-readme": "node node_modules/@bitnami/readme-generator-for-helm/bin/index.js",
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview"
+  },
+  "dependencies": {
+    "@bitnami/readme-generator-for-helm": "^2.7.2"
   }
 }

@@ -1,9 +1,25 @@
+## @section Postgres parameters
+##
 postgres:
+  ## @param postgres.image The Docker image for Postgres
+  ##
   image: postgres:16-alpine
+  ## @param postgres.host The host for Postgres
+  ##
   host: postgres
+  ## @param postgres.port The port for Postgres
+  ##
   port: 5432
+  ## @param postgres.db The database name for Postgres
+  ##
   db: odoo
+  ## @param postgres.user The username for Postgres
+  ##
   user: odoo
+  ## @param postgres.secretRef The secret reference for Postgres
+  ##
   secretRef: postgres-creds
   client:
+    ## @param postgres.client.enabled Enable or disable the Postgres client
+    ##
     enabled: false

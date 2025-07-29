@@ -1,18 +1,12 @@
-# cluster-issuer
+# Cluster Issuer Helm Chart
 
-Mint System Cluster Issuer
+This chart deploys cluster issuers for prod and staging and for dns and http.
 
-This chart deploys a cluster issuer.
+## Parameters
 
-## Values
+### ACME parameters
 
-Domain: `acme`
-
-| Key                | Type   | Default             |
-| ------------------ | ------ | ------------------- |
-| email              | string | `login@example.com` |
-| InfomaniakApiToken | string |                     |
-
-### Infomaniak
-
-The `infomaniak` solver uses <https://github.com/Infomaniak/cert-manager-webhook-infomaniak>.
+| Name          | Description                | Value               |
+| ------------- | -------------------------- | ------------------- |
+| `acme.email`  | The email address for ACME | `login@example.com` |
+| `acme.solver` | The solver for ACME        | `infomaniak`        |

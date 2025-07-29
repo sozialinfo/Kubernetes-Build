@@ -31,6 +31,7 @@ function help() {
     printf "$COLUMN" "save-dotenv" "" "Store content of .env in pass entry."
     # Docs
     printf "$COLUMN" "install" "" "Install node dependencies."
+    printf "$COLUMN" "docs" "" "Generate Helm chart readmes."
     printf "$COLUMN" "dev-vitepress" "" "Start VitePress dev server."
     printf "$COLUMN" "build-vitepress" "" "Build site with VitePress."
     printf "$COLUMN" "preview-vitepress" "" "Server VitePress build."
@@ -157,6 +158,13 @@ function load-kubeconfig() {
 
 # Docs Commands
 
+function docs() {
+    pnpm run generate-readme --values cluster-issuer/values.yaml -r cluster-issuer/README.md
+    pnpm run generate-readme --values odoo/values.yaml -r odoo/README.md
+    pnpm run generate-readme --values postgres/values.yaml -r postgres/README.md
+    pnpm run generate-readme --values vshnPostgres/values.yaml -r vshnPostgres/README.md
+}
+
 function dev-vitepress() {
     cp README.md index.md
     pnpm run docs:dev
@@ -209,6 +217,7 @@ function forward-haproxy-ingress() {
 # Helm Commands
 
 function list-chart() {
+    echo "postgresql"
     echo "postgres"
     echo "vshnpostgres"
     echo "cert-manager"
@@ -272,6 +281,7 @@ function install-odoo() {
     else
         echo "Install dependencies."
         helm dependency build odoo
+
         echo "Install odoo chart as release $RELEASE_NAME."
         helm install "$RELEASE_NAME" odoo \
             --set postgres.password="$POSTGRES_PASSWORD"
@@ -307,7 +317,6 @@ function install-odoo-appuio() {
     helm install "$RELEASE_NAME" odoo \
         --set ingress.host="$NAMESPACE.axo.mintcloud.ch" \
         --set ingress.className=haproxy \
-        --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
         --set vshnPostgres.client.enabled=true \
         --set postgres.enabled=false
@@ -321,7 +330,6 @@ function install-odoo-infomaniak() {
     helm install "$RELEASE_NAME" odoo \
         --set ingress.host="$NAMESPACE.chk.mintcloud.ch" \
         --set ingress.className=nginx \
-        --set ingress.secure=true \
         --set postgres.password="$POSTGRES_PASSWORD"
 }
 
@@ -425,7 +433,6 @@ function upgrade-odoo-appuio() {
     helm upgrade "$RELEASE_NAME" odoo \
         --set ingress.host="$NAMESPACE.axo.mintcloud.ch" \
         --set ingress.className=haproxy \
-        --set ingress.secure=true \
         --set vshnPostgres.enabled=true \
         --set vshnPostgres.client.enabled=true \
         --set postgres.enabled=false
@@ -436,7 +443,6 @@ function upgrade-odoo-infomaniak() {
     helm upgrade "$RELEASE_NAME" odoo \
         --set ingress.host="$NAMESPACE.chk.mintcloud.ch" \
         --set ingress.className=nginx \
-        --set ingress.secure=true \
         --set postgres.password="$POSTGRES_PASSWORD"
 }
 
@@ -520,7 +526,6 @@ function template() {
         helm --debug template "$RELEASE_NAME" odoo \
             --set ingress.host=$NAMESPACE.axo.mintcloud.ch \
             --set ingress.className=haproxy \
-            --set ingress.secure=true \
             --set vshnPostgres.enabled=true \
             --set vshnPostgres.client.enabled=true \
             --set postgres.enabled=false > manifest.yaml
@@ -528,9 +533,7 @@ function template() {
         helm --debug template "$RELEASE_NAME" odoo \
             --set ingress.host="$NAMESPACE.chk.mintcloud.ch" \
             --set ingress.className=nginx \
-            --set ingress.secure=true \
             --set postgres.password="$POSTGRES_PASSWORD" > manifest.yaml
-
     else
         helm --debug template "$RELEASE_NAME" odoo \
             --set postgres.password="$POSTGRES_PASSWORD" > manifest.yaml
@@ -581,6 +584,9 @@ function add-repos(){
 
     echo "Add jetstack."
     helm repo add jetstack https://charts.jetstack.io
+
+    echo "Add bitnami."
+    helm repo add bitnami https://charts.bitnami.com/bitnami
 }
 
 function remove-repo(){

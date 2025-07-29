@@ -1,30 +1,99 @@
+## @section Ingress parameters
+##
 ingress:
+  ## @param ingress.enabled Enable or disable the ingress
+  ##
   enabled: true
+  ## @param ingress.className The class name for the ingress
+  ##
   className: nginx
+  ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
+  ##
   clusterIssuerRef: letsencrypt-http-prod
+  ## @param ingress.host The host for the ingress
+  ##
   host: odoo.cloud.local
-  customDomain:
+  ## @param ingress.customDomain The custom domain for the ingress
+  ##
+  customDomain: ""
+
+## @section vshnPostgres parameters
+##
 vshnPostgres:
+  ## @param vshnPostgres.enabled Enable or disable vshnPostgres
+  ##
   enabled: false
+  ## @param vshnPostgres.secretRef The secret reference for vshnPostgres
+  ##
   secretRef: postgres-creds
   client:
+    ## @param vshnPostgres.client.enabled Enable or disable the vshnPostgres client
+    ##
     enabled: false
+
+## @section Postgres parameters
+##
 postgres:
+  ## @param postgres.enabled Enable or disable postgres
+  ##
   enabled: false
+  ## @param postgres.secretRef The secret reference for postgres
+  ##
   secretRef: postgres-creds
   client:
+    ## @param postgres.client.enabled Enable or disable the postgres client
+    ##
     enabled: false
-odoo:
+
+## @section PostgreSQL parameters
+##
+postgresql:
+  ## @param postgresql.enabled Enable or disable postgresql
+  ##
   enabled: true
+  ## @param postgresql.secretRef The secret reference for postgresql
+  ##
+  secretRef: postgres-creds
+
+## @section Odoo parameters
+##
+odoo:
+  ## @param odoo.enabled Enable or disable odoo
+  ##
+  enabled: true
+  ## @param odoo.image The image for odoo
+  ##
   image: mintsystem/odoo:18.0.20250725
+  ## @param odoo.host The host for odoo
+  ##
   host: odoo
-  proxyMode: True
+  ## @param odoo.proxyMode Enable or disable proxy mode for odoo
+  ##
+  proxyMode: true
+  ## @param odoo.githubUsername The GitHub username for odoo
+  ##
   githubUsername: ""
+  ## @param odoo.githubPersonalAccessToken The GitHub personal access token for odoo
+  ##
   githubPersonalAccessToken: ""
-  downloadOdooEnterprise: False
+  ## @param odoo.downloadOdooEnterprise Enable or disable downloading Odoo Enterprise
+  ##
+  downloadOdooEnterprise: false
+  ## @param odoo.addonsGitRepos The addons Git repositories for odoo
+  ##
   addonsGitRepos: "https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0,https://github.com/OCA/Server-Tools.git#18.0"
+  ## @param odoo.database The database for odoo
+  ##
   database: odoo
+  ## @param odoo.initLang The initial language for odoo
+  ##
   initLang: de_CH
-  listDB: False
+  ## @param odoo.listDB Enable or disable listing databases for odoo
+  ##
+  listDB: false
+  ## @param odoo.configMapRef The config map reference for odoo
+  ##
   configMapRef: odoo-config
+  ## @param odoo.secretRef The secret reference for odoo
+  ##
   secretRef: odoo-creds

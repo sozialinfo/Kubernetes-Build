@@ -1,15 +1,13 @@
-# vshnPostgres
-
-VSHN Postgres
+# vshnPostgres Helm Chart
 
 This chart deploys a VSHN Postgres service.
 
-## Values
+## Parameters
 
-Domain: `vshnPostgres`
+### vshnPostgres parameters
 
-| Key           | Type    | Default          |
-| ------------- | ------- | ---------------- |
-| enabled       | boolean | `false`          |
-| secretRef | string  | `postgres-creds`  |
-| client.enabled | boolean  | `false`     |
+| Name                          | Description                               | Value            |
+| ----------------------------- | ----------------------------------------- | ---------------- |
+| `vshnPostgres.enabled`        | Enable or disable vshnPostgres            | `false`          |
+| `vshnPostgres.secretRef`      | The secret reference for vshnPostgres     | `postgres-creds` |
+| `vshnPostgres.client.enabled` | Enable or disable the vshnPostgres client | `false`          |
