@@ -1,7 +1,7 @@
-namespace: odoo
 ingress:
   enabled: true
   className: nginx
+  clusterIssuerRef: letsencrypt-http-prod
   host: odoo.cloud.local
   customDomain:
   secure: false
@@ -11,7 +11,7 @@ vshnPostgres:
   client:
     enabled: false
 postgres:
-  enabled: true
+  enabled: false
   secretRef: postgres-creds
   client:
     enabled: false
