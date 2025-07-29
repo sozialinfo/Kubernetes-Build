@@ -24,7 +24,6 @@ function help() {
     # Env
     printf "$COLUMN" "version" "" "Show version of required tools."
     printf "$COLUMN" "template-dotenv" "" "Generate .env from .env.template."
-    printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
     printf "$COLUMN" "load-kubeconfig" "" "Load kubeconfig file from pass."
     printf "$COLUMN" "load-dotenv" "" "Restore content to .env from pass entry."
     printf "$COLUMN" "save-kubeconfig" "" "Save kubeconfig file in pass."
@@ -65,12 +64,12 @@ function help() {
     printf "$COLUMN" "index-repo" "" "Index Helm chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm chart files to dist."
     printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-build repo."
-    printf "$COLUMN" "install-repo" "[name]" "Install chart from kubernetes-build repo."
     # LLM
     printf "$COLUMN" "commit-with-llm" "" "Commit with llm generated commit message."
     printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
     # Test
-    printf "$COLUMN" "test-cluster-issuer" "" "Test cert isser."
+    printf "$COLUMN" "test-cluster-issuer" "" "Test cluster issuer."
+    printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
 }
 
 # Default vars
@@ -563,11 +562,6 @@ function add-repos(){
 function remove-repo(){
     echo "Remove the kubernetes-build repo."
     helm repo remove kubernetes-build
-}
-
-function install-repo(){
-    echo "Install release odoo from kubernetes-build repo."
-    helm install odoo kubernetes-build/odoo
 }
 
 if declare -f "$1" > /dev/null; then
