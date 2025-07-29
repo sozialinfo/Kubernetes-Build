@@ -45,9 +45,11 @@ function help() {
     printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingress-nginx port."
     printf "$COLUMN" "forward-haproxy-ingress" "" "Forward haproxy-ingress port."
     # Charts
-    printf "$COLUMN" "list-chart" "[env]" "List available Helm charts."
-    printf "$COLUMN" "install-chart" "[name][env]" "Install Helm chart."
-    printf "$COLUMN" "upgrade-release" "[name][env]" "Upgrade Helm release."
+    printf "$COLUMN" "list-chart" "" "List Helm charts."
+    printf "$COLUMN" "list-context" "" "List contexts."
+    printf "$COLUMN" "template-values" "[ctx]" "Template values file."
+    printf "$COLUMN" "install-chart" "[name][ctx]" "Install Helm chart."
+    printf "$COLUMN" "upgrade-release" "[name][ctx]" "Upgrade Helm release."
     printf "$COLUMN" "uninstall-release" "" "Uninstall Helm release."
     # kubectl
     printf "$COLUMN" "logs-odoo" "" "Show pod logs."
@@ -57,7 +59,7 @@ function help() {
     printf "$COLUMN" "list-pods" "" "List all pods."
     printf "$COLUMN" "login-oc" "" "Refresh the auth token for OpenShift."
     # Helm
-    printf "$COLUMN" "template" "[env]" "Template all charts with Helm."
+    printf "$COLUMN" "template-manifest" "[ctx]" "Template all charts with Helm."
     printf "$COLUMN" "package-repo" "" "Package Helm charts."
     printf "$COLUMN" "index-repo" "" "Index Helm chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm chart files to dist."
@@ -224,8 +226,32 @@ function list-chart() {
     echo "kuard"
 }
 
+function list-context() {
+    echo "(empty)"
+    echo "chk"
+    echo "axo"
+}
+
+function template-values {
+    echo "Template values.yaml"
+    export NAMESPACE
+    export ACME_EMAIL
+    export INFOMANIAK_API_TOKEN
+
+    if [ -n "$1" ]; then
+        envsubst < "values.$1.yaml.template" > "values.yaml"
+    else
+        envsubst < "values.yaml.template" > "values.yaml"
+    fi
+}
+
 function install-chart() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
+    if [ "$2" = "axo" ]; then
+        echo "Set oc project to $OC_PROJECT."
+        oc project "$OC_PROJECT"
+    fi
+    template-values "$2"
     "install-$1"
 }
 
@@ -266,31 +292,16 @@ EOF
 function install-postgres() {
     echo "Install chart postgres as release $RELEASE_NAME."
     helm install "$RELEASE_NAME" postgres \
-        --set postgres.client.enabled=true \
-        --set postgres.password="$POSTGRES_PASSWORD"
+        --values ./values.yaml
 }
 
 function install-odoo() {
-    if [ "$1" = "axo" ]; then
-        install-odoo-appuio
-    elif [ "$1" = "chk" ]; then
-        install-odoo-infomaniak
-    else
-        echo "Install dependencies."
-        helm dependency build odoo
+    echo "Install dependencies."
+    helm dependency build odoo
 
-        echo "Install odoo chart as release $RELEASE_NAME."
-        helm install "$RELEASE_NAME" odoo \
-            --set postgres.password="$POSTGRES_PASSWORD"
-        sleep 8
-
-        # echo "Get pods with name $1:"
-        # kubectl get pods -o=name --all-namespaces | grep "odoo"
-        # POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
-
-        # echo -e "\nWait for $POD_ID pods to be running:"
-        # kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
-    fi
+    echo "Install odoo chart as release $RELEASE_NAME."
+    helm install "$RELEASE_NAME" odoo \
+        --values ./values.yaml
 }
 
 function install-postgresql() {
@@ -299,40 +310,18 @@ function install-postgresql() {
 }
 
 function install-vshnPostgres() {
-    echo "Set oc project to $OC_PROJECT."
-    oc project "$OC_PROJECT"
-
     echo "Install vshnPostgres chart as release odoo with APPUiO-specific values."
     helm install "$RELEASE_NAME" vshnPostgres \
-        --set vshnPostgres.enabled=true \
-        --set vshnPostgres.client.enabled=true
+        --values ./values.yaml
 }
 
 function install-odoo-appuio() {
-    echo "Set oc project to $OC_PROJECT."
-    oc project "$OC_PROJECT"
-
     echo "Install dependencies."
     helm dependency build odoo
 
     echo "Install odoo chart as release $RELEASE_NAME with APPUiO-specific values."
     helm install "$RELEASE_NAME" odoo \
-        --set ingress.host="$NAMESPACE.axo.mintcloud.ch" \
-        --set ingress.className=haproxy \
-        --set vshnPostgres.enabled=true \
-        --set vshnPostgres.client.enabled=true \
-        --set postgres.enabled=false
-}
-
-function install-odoo-infomaniak() {
-    echo "Install dependencies."
-    helm dependency build odoo
-
-    echo "Install odoo chart as release $RELEASE_NAME with Infomaniak-specific values."
-    helm install "$RELEASE_NAME" odoo \
-        --set ingress.host="$NAMESPACE.chk.mintcloud.ch" \
-        --set ingress.className=nginx \
-        --set postgres.password="$POSTGRES_PASSWORD"
+        --values ./values.yaml
 }
 
 function install-ingress-nginx() {
@@ -348,7 +337,7 @@ function install-cert-manager() {
       --namespace cert-manager \
       --create-namespace \
       --version v1.18.2 \
-      --set crds.enabled=true
+      --values ./values.yaml
 
     # https://github.com/Infomaniak/cert-manager-webhook-infomaniak
     echo "Apply Infomaniak webhook"
@@ -360,8 +349,7 @@ function install-cluster-issuer() {
     helm install \
         cluster-issuer cluster-issuer \
         --namespace cert-manager \
-        --set acme.email="$ACME_EMAIL" \
-        --set acme.infomaniakApiToken="$INFOMANIAK_API_TOKEN"
+        --values ./values.yaml
 }
 
 function test-cluster-issuer() {
@@ -400,67 +388,43 @@ EOF
 
 function upgrade-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
+    template-values "$2"
     "upgrade-$1"
 }
 
 function upgrade-odoo() {
-    if [ "$1" = "axo" ]; then
-        upgrade-odoo-appuio
-    elif [ "$1" = "chk" ]; then
-        upgrade-odoo-infomaniak
-    else
-        echo "Update dependencies."
-        helm dependency update odoo
+    echo "Update dependencies."
+    helm dependency update odoo
 
-        echo "Upgrade odoo chart for release $RELEASE_NAME."
-        helm upgrade "$RELEASE_NAME" odoo
-    fi
+    echo "Upgrade odoo chart for release $RELEASE_NAME."
+    helm upgrade "$RELEASE_NAME" odoo \
+        --values ./values.yaml
 }
 
 function upgrade-postgres() {
     echo "Upgrade postgres chart for release $RELEASE_NAME."
-    helm upgrade "$RELEASE_NAME" postgres
+    helm upgrade "$RELEASE_NAME" postgres \
+        --values ./values.yaml
 }
 
 function upgrade-postgresql() {
     echo "Upgrade bitnami/postgresql"
     helm upgrade "$RELEASE_NAME" oci://registry-1.docker.io/bitnamicharts/postgresql -f odoo/values.yaml
-
 }
 
 function upgrade-vshnpostgres() {
     echo "Upgrade vshnPostgres chart for release $RELEASE_NAME."
     helm upgrade "$RELEASE_NAME" vshnPostgres \
-        --set vshnPostgres.enabled=true \
-        --set vshnPostgres.client.enabled=true \
-        --set postgres.password="$POSTGRES_PASSWORD"
-}
-
-function upgrade-odoo-appuio() {
-    echo "Upgrade odoo chart for release $RELEASE_NAME with APPUiO-specific values."
-    helm upgrade "$RELEASE_NAME" odoo \
-        --set ingress.host="$NAMESPACE.axo.mintcloud.ch" \
-        --set ingress.className=haproxy \
-        --set vshnPostgres.enabled=true \
-        --set vshnPostgres.client.enabled=true \
-        --set postgres.enabled=false
-}
-
-function upgrade-odoo-infomaniak() {
-    echo "Upgrade odoo chart for release $RELEASE_NAME with Infomaniak-specific values."
-    helm upgrade "$RELEASE_NAME" odoo \
-        --set ingress.host="$NAMESPACE.chk.mintcloud.ch" \
-        --set ingress.className=nginx \
-        --set postgres.password="$POSTGRES_PASSWORD"
+        --values ./values.yaml
 }
 
 function upgrade-cert-manager() {
     echo "Upgrade jetstack/cert-manager."
     helm upgrade \
-      cert-manager jetstack/cert-manager \
-      --namespace cert-manager \
-      --version v1.18.2 \
-      --set crds.enabled=true
+        cert-manager jetstack/cert-manager \
+        --namespace cert-manager \
+        --version v1.18.2 \
+        --values ./values.yaml
 }
 
 function upgrade-cluster-issuer() {
@@ -468,8 +432,7 @@ function upgrade-cluster-issuer() {
     helm upgrade \
         cluster-issuer cluster-issuer \
         --namespace cert-manager \
-        --set acme.email=$ACME_EMAIL \
-        --set acme.infomaniakApiToken="$INFOMANIAK_API_TOKEN"
+        --values ./values.yaml
 }
 
 function uninstall-release() {
@@ -533,29 +496,15 @@ function logs-ingress-nginx() {
 
 # Helm Commands
 
-function template() {
+function template-manifest() {
+    template-values "$1"
     echo "Template charts into manifest.yaml."
-    if [ "$1" = "axo" ]; then
-        helm --debug template "$RELEASE_NAME" odoo \
-            --set ingress.host=$NAMESPACE.axo.mintcloud.ch \
-            --set ingress.className=haproxy \
-            --set vshnPostgres.enabled=true \
-            --set vshnPostgres.client.enabled=true \
-            --set postgres.enabled=false > manifest.yaml
-    elif [ "$1" = "chk" ]; then
-        helm --debug template "$RELEASE_NAME" odoo \
-            --set ingress.host="$NAMESPACE.chk.mintcloud.ch" \
-            --set ingress.className=nginx \
-            --set postgres.password="$POSTGRES_PASSWORD" > manifest.yaml
-    else
-        helm --debug template "$RELEASE_NAME" odoo \
-            --set postgres.password="$POSTGRES_PASSWORD" > manifest.yaml
-    fi
+    helm --debug template "$RELEASE_NAME" odoo \
+        --values ./values.yaml > manifest.yaml
 
     helm --debug template cluster-issuer cluster-issuer \
         --namespace cert-manager \
-        --set acme.email="$ACME_EMAIL" \
-        --set acme.infomaniakApiToken="$INFOMANIAK_API_TOKEN" >> manifest.yaml
+        --values ./values.yaml >> manifest.yaml
 }
 
 function list() {

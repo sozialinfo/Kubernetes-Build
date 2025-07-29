@@ -1,0 +1,3 @@
+acme:
+    email: $ACME_EMAIL
+    infomaniakApiToken: "$INFOMANIAK_API_TOKEN"

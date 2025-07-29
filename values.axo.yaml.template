@@ -1,0 +1,9 @@
+ingress:
+    host: "$NAMESPACE.axo.mintcloud.ch"
+    className: haproxy
+vshnPostgres:
+    enabled: true
+    client:
+        enabled: true
+postgresql:
+    enabled: false

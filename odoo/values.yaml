@@ -9,7 +9,7 @@ ingress:
   className: nginx
   ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
   ##
-  clusterIssuerRef: letsencrypt-http-prod
+  clusterIssuerRef:
   ## @param ingress.host The host for the ingress
   ##
   host: odoo.cloud.local
