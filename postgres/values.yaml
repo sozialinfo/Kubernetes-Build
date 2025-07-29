@@ -1,6 +1,9 @@
 ## @section Postgres parameters
 ##
 postgres:
+  ## @param postgres.enabled Enable or disable Postgres
+  ##
+  enabled: true
   ## @param postgres.image The Docker image for Postgres
   ##
   image: postgres:16-alpine

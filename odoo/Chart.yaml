@@ -1,7 +1,7 @@
 apiVersion: v2
 name: odoo
 description: Mint System Odoo
-home: https://kubernetes.build/
+home: https://kubernetes.build
 maintainers:
   - name: Mint System GmbH
     email: support@mint-system.ch

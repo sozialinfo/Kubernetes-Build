@@ -1,7 +1,7 @@
 apiVersion: v2
 name: vshnPostgres
 description: VSHN Postgres
-home: https://kubernetes.build/
+home: https://kubernetes.build
 maintainers:
   - name: Mint System GmbH
     email: support@mint-system.ch

@@ -48,12 +48,16 @@ postgres:
 ## @section PostgreSQL parameters
 ##
 postgresql:
-  ## @param postgresql.enabled Enable or disable postgresql
+  ## @param postgres.enabled Enable or disable PostgreSQL
   ##
   enabled: true
-  ## @param postgresql.secretRef The secret reference for postgresql
-  ##
-  secretRef: postgres-creds
+  auth:
+    ## @param postgresql.auth.username The username for PostgreSQL authentication
+    ##
+    username: odoo
+    ## @param postgresql.auth.database The database name for PostgreSQL authentication
+    ##
+    database: odoo
 
 ## @section Odoo parameters
 ##

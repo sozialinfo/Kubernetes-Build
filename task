@@ -46,11 +46,8 @@ function help() {
     printf "$COLUMN" "forward-haproxy-ingress" "" "Forward haproxy-ingress port."
     # Charts
     printf "$COLUMN" "list-chart" "[env]" "List available Helm charts."
-    printf "$COLUMN" "install-odoo" "[env]" "Install Odoo chart. Optionally set env."
-    printf "$COLUMN" "install-chart" "[name]" "Install Helm chart."
-    printf "$COLUMN" "upgrade-odoo" "[env]" "Upgrade Odoo chart release. Optionally set env."
-    printf "$COLUMN" "upgrade-release" "[name]" "Upgrade Helm release."
-    printf "$COLUMN" "uninstall-odoo" "" "Uninstall Odoo Helm release."
+    printf "$COLUMN" "install-chart" "[name][env]" "Install Helm chart."
+    printf "$COLUMN" "upgrade-release" "[name][env]" "Upgrade Helm release."
     printf "$COLUMN" "uninstall-release" "" "Uninstall Helm release."
     # kubectl
     printf "$COLUMN" "logs-odoo" "" "Show pod logs."
@@ -132,7 +129,7 @@ function test-k8s() {
     else
         start-kind
         add-repos
-        install-odoo
+        install-chart odoo
         install-ingress-nginx
     fi
 }
@@ -287,13 +284,18 @@ function install-odoo() {
             --set postgres.password="$POSTGRES_PASSWORD"
         sleep 8
 
-        echo "Get pods with name $1:"
-        kubectl get pods -o=name --all-namespaces | grep "odoo"
-        POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
+        # echo "Get pods with name $1:"
+        # kubectl get pods -o=name --all-namespaces | grep "odoo"
+        # POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
 
-        echo -e "\nWait for $POD_ID pods to be running:"
-        kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
+        # echo -e "\nWait for $POD_ID pods to be running:"
+        # kubectl wait --for=condition=Ready "$POD_ID" --timeout=120s
     fi
+}
+
+function install-postgresql() {
+    echo "Install bitnami/postgresql"
+    helm install "$RELEASE_NAME" bitnami/postgresql
 }
 
 function install-vshnPostgres() {
@@ -420,6 +422,11 @@ function upgrade-postgres() {
     helm upgrade "$RELEASE_NAME" postgres
 }
 
+function upgrade-postgresql() {
+    echo "Upgrade bitnami/postgresql"
+    helm upgrade "$RELEASE_NAME" bitnami/postgresql
+}
+
 function upgrade-vshnpostgres() {
     echo "Upgrade vshnPostgres chart for release $RELEASE_NAME."
     helm upgrade "$RELEASE_NAME" vshnPostgres \
@@ -470,6 +477,11 @@ function uninstall-release() {
 }
 
 function uninstall-odoo() {
+    echo "Uninstall release $RELEASE_NAME."
+    helm uninstall "$RELEASE_NAME"
+}
+
+function uninstall-postgresql() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
 }

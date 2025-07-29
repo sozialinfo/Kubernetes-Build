@@ -92,7 +92,7 @@ task template-dotenv
 Install the Odoo chart:
 
 ```bash
-task install-odoo
+task install-chart odoo
 ```
 
 The Odoo database will be initialized automtically.
@@ -178,7 +178,7 @@ task add-repos
 Install the Helm release.
 
 ```bash
-task install-odoo exo
+task install-chart odoo exo
 ```
 
 #### Publish Helm charts
@@ -260,7 +260,7 @@ task install-chart cluster-issuer
 Install the Odoo chart.
 
 ```bash
-task install--odoo chk
+task install-chart odoo chk
 ```
 
 ## Troubleshooting
