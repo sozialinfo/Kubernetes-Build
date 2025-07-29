@@ -4,7 +4,6 @@ ingress:
   clusterIssuerRef: letsencrypt-http-prod
   host: odoo.cloud.local
   customDomain:
-  secure: false
 vshnPostgres:
   enabled: false
   secretRef: postgres-creds

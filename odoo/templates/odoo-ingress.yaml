@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: odoo-ingress
   annotations:
-    {{- if .Values.ingress.secure }}
+    {{- if .Values.ingress.clusterIssuerRef }}
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
     {{- end }}
     {{- if eq .Values.ingress.className "nginx" }}
@@ -34,7 +34,7 @@ spec:
             port:
               number: 8069
   {{- end }}
-  {{- if .Values.ingress.secure }}
+  {{- if .Values.ingress.clusterIssuerRef }}
   tls:
     - hosts:
       - {{.Values.ingress.host }}
