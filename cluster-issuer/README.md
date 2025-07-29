@@ -1,4 +1,4 @@
-# Cluster Issuer Helm Chart
+# Mint System Cluster Issuer
 
 This chart deploys cluster issuers for prod and staging and for dns and http.
 

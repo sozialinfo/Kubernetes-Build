@@ -1,24 +1,9 @@
 apiVersion: v1
 entries:
-  cert-manager:
-  - apiVersion: v2
-    appVersion: 1.0.0
-    created: "2025-07-29T15:12:09.225652322+02:00"
-    description: Mint System Cert Manager
-    digest: 00df4010492d3c8dfb5f4a04553238b60107923aec2cf913d0108a1f2cae960d
-    home: https://kubernetes.build/
-    maintainers:
-    - email: support@mint-system.ch
-      name: Mint System GmbH
-    name: cert-manager
-    type: application
-    urls:
-    - cert-manager-0.1.0.tgz
-    version: 0.1.0
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-07-29T15:12:09.22598091+02:00"
+    created: "2025-07-29T18:41:09.604202867+02:00"
     dependencies:
     - condition: postgres.enabled
       name: postgres
@@ -28,9 +13,13 @@ entries:
       name: vshnPostgres
       repository: https://kubernetes.build
       version: 0.1.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.7.13
     description: Mint System Odoo
-    digest: 56f9fdaf82e910498bf90395638ad39219ec63e9ea8b0a673b248de4158c27db
-    home: https://kubernetes.build/
+    digest: 4e68f092f07f2ffc636efb12c2041a4c84160f257635538736fbf7c46a165ab9
+    home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
       name: Mint System GmbH
@@ -42,10 +31,10 @@ entries:
   postgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-07-29T15:12:09.226109935+02:00"
+    created: "2025-07-29T18:41:09.604653951+02:00"
     description: Mint System Postgres
-    digest: 71d404030d90b879f6ad0f40e318c6c93f8fceb4ba70ad4134b34e09f9fd3b63
-    home: https://kubernetes.build/
+    digest: 8110a850a6fa26eb9f17567407d0ce507ca9d48b5d6684d5cf6a8ff583382a8b
+    home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
       name: Mint System GmbH
@@ -57,10 +46,10 @@ entries:
   vshnPostgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-07-29T15:12:09.226247425+02:00"
+    created: "2025-07-29T18:41:09.605256888+02:00"
     description: VSHN Postgres
-    digest: 262b70272c1ec7f1be0870fee51808aac797b8b82a9d26dabae2d58109226547
-    home: https://kubernetes.build/
+    digest: bbef20fb547c78efd4aaf94bb488d23a2e53054ef20eda1048ab457f52b3760e
+    home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
       name: Mint System GmbH
@@ -69,4 +58,4 @@ entries:
     urls:
     - vshnPostgres-0.1.0.tgz
     version: 0.1.0
-generated: "2025-07-29T15:12:09.225486159+02:00"
+generated: "2025-07-29T18:41:09.600409082+02:00"

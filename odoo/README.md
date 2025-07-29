@@ -1,4 +1,4 @@
-# Odoo Helm Chart
+# Mint System Odoo
 
 This Helm chart deploys Odoo with PostgreSQL.
 
