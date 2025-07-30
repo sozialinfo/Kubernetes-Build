@@ -47,6 +47,7 @@ function help() {
     # Chart
     printf "$COLUMN" "list-chart" "" "List Helm charts."
     printf "$COLUMN" "list-context" "" "List contexts."
+    printf "$COLUMN" "switch-context" "" "Switch kubeconfig file."
     printf "$COLUMN" "template-values" "[ctx]" "Template values file."
     printf "$COLUMN" "update-dependencies" "[name]" "Update dependencies for a chart."
     printf "$COLUMN" "install-chart" "[name][ctx]" "Install Helm chart."
@@ -253,10 +254,21 @@ function list-chart() {
 }
 
 function list-context() {
-    echo "(empty)"
+    echo "loc"
     echo "chk"
     echo "axo"
     echo "ksi"
+}
+
+function switch-context() {
+    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+
+    LINK_NAME="$HOME/.kube/config"
+    echo "Remove $LINK_NAME"
+    rm "$LINK_NAME"
+    TARGET="$HOME/.kube/config.$1"
+    echo "Setup symlink from $LINK_NAME to $TARGET"
+    ln -s "$TARGET" "$LINK_NAME"
 }
 
 function template-values {
