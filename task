@@ -24,9 +24,9 @@ function help() {
     # Env
     printf "$COLUMN" "version" "" "Show version of required tools."
     printf "$COLUMN" "template-dotenv" "" "Generate .env from .env.template."
-    printf "$COLUMN" "load-kubeconfig" "" "Load kubeconfig file from pass."
+    printf "$COLUMN" "load-kubeconfig" "[ctx]" "Load kubeconfig file from pass."
     printf "$COLUMN" "load-dotenv" "" "Restore content to .env from pass entry."
-    printf "$COLUMN" "save-kubeconfig" "" "Save kubeconfig file in pass."
+    printf "$COLUMN" "save-kubeconfig" "[ctx]" "Save kubeconfig file in pass."
     printf "$COLUMN" "save-dotenv" "" "Store content of .env in pass entry."
     # Docs
     printf "$COLUMN" "install" "" "Install node dependencies."
@@ -82,7 +82,6 @@ RELEASE_NAME=${RELEASE_NAME:="odoo"}
 # Dynamic vars
 
 PASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
 
 # Import commands
 
@@ -139,19 +138,35 @@ function test-k8s() {
 }
 
 function save-kubeconfig() {
-    if [ -f "$HOME/.kube/config" ]; then
-        echo "Store ~/.kube/config file in pass: $PASS_KUBECONFIG_ENTRY"
-        cat "$HOME/.kube/config" | pass insert -m -f "$PASS_KUBECONFIG_ENTRY"
+    PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
+    KUBECONFIG_FILE="$HOME/.kube/config"
+
+    if [ -n"$1" ]; then
+        PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
+        KUBECONFIG_FILE="$HOME/.kube/config.$1"
+    fi
+
+    if [ -f "$KUBECONFIG_FILE" ]; then
+        echo "Store $KUBECONFIG_FILE file in pass: $PASS_KUBECONFIG_ENTRY"
+        echo -e "\n$(cat $KUBECONFIG_FILE)" | pass insert -m -f "$PASS_KUBECONFIG_ENTRY"
     else
-        echo "No ~/.kube/config file found."
+        echo "No $KUBECONFIG_FILE file found."
     fi
 }
 
 function load-kubeconfig() {
+    PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
+    KUBECONFIG_FILE="$HOME/.kube/config"
+
+    if [ -n"$1" ]; then
+        PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
+        KUBECONFIG_FILE="$HOME/.kube/config.$1"
+    fi
+
     if pass find "$PASS_KUBECONFIG_ENTRY" >/dev/null; then
-        echo "Load ~/.kube/config file from pass: $PASS_KUBECONFIG_ENTRY"
+        echo "Load $KUBECONFIG_FILE file from pass: $PASS_KUBECONFIG_ENTRY"
         mkdir -p "$HOME/.kube/"
-        pass show "$PASS_KUBECONFIG_ENTRY" > "$HOME/.kube/config"
+        pass show "$PASS_KUBECONFIG_ENTRY" | tail -n +2 > "$KUBECONFIG_FILE"
     else
         echo "Pass entry not found."
     fi
@@ -239,6 +254,7 @@ function list-context() {
     echo "(empty)"
     echo "chk"
     echo "axo"
+    echo "ksi"
 }
 
 function template-values {

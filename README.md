@@ -216,13 +216,12 @@ Deploy the Helm charts to [Infomaniak Managed Kubernetes service](https://www.in
 
 Create new Kubernetes cluster in the Infomaniak manager. Then add an instance group.
 
-Download the Kubeconfig file and merge it.
+Download the Kubeconfig file and move it.
 
 ```bash
-KUBECONFIG_FILE=~/Downloads/pck-XXXXXXX-kubeconfig
-mkdir -p ~/.kube
-KUBECONFIG=$KUBECONFIG_FILE:$KUBECONFIG kubectl config view --merge --flatten > ~/.kube/config
-kubectl config get-contexts
+mv ~/Downloads/pck-XXXXXXX-kubeconfig ~/.kube/config.chk
+export KUBECONFIG=~/.kube/config.chk
+kubectl get namespaces
 ```
 
 #### Setup ingress nginx
