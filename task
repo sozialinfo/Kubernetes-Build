@@ -48,6 +48,7 @@ function help() {
     printf "$COLUMN" "list-chart" "" "List Helm charts."
     printf "$COLUMN" "list-context" "" "List contexts."
     printf "$COLUMN" "template-values" "[ctx]" "Template values file."
+    printf "$COLUMN" "update-dependencies" "[name]" "Update dependencies for a chart."
     printf "$COLUMN" "install-chart" "[name][ctx]" "Install Helm chart."
     printf "$COLUMN" "upgrade-release" "[name][ctx]" "Upgrade Helm release."
     printf "$COLUMN" "uninstall-release" "" "Uninstall Helm release."
@@ -132,6 +133,7 @@ function test-k8s() {
     else
         start-kind
         add-repos
+        update-dependencies
         install-chart odoo
         install-ingress-nginx
     fi
@@ -268,6 +270,11 @@ function template-values {
     else
         envsubst < "values.yaml.template" > "values.yaml"
     fi
+}
+
+function update-dependencies() {
+    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+    helm dependency update "$1"
 }
 
 function install-chart() {
