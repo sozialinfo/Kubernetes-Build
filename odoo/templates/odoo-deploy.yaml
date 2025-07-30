@@ -34,8 +34,8 @@ spec:
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: odoo-postgresql
-                  key: postgres-password
+                  name: {{ .Values.postgresql.auth.existingSecret }}
+                  key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
             - name: PGHOST
               value: odoo-postgresql.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGUSER
@@ -88,8 +88,8 @@ spec:
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: odoo-postgresql
-                  key: postgres-password
+                  name: {{ .Values.postgresql.auth.existingSecret }}
+                  key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
             - name: PGHOST
               value: odoo-postgresql.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGUSER

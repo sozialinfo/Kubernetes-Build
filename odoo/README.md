@@ -32,11 +32,14 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ### PostgreSQL parameters
 
-| Name                       | Description                                     | Value  |
-| -------------------------- | ----------------------------------------------- | ------ |
-| `postgresql.enabled`       | Enable or disable PostgreSQL                    | `true` |
-| `postgresql.auth.username` | The username for PostgreSQL authentication      | `odoo` |
-| `postgresql.auth.database` | The database name for PostgreSQL authentication | `odoo` |
+| Name                                          | Description                                     | Value               |
+| --------------------------------------------- | ----------------------------------------------- | ------------------- |
+| `postgresql.enabled`                          | Enable or disable PostgreSQL                    | `true`              |
+| `postgresql.auth.username`                    | The username for PostgreSQL authentication      | `odoo`              |
+| `postgresql.auth.database`                    | The database name for PostgreSQL authentication | `odoo`              |
+| `postgresql.auth.existingSecret`              | Name of the secret key.                         | `odoo-postgresql`   |
+| `postgresql.auth.secretKeys.adminPasswordKey` | The admin password key for PostgreSQL           | `postgres-password` |
+| `postgresql.auth.secretKeys.userPasswordKey`  | The user password key for PostgreSQL            | `password`          |
 
 ### Odoo parameters
 

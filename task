@@ -44,7 +44,7 @@ function help() {
     printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
     printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingress-nginx port."
     printf "$COLUMN" "forward-haproxy-ingress" "" "Forward haproxy-ingress port."
-    # Charts
+    # Chart
     printf "$COLUMN" "list-chart" "" "List Helm charts."
     printf "$COLUMN" "list-context" "" "List contexts."
     printf "$COLUMN" "template-values" "[ctx]" "Template values file."
@@ -52,6 +52,7 @@ function help() {
     printf "$COLUMN" "upgrade-release" "[name][ctx]" "Upgrade Helm release."
     printf "$COLUMN" "uninstall-release" "" "Uninstall Helm release."
     # kubectl
+    printf "$COLUMN" "get-secrets" "[name]" "Show secrets for chart."
     printf "$COLUMN" "logs-odoo" "" "Show pod logs."
     printf "$COLUMN" "logs-haproxy-ingress" "" "Show haproxy-ingress logs."
     printf "$COLUMN" "logs-ingress-nginx" "" "Show ingress-nginx logs."
@@ -221,7 +222,7 @@ function forward-haproxy-ingress() {
     kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $PORT:80
 }
 
-# Helm Commands
+# Chart Commands
 
 function list-chart() {
     echo "postgresql"
@@ -304,17 +305,18 @@ function install-postgres() {
 }
 
 function install-odoo() {
-    echo "Install dependencies."
-    helm dependency build odoo
-
     echo "Install odoo chart as release $RELEASE_NAME."
     helm install "$RELEASE_NAME" odoo \
         --values ./values.yaml
+
+    get-secrets odoo
 }
 
 function install-postgresql() {
     echo "Install bitnami/postgresql"
-    helm install "$RELEASE_NAME" oci://registry-1.docker.io/bitnamicharts/postgresql -f odoo/values.yaml
+    helm install "$RELEASE_NAME" bitnami/postgresql --values odoo/values.yaml
+
+    get-secrets odoo
 }
 
 function install-vshnPostgres() {
@@ -401,9 +403,6 @@ function upgrade-release() {
 }
 
 function upgrade-odoo() {
-    echo "Update dependencies."
-    helm dependency update odoo
-
     echo "Upgrade odoo chart for release $RELEASE_NAME."
     helm upgrade "$RELEASE_NAME" odoo \
         --values ./values.yaml
@@ -451,11 +450,15 @@ function uninstall-release() {
 function uninstall-odoo() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
+
+    kubectl delete pvc data-odoo-postgresql-0
 }
 
 function uninstall-postgresql() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
+
+    kubectl delete pvc data-odoo-postgresql-0
 }
 
 function uninstall-ingress-nginx() {
@@ -482,6 +485,16 @@ function uninstall-cluster-issuer() {
 }
 
 # kubectl Commands
+
+function get-secrets() {
+    if [ "$1" = "odoo" ]; then
+        echo "Get the postgres admin password"
+        kubectl get secret odoo-postgresql -o jsonpath="{.data.postgres-password}" | base64 --decode && echo
+
+        echo "Get the user password (if exists)"
+        kubectl get secret odoo-postgresql -o jsonpath="{.data.password}" | base64 --decode && echo
+    fi
+}
 
 function logs-odoo() {
     POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
