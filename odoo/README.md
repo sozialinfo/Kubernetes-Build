@@ -43,17 +43,17 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ### Odoo parameters
 
-| Name                             | Description                                   | Value                                                                                                         |
-| -------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `odoo.enabled`                   | Enable or disable odoo                        | `true`                                                                                                        |
-| `odoo.image`                     | The image for odoo                            | `mintsystem/odoo:18.0.20250725`                                                                               |
-| `odoo.proxyMode`                 | Enable or disable proxy mode for odoo         | `true`                                                                                                        |
-| `odoo.githubUsername`            | The GitHub username for odoo                  | `""`                                                                                                          |
-| `odoo.githubPersonalAccessToken` | The GitHub personal access token for odoo     | `""`                                                                                                          |
-| `odoo.downloadOdooEnterprise`    | Enable or disable downloading Odoo Enterprise | `false`                                                                                                       |
-| `odoo.addonsGitRepos`            | The addons Git repositories for odoo          | `https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0,https://github.com/OCA/Server-Tools.git#18.0` |
-| `odoo.database`                  | The database for odoo                         | `odoo`                                                                                                        |
-| `odoo.initLang`                  | The initial language for odoo                 | `de_CH`                                                                                                       |
-| `odoo.listDB`                    | Enable or disable listing databases for odoo  | `false`                                                                                                       |
-| `odoo.configMapRef`              | The config map reference for odoo             | `odoo-config`                                                                                                 |
-| `odoo.secretRef`                 | The secret reference for odoo                 | `odoo-creds`                                                                                                  |
+| Name                             | Description                                   | Value                                                                                                               |
+| -------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `odoo.enabled`                   | Enable or disable odoo                        | `true`                                                                                                              |
+| `odoo.image`                     | The image for odoo                            | `mintsystem/odoo:18.0.20250725`                                                                                     |
+| `odoo.proxyMode`                 | Enable or disable proxy mode for odoo         | `true`                                                                                                              |
+| `odoo.githubUsername`            | The GitHub username for odoo                  | `""`                                                                                                                |
+| `odoo.githubPersonalAccessToken` | The GitHub personal access token for odoo     | `""`                                                                                                                |
+| `odoo.downloadOdooEnterprise`    | Enable or disable downloading Odoo Enterprise | `false`                                                                                                             |
+| `odoo.addonsGitRepos`            | List of addon Git repositories for odoo       | `["https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0","https://github.com/OCA/Server-Tools.git#18.0"]` |
+| `odoo.database`                  | The database for odoo                         | `odoo`                                                                                                              |
+| `odoo.initLang`                  | The initial language for odoo                 | `de_CH`                                                                                                             |
+| `odoo.listDB`                    | Enable or disable listing databases for odoo  | `false`                                                                                                             |
+| `odoo.configMapRef`              | The config map reference for odoo             | `odoo-config`                                                                                                       |
+| `odoo.secretRef`                 | The secret reference for odoo                 | `odoo-creds`                                                                                                        |
