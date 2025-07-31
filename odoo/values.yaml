@@ -37,12 +37,15 @@ postgres:
   ## @param postgres.enabled Enable or disable Postgres
   ##
   enabled: true
+  ## @param postgres.db The database name for Postgres
+  ##
+  db: odoo
+  ## @param postgres.user The username for Postgres
+  ##
+  user: odoo
   ## @param postgres.secretRef The secret reference for Postgres
   ##
   secretRef: odoo-postgres
-  ## @param postgres.userPasswordKey The user password key for Postgres
-  ##
-  userPasswordKey: "password"
 
 ## @section PostgreSQL parameters
 ##

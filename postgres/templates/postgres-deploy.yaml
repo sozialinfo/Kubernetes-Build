@@ -13,7 +13,7 @@ spec:
         app: postgres
     spec:
       containers:
-        - name: {{.Values.postgres.host }}
+        - name: postgres
           image: {{.Values.postgres.image }}
           ports:
             - containerPort: {{.Values.postgres.port }}
