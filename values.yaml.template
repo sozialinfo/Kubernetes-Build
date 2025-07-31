@@ -1,0 +1,2 @@
+postgres:
+    secretRef: odoo-postgres

@@ -567,11 +567,15 @@ function logs-ingress-nginx() {
 function template-manifest() {
     template-values "$1"
     echo "Template charts into manifest.yaml."
+
     helm --debug template "$RELEASE_NAME" odoo \
         --values ./values.yaml > manifest.yaml
 
     helm --debug template cluster-issuer cluster-issuer \
         --namespace cert-manager \
+        --values ./values.yaml >> manifest.yaml
+
+    helm --debug template "$RELEASE_NAME" postgres \
         --values ./values.yaml >> manifest.yaml
 }
 
