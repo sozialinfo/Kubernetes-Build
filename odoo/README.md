@@ -16,25 +16,25 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ### vshnPostgres parameters
 
-| Name                          | Description                               | Value            |
-| ----------------------------- | ----------------------------------------- | ---------------- |
-| `vshnPostgres.enabled`        | Enable or disable vshnPostgres            | `false`          |
-| `vshnPostgres.secretRef`      | The secret reference for vshnPostgres     | `postgres-creds` |
-| `vshnPostgres.client.enabled` | Enable or disable the vshnPostgres client | `false`          |
+| Name                          | Description                               | Value             |
+| ----------------------------- | ----------------------------------------- | ----------------- |
+| `vshnPostgres.enabled`        | Enable or disable vshnPostgres            | `false`           |
+| `vshnPostgres.secretRef`      | The secret reference for vshnPostgres     | `odoo-postgresql` |
+| `vshnPostgres.client.enabled` | Enable or disable the vshnPostgres client | `false`           |
 
 ### Postgres parameters
 
-| Name                      | Description                           | Value            |
-| ------------------------- | ------------------------------------- | ---------------- |
-| `postgres.enabled`        | Enable or disable postgres            | `false`          |
-| `postgres.secretRef`      | The secret reference for postgres     | `postgres-creds` |
-| `postgres.client.enabled` | Enable or disable the postgres client | `false`          |
+| Name                       | Description                        | Value           |
+| -------------------------- | ---------------------------------- | --------------- |
+| `postgres.enabled`         | Enable or disable Postgres         | `true`          |
+| `postgres.secretRef`       | The secret reference for Postgres  | `odoo-postgres` |
+| `postgres.userPasswordKey` | The user password key for Postgres | `password`      |
 
 ### PostgreSQL parameters
 
 | Name                                          | Description                                     | Value               |
 | --------------------------------------------- | ----------------------------------------------- | ------------------- |
-| `postgresql.enabled`                          | Enable or disable PostgreSQL                    | `true`              |
+| `postgresql.enabled`                          | Enable or disable PostgreSQL                    | `false`             |
 | `postgresql.auth.username`                    | The username for PostgreSQL authentication      | `odoo`              |
 | `postgresql.auth.database`                    | The database name for PostgreSQL authentication | `odoo`              |
 | `postgresql.auth.existingSecret`              | Name of the secret key.                         | `odoo-postgresql`   |

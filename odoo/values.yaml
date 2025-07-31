@@ -25,7 +25,7 @@ vshnPostgres:
   enabled: false
   ## @param vshnPostgres.secretRef The secret reference for vshnPostgres
   ##
-  secretRef: postgres-creds
+  secretRef: odoo-postgresql
   client:
     ## @param vshnPostgres.client.enabled Enable or disable the vshnPostgres client
     ##
@@ -34,23 +34,22 @@ vshnPostgres:
 ## @section Postgres parameters
 ##
 postgres:
-  ## @param postgres.enabled Enable or disable postgres
+  ## @param postgres.enabled Enable or disable Postgres
   ##
-  enabled: false
-  ## @param postgres.secretRef The secret reference for postgres
+  enabled: true
+  ## @param postgres.secretRef The secret reference for Postgres
   ##
-  secretRef: postgres-creds
-  client:
-    ## @param postgres.client.enabled Enable or disable the postgres client
-    ##
-    enabled: false
+  secretRef: odoo-postgres
+  ## @param postgres.userPasswordKey The user password key for Postgres
+  ##
+  userPasswordKey: "password"
 
 ## @section PostgreSQL parameters
 ##
 postgresql:
   ## @param postgresql.enabled Enable or disable PostgreSQL
   ##
-  enabled: true
+  enabled: false
   auth:
     ## @param postgresql.auth.username The username for PostgreSQL authentication
     ##

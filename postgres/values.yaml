@@ -21,8 +21,7 @@ postgres:
   user: odoo
   ## @param postgres.secretRef The secret reference for Postgres
   ##
-  secretRef: postgres-creds
-  client:
-    ## @param postgres.client.enabled Enable or disable the Postgres client
-    ##
-    enabled: false
+  secretRef: postgres
+  ## @param postgres.userPasswordKey The user password key for Postgres
+  ##
+  userPasswordKey: "password"

@@ -48,6 +48,7 @@ function help() {
     printf "$COLUMN" "list-chart" "" "List Helm charts."
     printf "$COLUMN" "list-context" "" "List contexts."
     printf "$COLUMN" "switch-context" "" "Switch kubeconfig file."
+    printf "$COLUMN" "show-context" "" "Show active kubeconfig."
     printf "$COLUMN" "template-values" "[ctx]" "Template values file."
     printf "$COLUMN" "update-dependencies" "[name]" "Update dependencies for a chart."
     printf "$COLUMN" "install-chart" "[name][ctx]" "Install Helm chart."
@@ -254,10 +255,10 @@ function list-chart() {
 }
 
 function list-context() {
-    echo "loc"
-    echo "chk"
-    echo "axo"
-    echo "ksi"
+    echo "loc - cloud.local"
+    echo "chk - chk.mintcloud.ch"
+    echo "axo - axo.mintcloud.ch"
+    echo "ksi - k8s.sozialinfo.ch"
 }
 
 function switch-context() {
@@ -269,6 +270,10 @@ function switch-context() {
     TARGET="$HOME/.kube/config.$1"
     echo "Setup symlink from $LINK_NAME to $TARGET"
     ln -s "$TARGET" "$LINK_NAME"
+}
+
+function show-context() {
+    ls -l "$HOME/.kube/config"
 }
 
 function template-values {
@@ -343,15 +348,11 @@ function install-odoo() {
     echo "Install odoo chart as release $RELEASE_NAME."
     helm install "$RELEASE_NAME" odoo \
         --values ./values.yaml
-
-    get-secrets odoo
 }
 
 function install-postgresql() {
     echo "Install bitnami/postgresql"
     helm install "$RELEASE_NAME" bitnami/postgresql --values odoo/values.yaml
-
-    get-secrets odoo
 }
 
 function install-vshnPostgres() {
