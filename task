@@ -487,14 +487,21 @@ function uninstall-odoo() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
 
-    kubectl delete pvc data-odoo-postgresql-0
+    echo "Run: kubectl delete pvc"
+}
+
+function uninstall-postgres() {
+    echo "Uninstall release $RELEASE_NAME."
+    helm uninstall "$RELEASE_NAME"
+
+    echo "Run: kubectl delete pvc"
 }
 
 function uninstall-postgresql() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
 
-    kubectl delete pvc data-odoo-postgresql-0
+    echo "Run: kubectl delete pvc"
 }
 
 function uninstall-ingress-nginx() {
@@ -529,6 +536,10 @@ function get-secrets() {
 
         echo "Get the user password (if exists)"
         kubectl get secret odoo-postgresql -o jsonpath="{.data.password}" | base64 --decode && echo
+    fi
+
+    if [ "$1" = "postgres" ]; then
+        kubectl get secret postgres -o jsonpath="{.data.password}" | base64 --decode && echo
     fi
 }
 
