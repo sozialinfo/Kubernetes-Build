@@ -19,39 +19,27 @@ spec:
             - containerPort: {{.Values.postgres.port }}
           env:
             - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_DB
+              value: {{ .Values.postgres.db }}
             - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_USER
+              value: {{ .Values.postgres.user }}
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_PASSWORD
+                  key: {{ .Values.postgres.userPasswordKey }}
             - name: PGDATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_DB
+              value: {{ .Values.postgres.db }}
             - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_USER
+              value: {{ .Values.postgres.user }}
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretRef }}
-                  key: POSTGRES_PASSWORD
+                  key: {{ .Values.postgres.userPasswordKey }}
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgredb
       volumes:
         - name: postgredb
           persistentVolumeClaim:
-            claimName: postgresql-data-claim
+            claimName: postgres-data-claim
