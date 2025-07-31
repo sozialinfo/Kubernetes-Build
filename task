@@ -214,17 +214,17 @@ function start-kind() {
     echo "Start kind."
     kind create cluster
 
-    echo "Apply kubelet config"
-    cat <<EOF | kubectl apply -f -
----
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-- role: control-plane
-  extraMounts:
-  - containerPath: /var/lib/kubelet/config.json
-    hostPath: $CONTAINER_CONFIG/secret.json
-EOF
+#     echo "Apply kubelet config"
+#     cat <<EOF | kubectl apply -f -
+# ---
+# kind: Cluster
+# apiVersion: kind.x-k8s.io/v1alpha4
+# nodes:
+# - role: control-plane
+#   extraMounts:
+#   - containerPath: /var/lib/kubelet/config.json
+#     hostPath: $CONTAINER_CONFIG/secret.json
+# EOF
 }
 
 function delete-kind() {
