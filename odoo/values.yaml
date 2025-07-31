@@ -45,7 +45,7 @@ postgres:
   user: odoo
   ## @param postgres.secretRef The secret reference for Postgres
   ##
-  secretRef: odoo-postgres
+  secretRef: postgres
   ## @param postgres.userPasswordKey The user password key for Postgres
   ##
   userPasswordKey: "password"

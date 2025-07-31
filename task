@@ -81,6 +81,8 @@ function help() {
 OC_PROJECT=${OC_PROJECT:="odoo"}
 NAMESPACE=${NAMESPACE:="odoo"}
 RELEASE_NAME=${RELEASE_NAME:="odoo"}
+CONTAINER_REGISTRY=${CONTAINER_REGISTRY:="mintsystem/"}
+CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
 
 # Dynamic vars
 
@@ -211,6 +213,18 @@ function preview-vitepress() {
 function start-kind() {
     echo "Start kind."
     kind create cluster
+
+    echo "Apply kubelet config"
+    cat <<EOF | kubectl apply -f -
+---
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraMounts:
+  - containerPath: /var/lib/kubelet/config.json
+    hostPath: $CONTAINER_CONFIG/secret.json
+EOF
 }
 
 function delete-kind() {

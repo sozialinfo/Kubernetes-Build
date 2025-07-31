@@ -32,7 +32,7 @@ spec:
               name: {{ .Values.postgres.secretRef }}
               key: {{ .Values.postgres.userPasswordKey }}
         - name: PGHOST
-          value: odoo-postgres.{{ .Release.Namespace }}.svc.cluster.local
+          value: postgres.{{ .Release.Namespace }}.svc.cluster.local
         - name: PGUSER
           value: {{ .Values.postgres.user }}
         {{- end }}
