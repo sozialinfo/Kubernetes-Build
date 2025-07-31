@@ -11,11 +11,11 @@ appVersion: "1.0.0"
 dependencies:
   - name: postgres
     version: 0.1.0
-    repository: https://kubernetes.build
+    repository: "file://../postgres"
     condition: postgres.enabled
   - name: vshnPostgres
     version: 0.1.0
-    repository: https://kubernetes.build
+    repository: "file://../vshnPostgres"
     condition: vshnPostgres.enabled
   - name: postgresql
     version: 16.7.21
