@@ -264,12 +264,11 @@ task install-chart odoo chk
 
 ## Troubleshooting
 
-### Debug the Postgres instance
+### Debug the APPUiO Postgres instance
 
 When deploying the Postgres container with this project the client option is enabled.
 
 ```yml
-postgres.client.enabled=true
 vshnPostgres.client.enabled=true
 ```
 
@@ -280,12 +279,6 @@ kubectl exec -it postgres-client -- bash
 ```
 
 In the shell try to connect to the cluster.
-
-```bash
-PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -d $POSTGRES_DB -U $POSTGRES_USER
-```
-
-When connection from APPUiO use this command:
 
 ```bash
 psql --set=sslmode=verify-ca --set=sslrootcert=/etc/secret-volume/ca.crt -h $POSTGRESQL_HOST -d $POSTGRESQL_DB -U $POSTGRESQL_USER

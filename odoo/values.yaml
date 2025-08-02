@@ -43,12 +43,6 @@ postgres:
   ## @param postgres.user The username for Postgres
   ##
   user: odoo
-  ## @param postgres.secretRef The secret reference for Postgres
-  ##
-  secretRef: postgres
-  ## @param postgres.userPasswordKey The user password key for Postgres
-  ##
-  userPasswordKey: "password"
 
 ## @section PostgreSQL parameters
 ##
@@ -110,9 +104,6 @@ odoo:
   ## @param odoo.listDB Enable or disable listing databases for odoo
   ##
   listDB: false
-  ## @param odoo.configMapRef The config map reference for odoo
-  ##
-  configMapRef: odoo-config
   ## @param odoo.secretRef The secret reference for odoo
   ##
   secretRef: odoo-creds

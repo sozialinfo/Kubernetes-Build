@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: odoo
+  name: {{ .Release.Name }}-odoo
   labels:
     app: odoo
 spec:
@@ -78,7 +78,7 @@ spec:
             - secretRef:
                 name: {{ .Values.odoo.secretRef }}
             - configMapRef:
-                name: {{ .Values.odoo.configMapRef }}
+                name: {{ .Release.Name }}-configmap
           env: *shared-env
           {{- if .Values.vshnPostgres.enabled }}
           volumeMounts:
@@ -95,5 +95,5 @@ spec:
             - secretRef:
                 name: {{ .Values.odoo.secretRef }}
             - configMapRef:
-                name: {{ .Values.odoo.configMapRef }}
+                name: {{ .Release.Name }}-configmap
           env: *shared-env
