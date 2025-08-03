@@ -271,7 +271,7 @@ function list-chart() {
 
 function list-context() {
     echo "loc (cloud.local)"
-    echo "krb (k3s.raspberrypi.build)"
+    echo "rpi (k3s.raspberrypi.build)"
     echo "chk (chk.mintcloud.ch)"
     echo "axo (axo.mintcloud.ch)"
     echo "ksi (k8s.sozialinfo.ch)"
