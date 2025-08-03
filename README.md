@@ -245,7 +245,7 @@ task install-chart ingress-nginx
 Create an api token with domain scope: <https://manager.infomaniak.com/v3/infomaniak-api>
 
 ```bash
-ACME_EMAIL="syadmin@example.com"
+ACME_EMAIL="sysadmin@example.com"
 INFOMANIAK_API_TOKEN="YOUR_API_TOKEN"
 ```
 
@@ -275,13 +275,31 @@ task install-chart odoo chk
 
 #### Setup ingress nginx
 
-#### Setup ingress nginx
-
 Add all repos and install the ingress nginx.
 
 ```bash
 task add-repos
 task install-chart ingress-nginx
+```
+
+#### Setup cert manager
+
+Setup `.env` config.
+
+```bash
+ACME_EMAIL="sysadmin@example.com"
+```
+
+Install cert manager with Infomaniak webhook.
+
+```bash
+task install-chart cert-manager
+```
+
+Install cluster issuer.
+
+```bash
+task install-chart cluster-issuer
 ```
 
 ## Troubleshooting

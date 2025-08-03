@@ -1,7 +1,7 @@
 ingress:
-    host: "$NAMESPACE.chk.mintcloud.ch"
+    host: "$NAMESPACE.k3s.raspberrypi.build"
     clusterIssuerRef: letsencrypt-http-prod
     className: nginx
 acme:
     email: $ACME_EMAIL
-    infomaniakApiToken: "$INFOMANIAK_API_TOKEN"
+    solver:
