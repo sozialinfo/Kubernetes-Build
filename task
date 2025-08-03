@@ -270,10 +270,11 @@ function list-chart() {
 }
 
 function list-context() {
-    echo "loc - cloud.local"
-    echo "chk - chk.mintcloud.ch"
-    echo "axo - axo.mintcloud.ch"
-    echo "ksi - k8s.sozialinfo.ch"
+    echo "loc (cloud.local)"
+    echo "krb (k3s.raspberrypi.build)"
+    echo "chk (chk.mintcloud.ch)"
+    echo "axo (axo.mintcloud.ch)"
+    echo "ksi (k8s.sozialinfo.ch)"
 }
 
 function switch-context() {
@@ -281,7 +282,7 @@ function switch-context() {
 
     LINK_NAME="$HOME/.kube/config"
     echo "Remove $LINK_NAME"
-    rm "$LINK_NAME"
+    rm "$LINK_NAME" || true
     TARGET="$HOME/.kube/config.$1"
     echo "Setup symlink from $LINK_NAME to $TARGET"
     ln -s "$TARGET" "$LINK_NAME"
