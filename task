@@ -339,10 +339,10 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - kuard.chk.mintcloud.ch
-    secretName: kuard-chk-mintcloud-ch
+    - kuard.k3s.raspberrypi.build
+    secretName: kuard-certificate
   rules:
-  - host: kuard.chk.mintcloud.ch
+  - host: kuard.k3s.raspberrypi.build
     http:
       paths:
       - path: /

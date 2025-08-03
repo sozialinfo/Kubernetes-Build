@@ -299,7 +299,7 @@ task install-chart cert-manager
 Install cluster issuer.
 
 ```bash
-task install-chart cluster-issuer
+task install-chart cluster-issuer rpi
 ```
 
 ## Troubleshooting
