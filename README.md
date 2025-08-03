@@ -12,6 +12,7 @@ The Mint System collection of Helm charts.
 * 🚀 **Install**: Install Helm repository and get started with Odoo.
 * 🛠️ **Develop**: Deploy Odoo and Postgres to a local Kubernetes cluster.
 * 🏗️ **Build**: Fork and build your own Helm charts.
+* 🚀 **Deploy**: Configure and deploy Helm charts to remote clusters.
 
 ## Usage
 
@@ -145,6 +146,12 @@ Commit and push the files.
 
 ## Usage
 
+You can use this project to deploy to these Kubernetes clusters:
+
+* [APPUiO](#APPUiO)
+* [Infomaniak](#Infomaniak)
+* [K3s](#K3s)
+
 ### APPUiO
 
 Setup and deploy the Helm charts with [APPUiO](https://portal.appuio.cloud/).
@@ -260,6 +267,21 @@ Install the Odoo chart.
 
 ```bash
 task install-chart odoo chk
+```
+
+### K3s
+
+#### Setup project
+
+#### Setup ingress nginx
+
+#### Setup ingress nginx
+
+Add all repos and install the ingress nginx.
+
+```bash
+task add-repos
+task install-chart ingress-nginx
 ```
 
 ## Troubleshooting

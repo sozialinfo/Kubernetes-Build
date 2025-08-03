@@ -286,6 +286,7 @@ function switch-context() {
     TARGET="$HOME/.kube/config.$1"
     echo "Setup symlink from $LINK_NAME to $TARGET"
     ln -s "$TARGET" "$LINK_NAME"
+    chmod 0644 "$TARGET"
 }
 
 function show-context() {
