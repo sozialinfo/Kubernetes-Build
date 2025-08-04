@@ -43,6 +43,9 @@ postgres:
   ## @param postgres.user The username for Postgres
   ##
   user: odoo
+  ## @param postgres.secretRef The secret reference for Postgres
+  ##
+  secretRef: postgres
 
 ## @section PostgreSQL parameters
 ##

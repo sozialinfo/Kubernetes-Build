@@ -64,7 +64,7 @@ function help() {
     printf "$COLUMN" "login-oc" "" "Refresh the auth token for OpenShift."
     # Helm
     printf "$COLUMN" "add-repos" "" "Add the required Helm repos."
-    printf "$COLUMN" "template-manifest" "[ctx]" "Template all charts with Helm."
+    printf "$COLUMN" "template-manifest" "[name][ctx]" "Template all charts with Helm."
     printf "$COLUMN" "package-repo" "[name]" "Package Helm charts."
     printf "$COLUMN" "index-repo" "" "Index Helm chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm chart files to dist."
@@ -123,10 +123,10 @@ function install() {
 
 function setup-hosts() {
     echo "Adding entries to /etc/hosts ..."
-    grep -qxF '127.0.0.1 cloud.local' /etc/hosts || echo "127.0.0.1 cloud.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 $NAMESPACE.cloud.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.cloud.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 knd.local' /etc/hosts || echo "127.0.0.1 knd.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 $NAMESPACE.knd.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.knd.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 $NAMESPACE.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 restic.cloud.local" /etc/hosts || echo "127.0.0.1 restic.cloud.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 restic.knd.local" /etc/hosts || echo "127.0.0.1 restic.knd.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 restic.local" /etc/hosts || echo "127.0.0.1 restic.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
@@ -246,13 +246,13 @@ function forward-odoo() {
 
 function forward-ingress-nginx() {
     PORT=8080
-    echo "Open http://$NAMESPACE.cloud.local:$PORT or http://$NAMESPACE.local:$PORT url in your browser."
+    echo "Open http://$NAMESPACE.knd.local:$PORT or http://$NAMESPACE.local:$PORT url in your browser."
     kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller $PORT:80
 }
 
 function forward-haproxy-ingress() {
     PORT=8080
-    echo "Open http://$NAMESPACE.cloud.local:$PORT or http://$NAMESPACE.local:$POR url in your browser."
+    echo "Open http://$NAMESPACE.knd.local:$PORT or http://$NAMESPACE.local:$POR url in your browser."
     kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $PORT:80
 }
 
@@ -270,7 +270,7 @@ function list-chart() {
 }
 
 function list-context() {
-    echo "loc (cloud.local)"
+    echo "loc (knd.local)"
     echo "rpi (k3s.raspberrypi.build)"
     echo "chk (chk.mintcloud.ch)"
     echo "axo (axo.mintcloud.ch)"
@@ -555,18 +555,20 @@ function logs-ingress-nginx() {
 # Helm Commands
 
 function template-manifest() {
-    template-values "$1"
+    template-values "$2"
     echo "Template charts into manifest.yaml."
 
-    helm --debug template "$RELEASE_NAME" odoo \
-        --values ./values.yaml > manifest.yaml
-
-    helm --debug template cluster-issuer cluster-issuer \
-        --namespace cert-manager \
-        --values ./values.yaml >> manifest.yaml
-
-    helm --debug template "$RELEASE_NAME" postgres \
-        --values ./values.yaml >> manifest.yaml
+    if [ "$1" = "odoo" ]; then
+        helm --debug template "$RELEASE_NAME" odoo \
+            --values ./values.yaml > manifest.yaml
+    elif [ "$1" = "cluster-issuer" ]; then
+        helm --debug template cluster-issuer cluster-issuer \
+            --namespace cert-manager \
+            --values ./values.yaml > manifest.yaml
+    elif [ "$1" = "postgres" ]; then
+        helm --debug template "$RELEASE_NAME" postgres \
+            --values ./values.yaml > manifest.yaml
+    fi
 }
 
 function list() {

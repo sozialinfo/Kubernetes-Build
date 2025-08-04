@@ -11,7 +11,7 @@ This Helm chart deploys Odoo with PostgreSQL.
 | `ingress.enabled`          | Enable or disable the ingress                | `true`             |
 | `ingress.className`        | The class name for the ingress               | `nginx`            |
 | `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `nil`              |
-| `ingress.host`             | The host for the ingress                     | `odoo.cloud.local` |
+| `ingress.host`             | The host for the ingress                     | `odoo.knd.local` |
 | `ingress.customDomain`     | The custom domain for the ingress            | `""`               |
 
 ### vshnPostgres parameters
