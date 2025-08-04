@@ -243,6 +243,12 @@ function forward() {
     "forward-$1"
 }
 
+function forward-postgres() {
+    PORT=5432
+    echo "Connect to http://localhost:$PORT url in your browser."
+    kubectl port-forward service/postgres $PORT:5432
+}
+
 function forward-odoo() {
     PORT=8080
     echo "Open http://localhost:$PORT url in your browser."
