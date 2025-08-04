@@ -13,56 +13,6 @@ spec:
       labels:
         app: odoo
     spec:
-      x-shared-env: &shared-env
-        {{- if .Values.postgresql.enabled }}
-        - name: PGPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgresql.auth.existingSecret }}
-              key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
-        - name: PGHOST
-          value: {{ .Release.Name }}-postgresql.{{ .Release.Namespace }}.svc.cluster.local
-        - name: PGUSER
-          value: {{ .Values.postgresql.auth.username }}
-        {{- end }}
-        {{- if .Values.postgres.enabled }}
-        - name: PGPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgres.secretRef }}
-              key: {{ .Values.postgres.userPasswordKey }}
-        - name: PGHOST
-          value: {{ .Release.Name }}-postgres.{{ .Release.Namespace }}.svc.cluster.local
-        - name: PGUSER
-          value: {{ .Values.postgres.user }}
-        {{- end }}
-        {{- if .Values.vshnPostgres.enabled }}
-        - name: PGHOST
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.vshnPostgres.secretRef }}
-              key: POSTGRESQL_HOST
-        - name: PGPORT
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.vshnPostgres.secretRef }}
-              key: POSTGRESQL_PORT
-        - name: PGUSER
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.vshnPostgres.secretRef }}
-              key: POSTGRESQL_USER
-        - name: PGPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.vshnPostgres.secretRef }}
-              key: POSTGRESQL_PASSWORD
-        - name: PGSSLMODE
-          value: verify-ca
-        - name: PGSSLROOTCERT
-          value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
-        {{- end }}
-
       initContainers:
         - name: init
           image: {{ .Values.image }}
@@ -79,7 +29,55 @@ spec:
                 name: {{ .Values.secretRef }}
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
-          env: *shared-env
+          env:
+            {{- if .Values.postgresql.enabled }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.auth.existingSecret }}
+                  key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
+            - name: PGHOST
+              value: postgresql.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              value: {{ .Values.postgresql.auth.username }}
+            {{- end }}
+            {{- if .Values.postgres.enabled }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: {{ .Values.postgres.userPasswordKey }}
+            - name: PGHOST
+              value: postgres.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              value: {{ .Values.postgres.user }}
+            {{- end }}
+            {{- if .Values.vshnPostgres.enabled }}
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_HOST
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_PORT
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_PASSWORD
+            - name: PGSSLMODE
+              value: verify-ca
+            - name: PGSSLROOTCERT
+              value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
+            {{- end }}
           {{- if .Values.vshnPostgres.enabled }}
           volumeMounts:
           - name: {{ .Values.vshnPostgres.secretRef }}
@@ -97,4 +95,64 @@ spec:
                 name: {{ .Values.secretRef }}
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
-          env: *shared-env
+          env:
+            {{- if .Values.postgresql.enabled }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.auth.existingSecret }}
+                  key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
+            - name: PGHOST
+              value: postgresql.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              value: {{ .Values.postgresql.auth.username }}
+            {{- end }}
+            {{- if .Values.postgres.enabled }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: {{ .Values.postgres.userPasswordKey }}
+            - name: PGHOST
+              value: postgres.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              value: {{ .Values.postgres.user }}
+            {{- end }}
+            {{- if .Values.vshnPostgres.enabled }}
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_HOST
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_PORT
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_PASSWORD
+            - name: PGSSLMODE
+              value: verify-ca
+            - name: PGSSLROOTCERT
+              value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
+            {{- end }}
+          {{- if .Values.vshnPostgres.enabled }}
+          volumeMounts:
+          - name: {{ .Values.vshnPostgres.secretRef }}
+            readOnly: true
+            mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
+          {{- end }}
+      {{- if .Values.vshnPostgres.enabled }}
+      volumes:
+      - name: {{ .Values.vshnPostgres.secretRef }}
+        secret:
+          secretName: {{ .Values.vshnPostgres.secretRef }}
+      {{- end }}
