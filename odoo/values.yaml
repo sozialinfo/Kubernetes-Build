@@ -45,7 +45,7 @@ postgres:
   user: odoo
   ## @param postgres.secretRef The secret reference for Postgres
   ##
-  secretRef: postgres
+  secretRef: odoo-postgres
 
 ## @section PostgreSQL parameters
 ##
@@ -74,39 +74,41 @@ postgresql:
 
 ## @section Odoo parameters
 ##
-odoo:
-  ## @param odoo.enabled Enable or disable odoo
-  ##
-  enabled: true
-  ## @param odoo.image The image for odoo
-  ##
-  image: mintsystem/odoo:18.0.20250725
-  ## @param odoo.proxyMode Enable or disable proxy mode for odoo
-  ##
-  proxyMode: true
-  ## @param odoo.githubUsername The GitHub username for odoo
-  ##
-  githubUsername: ""
-  ## @param odoo.githubPersonalAccessToken The GitHub personal access token for odoo
-  ##
-  githubPersonalAccessToken: ""
-  ## @param odoo.downloadOdooEnterprise Enable or disable downloading Odoo Enterprise
-  ##
-  downloadOdooEnterprise: false
-  ## @param odoo.addonsGitRepos List of addon Git repositories for odoo
-  ##
-  addonsGitRepos:
-    - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0
-    - https://github.com/OCA/Server-Tools.git#18.0
-  ## @param odoo.database The database for odoo
-  ##
-  database: odoo
-  ## @param odoo.initLang The initial language for odoo
-  ##
-  initLang: de_CH
-  ## @param odoo.listDB Enable or disable listing databases for odoo
-  ##
-  listDB: false
-  ## @param odoo.secretRef The secret reference for odoo
-  ##
-  secretRef: odoo-creds
+## @param enabled Enable or disable odoo
+##
+enabled: true
+## @param image The image for odoo
+##
+image: mintsystem/odoo:18.0.20250725
+## @param imagePullPolicy Pull policy for odoo image
+##
+imagePullPolicy: Always
+## @param proxyMode Enable or disable proxy mode for odoo
+##
+proxyMode: true
+## @param githubUsername The GitHub username for odoo
+##
+githubUsername: ""
+## @param githubPersonalAccessToken The GitHub personal access token for odoo
+##
+githubPersonalAccessToken: ""
+## @param downloadOdooEnterprise Enable or disable downloading Odoo Enterprise
+##
+downloadOdooEnterprise: false
+## @param addonsGitRepos List of addon Git repositories for odoo
+##
+addonsGitRepos:
+  - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0
+  - https://github.com/OCA/Server-Tools.git#18.0
+## @param database The database for odoo
+##
+database: odoo
+## @param initLang The initial language for odoo
+##
+initLang: de_CH
+## @param listDB Enable or disable listing databases for odoo
+##
+listDB: false
+## @param secretRef The secret reference for odoo
+##
+secretRef: odoo-creds

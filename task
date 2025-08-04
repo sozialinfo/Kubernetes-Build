@@ -328,6 +328,10 @@ function install-postgres() {
 }
 
 function install-odoo() {
+
+    echo "Load local odoo image."
+    kind load docker-image mintsystem/odoo:18.0.20250725
+
     echo "Install odoo chart as release $RELEASE_NAME."
     helm install "$RELEASE_NAME" odoo \
         --values ./values.yaml
@@ -516,14 +520,18 @@ function uninstall-cluster-issuer() {
 
 function get-secrets() {
     if [ "$1" = "odoo" ]; then
-        echo "Get the postgres admin password"
-        kubectl get secret odoo-postgresql -o jsonpath="{.data.postgres-password}" | base64 --decode && echo
+        echo "Get the postgres user:"
+        kubectl get secret odoo-postgres -o jsonpath="{.data.user}" | base64 --decode && echo
 
-        echo "Get the user password (if exists)"
-        kubectl get secret odoo-postgresql -o jsonpath="{.data.password}" | base64 --decode && echo
+        echo "Get the postgres user password:"
+        kubectl get secret odoo-postgres -o jsonpath="{.data.password}" | base64 --decode && echo
     fi
 
     if [ "$1" = "postgres" ]; then
+        echo "Get the postgres user:"
+        kubectl get secret postgres -o jsonpath="{.data.user}" | base64 --decode && echo
+
+        echo "Get the postgres password:"
         kubectl get secret postgres -o jsonpath="{.data.password}" | base64 --decode && echo
     fi
 }
@@ -585,9 +593,6 @@ function package-repo() {
         helm package cluster-issuer
         helm package postgres
         helm package vshnPostgres
-        # mkdir -p ./odoo/charts
-        # cp postgres-0.1.0.tgz odoo/charts/
-        # cp vshnPostgres-0.1.0.tgz odoo/charts/
         helm package odoo
     fi
 }

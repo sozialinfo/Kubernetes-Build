@@ -65,18 +65,18 @@ spec:
 
       initContainers:
         - name: init
-          image: {{ .Values.odoo.image }}
-          imagePullPolicy: Always
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           command:
             - /bin/bash
             - -c
             - |
-              {{- if .Values.odoo.downloadOdooEnterprise }}/entrypoint.sh download-odoo-enterprise && \{{- end }}
+              {{- if .Values.downloadOdooEnterprise }}/entrypoint.sh download-odoo-enterprise && \{{- end }}
               /entrypoint.sh git-clone-addons && \
               /entrypoint.sh init-db
           envFrom:
             - secretRef:
-                name: {{ .Values.odoo.secretRef }}
+                name: {{ .Values.secretRef }}
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env: *shared-env
@@ -88,12 +88,13 @@ spec:
           {{- end }}
       containers:
         - name: odoo
-          image: {{ .Values.odoo.image }}
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
           - containerPort: 8069
           envFrom:
             - secretRef:
-                name: {{ .Values.odoo.secretRef }}
+                name: {{ .Values.secretRef }}
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env: *shared-env
