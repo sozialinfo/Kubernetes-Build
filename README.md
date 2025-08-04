@@ -101,7 +101,7 @@ The Odoo database will be initialized automtically.
 Once the pod is ready, run this command to port forward the service:
 
 ```bash
-task forward-odoo
+task forward odoo
 ```
 
 ### Setup ingress nginx
@@ -115,7 +115,7 @@ task install-chart ingress-nginx
 Forward the ingress-nginx port.
 
 ```bash
-task forward-ingress-nginx
+task forward ingress-nginx
 ```
 
 ### Setup haproxy ingress
@@ -129,7 +129,7 @@ task install-chart haproxy-ingress
 Forward the haproxy-ingress port.
 
 ```bash
-task forward-haproxy-ingress
+task forward haproxy-ingress
 ```
 
 ### Release charts

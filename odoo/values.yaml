@@ -12,7 +12,7 @@ ingress:
   clusterIssuerRef:
   ## @param ingress.host The host for the ingress
   ##
-  host: odoo.cloud.local
+  host: odoo.knd.local
   ## @param ingress.customDomain The custom domain for the ingress
   ##
   customDomain: ""

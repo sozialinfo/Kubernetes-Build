@@ -40,9 +40,7 @@ function help() {
     printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
     printf "$COLUMN" "setup-hosts" "" "Update hosts file."
-    printf "$COLUMN" "forward-odoo" "" "Forward odoo port."
-    printf "$COLUMN" "forward-ingress-nginx" "" "Forward ingress-nginx port."
-    printf "$COLUMN" "forward-haproxy-ingress" "" "Forward haproxy-ingress port."
+    printf "$COLUMN" "forward" "[name]" "Forward port."
     # Chart
     printf "$COLUMN" "list-chart" "" "List Helm charts."
     printf "$COLUMN" "list-context" "" "List contexts."
@@ -237,6 +235,11 @@ function delete-kind() {
 function start-minikube() {
     echo "Start minikube."
     minikube start
+}
+
+function forward() {
+    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+    "forward-$1"
 }
 
 function forward-odoo() {
