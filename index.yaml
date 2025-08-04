@@ -3,9 +3,9 @@ entries:
   cert-issuer:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-08-04T12:04:06.057262345+02:00"
+    created: "2025-08-04T13:46:31.853839279+02:00"
     description: Mint System Cluster Issuer
-    digest: 0ae98609a0154302728fbacf5b89b03bf36a39e68fe1ff20e3182f499395a4bb
+    digest: bcb566e5ebd6bc133a3147ed283b98deb2480ff7746254c410c0e828a93c933d
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -18,7 +18,7 @@ entries:
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-08-04T12:04:06.0611257+02:00"
+    created: "2025-08-04T13:46:31.857487312+02:00"
     dependencies:
     - condition: postgres.enabled
       name: postgres
@@ -33,7 +33,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 16.7.21
     description: Mint System Odoo
-    digest: a802681ba65cc59777a1870ebcab05fe66000a0f776209d7420f44880284f560
+    digest: 0a12e15f8c43bac83c18923d410bf0c3d3dcd560395335118723f98a17ae06d2
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -46,9 +46,9 @@ entries:
   postgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-08-04T12:04:06.061240326+02:00"
+    created: "2025-08-04T13:46:31.857599462+02:00"
     description: Mint System Postgres
-    digest: efdd99d084ef088609f319aa9f0a76afb6a2188b2f1f1dd2497ceb0358045963
+    digest: c29ca63317b3014660e1b36574e2870f012ca030bec4117c4258e4b104c6bc50
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -61,9 +61,9 @@ entries:
   vshnPostgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-08-04T12:04:06.061335174+02:00"
+    created: "2025-08-04T13:46:31.857683521+02:00"
     description: VSHN Postgres
-    digest: 09fab9741c9412a59caa22c948432a5362ea1ff6832482931bd499aa0d8dbafa
+    digest: bace3143c374e6245fbc34f991f2a27980e358e57bcb8476916d8c2d906f0a3a
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -73,4 +73,4 @@ entries:
     urls:
     - vshnPostgres-0.1.0.tgz
     version: 0.1.0
-generated: "2025-08-04T12:04:06.057079932+02:00"
+generated: "2025-08-04T13:46:31.853677104+02:00"
