@@ -304,22 +304,10 @@ task install-chart cluster-issuer rpi
 
 ## Troubleshooting
 
-### Debug the APPUiO Postgres instance
+### Reset the postgres password
 
-When deploying the Postgres container with this project the client option is enabled.
-
-```yml
-vshnPostgres.client.enabled=true
-```
-
-You can enter an interactive shell on the client container.
+The postgres data is persisted on the host. Removing the pvc will not deleted the postgres data. To update the password, enter the container and run:
 
 ```bash
-kubectl exec -it postgres-client -- bash
-```
-
-In the shell try to connect to the cluster.
-
-```bash
-psql --set=sslmode=verify-ca --set=sslrootcert=/etc/secret-volume/ca.crt -h $POSTGRESQL_HOST -d $POSTGRESQL_DB -U $POSTGRESQL_USER
+psql -c "ALTER USER $PGUSER WITH PASSWORD '$PGPASSWORD';"
 ```
