@@ -88,6 +88,7 @@ CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
 # Dynamic vars
 
 PASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+CURRENT_CONTEXT=$(kubectl config current-context)
 
 # Import commands
 
@@ -475,11 +476,21 @@ function uninstall-release() {
 function uninstall-odoo() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
+
+    if [ "$CURRENT_CONTEXT" = "kind-kind" ]; then
+        echo "Delete /data/volume"
+        docker exec kind-control-plane rm -rf /data/volume
+    fi
 }
 
 function uninstall-postgres() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
+
+    if [ "$CURRENT_CONTEXT" = "kind-kind" ]; then
+        echo "Delete /data/volume"
+        docker exec kind-control-plane rm -rf /data/volume
+    fi
 }
 
 function uninstall-postgresql() {

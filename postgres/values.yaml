@@ -24,3 +24,6 @@ secretRef: postgres
 ## @param userPasswordKey The user password key for Postgres
 ##
 userPasswordKey: "password"
+## @param hostPath The host path for the PersistentVolume
+##
+hostPath: "/data/volume"
