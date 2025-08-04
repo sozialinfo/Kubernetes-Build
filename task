@@ -475,22 +475,16 @@ function uninstall-release() {
 function uninstall-odoo() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
-
-    echo "Run: kubectl delete pvc"
 }
 
 function uninstall-postgres() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
-
-    echo "Run: kubectl delete pvc"
 }
 
 function uninstall-postgresql() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
-
-    echo "Run: kubectl delete pvc"
 }
 
 function uninstall-ingress-nginx() {
