@@ -46,6 +46,7 @@ function help() {
     printf "$COLUMN" "list-context" "" "List contexts."
     printf "$COLUMN" "switch-context" "" "Switch kubeconfig file."
     printf "$COLUMN" "show-context" "" "Show active kubeconfig."
+    printf "$COLUMN" "get-context-alias" "" "Get alias of current context."
     printf "$COLUMN" "template-values" "[ctx]" "Template values file."
     printf "$COLUMN" "update-dependencies" "[name]" "Update dependencies for a chart."
     printf "$COLUMN" "install-chart" "[name][ctx]" "Install Helm chart."
@@ -267,7 +268,7 @@ function list-chart() {
     echo "postgres"
     echo "vshnpostgres"
     echo "cert-manager"
-    echo "cert-issuer"
+    echo "cluster-issuer"
     echo "ingress-nginx"
     echo "haproxy-ingress"
     echo "kuard"
@@ -279,6 +280,10 @@ function list-context() {
     echo "chk (chk.mintcloud.ch)"
     echo "axo (axo.mintcloud.ch)"
     echo "ksi (k8s.sozialinfo.ch)"
+}
+
+get-context-alias() {
+    echo "$(basename "$(readlink "$HOME/.kube/config")" | cut -d '.' -f 2)"
 }
 
 function switch-context() {
@@ -298,14 +303,20 @@ function show-context() {
 }
 
 function template-values {
-    echo "Template values.yaml"
+    ALIAS="$1"
+    if [ -z "$ALIAS" ]; then
+        ALIAS="$(get-context-alias)"
+    fi
+
     export NAMESPACE
     export ACME_EMAIL
     export INFOMANIAK_API_TOKEN
 
-    if [ -n "$1" ]; then
-        envsubst < "values.$1.yaml.template" > "values.yaml"
+    if [ -n "$ALIAS" ]; then
+        echo "Template values.yaml from values.$ALIAS.yaml.template"
+        envsubst < "values.$ALIAS.yaml.template" > "values.yaml"
     else
+        echo "Template values.yaml from values.yaml.template"
         envsubst < "values.yaml.template" > "values.yaml"
     fi
 }
