@@ -24,13 +24,11 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ### Postgres parameters
 
-| Name                       | Description                        | Value      |
-| -------------------------- | ---------------------------------- | ---------- |
-| `postgres.enabled`         | Enable or disable Postgres         | `true`     |
-| `postgres.db`              | The database name for Postgres     | `odoo`     |
-| `postgres.user`            | The username for Postgres          | `odoo`     |
-| `postgres.secretRef`       | The secret reference for Postgres  | `postgres` |
-| `postgres.userPasswordKey` | The user password key for Postgres | `password` |
+| Name               | Description                    | Value  |
+| ------------------ | ------------------------------ | ------ |
+| `postgres.enabled` | Enable or disable Postgres     | `true` |
+| `postgres.db`      | The database name for Postgres | `odoo` |
+| `postgres.user`    | The username for Postgres      | `odoo` |
 
 ### PostgreSQL parameters
 
@@ -57,5 +55,4 @@ This Helm chart deploys Odoo with PostgreSQL.
 | `odoo.database`                  | The database for odoo                         | `odoo`                                                                                                              |
 | `odoo.initLang`                  | The initial language for odoo                 | `de_CH`                                                                                                             |
 | `odoo.listDB`                    | Enable or disable listing databases for odoo  | `false`                                                                                                             |
-| `odoo.configMapRef`              | The config map reference for odoo             | `odoo-config`                                                                                                       |
 | `odoo.secretRef`                 | The secret reference for odoo                 | `odoo-creds`                                                                                                        |

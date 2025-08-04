@@ -14,28 +14,28 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: {{.Values.postgres.image }}
+          image: {{.Values.image }}
           ports:
-            - containerPort: {{.Values.postgres.port }}
+            - containerPort: {{ .Values.port }}
           env:
             - name: POSTGRES_DB
-              value: {{ .Values.postgres.db }}
+              value: {{ .Values.db }}
             - name: POSTGRES_USER
-              value: {{ .Values.postgres.user }}
+              value: {{ .Values.user }}
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: {{ .Values.postgres.userPasswordKey }}
+                  name: {{ .Values.secretRef }}
+                  key: {{ .Values.userPasswordKey }}
             - name: PGDATABASE
-              value: {{ .Values.postgres.db }}
+              value: {{ .Values.db }}
             - name: PGUSER
-              value: {{ .Values.postgres.user }}
+              value: {{ .Values.user }}
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: {{ .Values.postgres.userPasswordKey }}
+                  name: {{ .Values.secretRef }}
+                  key: {{ .Values.userPasswordKey }}
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgredb

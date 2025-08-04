@@ -1,27 +1,26 @@
 ## @section Postgres parameters
 ##
-postgres:
-  ## @param postgres.enabled Enable or disable Postgres
-  ##
-  enabled: true
-  ## @param postgres.image The Docker image for Postgres
-  ##
-  image: postgres:16-alpine
-  ## @param postgres.port The port for Postgres
-  ##
-  port: 5432
-  ## @param postgres.db The database name for Postgres
-  ##
-  db: postgres
-  ## @param postgres.user The username for Postgres
-  ##
-  user: postgres
-  ## @param postgres.password If not set a password will be generated
-  ##
-  password:
-  ## @param postgres.secretRef The secret reference for Postgres
-  ##
-  secretRef: postgres
-  ## @param postgres.userPasswordKey The user password key for Postgres
-  ##
-  userPasswordKey: "password"
+## @param enabled Enable or disable Postgres
+##
+enabled: true
+## @param image The Docker image for Postgres
+##
+image: postgres:16-alpine
+## @param port The port for Postgres
+##
+port: 5432
+## @param db The database name for Postgres
+##
+db: postgres
+## @param user The username for Postgres
+##
+user: postgres
+## @param password If not set a password will be generated
+##
+password:
+## @param secretRef The secret reference for Postgres
+##
+secretRef: postgres
+## @param userPasswordKey The user password key for Postgres
+##
+userPasswordKey: "password"

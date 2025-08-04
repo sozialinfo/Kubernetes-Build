@@ -60,7 +60,7 @@ function help() {
     printf "$COLUMN" "logs-haproxy-ingress" "" "Show haproxy-ingress logs."
     printf "$COLUMN" "logs-ingress-nginx" "" "Show ingress-nginx logs."
     printf "$COLUMN" "list" "" "List Helm deployments."
-    printf "$COLUMN" "list-pods" "" "List all pods."
+    printf "$COLUMN" "get-pods" "" "List all pods."
     printf "$COLUMN" "login-oc" "" "Refresh the auth token for OpenShift."
     # Helm
     printf "$COLUMN" "add-repos" "" "Add the required Helm repos."
@@ -538,7 +538,7 @@ function logs-odoo() {
     kubectl logs "$POD_ID"
 }
 
-function list-pods() {
+function get-pods() {
     kubectl get pods
 }
 

@@ -1,4 +1,4 @@
-{{- if .Values.vshnPostgres.enabled }}
+{{- if .Values.enabled }}
 apiVersion: vshn.appcat.vshn.io/v1
 kind: VSHNPostgreSQL
 metadata:
@@ -16,7 +16,7 @@ spec:
       # FIXME: If enabled instead of the postgres-creds the postgres-odoo secret will be written.
       # access:
       #   - user: {{ .Values.namespace }}
-      #     writeConnectionSecretToRef: 
+      #     writeConnectionSecretToRef:
       #       name: postgres-{{ .Values.namespace }}
       #       namespace: {{ .Values.namespace }}
     security:
@@ -29,9 +29,9 @@ spec:
       schedule: "30 23 * * *"
       retention: 12
   writeConnectionSecretToRef:
-    name: {{ .Values.vshnPostgres.secretRef }}
+    name: {{ .Values.secretRef }}
 {{- end }}
-{{- if .Values.vshnPostgres.client.enabled }}
+{{- if .Values.client.enabled }}
 ---
 apiVersion: v1
 kind: Pod
@@ -53,7 +53,7 @@ spec:
       - PGPASSWORD=$POSTGRESQL_PASSWORD psql "sslmode=verify-ca sslrootcert=/etc/secret-volume/ca.crt host=$POSTGRESQL_HOST port=$POSTGRESQL_PORT dbname=$POSTGRESQL_DB" -U $POSTGRESQL_USER -l
     envFrom:
       - secretRef:
-          name: {{ .Values.vshnPostgres.secretRef }}
+          name: {{ .Values.secretRef }}
     volumeMounts:
     - name: secret-volume
       readOnly: true
@@ -62,6 +62,6 @@ spec:
   - name: secret-volume
     secret:
       defaultMode: 0600
-      secretName: {{ .Values.vshnPostgres.secretRef }}
+      secretName: {{ .Values.secretRef }}
   restartPolicy: OnFailure
 {{- end }}
