@@ -626,7 +626,7 @@ function package-repo() {
 function commit() {
     git config user.name 'Mint Bot'
     git config user.email 'bot@mint-system.ch'
-    # git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/Mint-System/Kubernetes-Build"
+    git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/Mint-System/Kubernetes-Build"
     git add *.tgz
     git commit -m "feat(helm): package revision update"
     git push || echo "No changes to commit"
