@@ -386,7 +386,7 @@ function install-cert-manager() {
       --create-namespace \
       --version v1.18.2 \
       --set crds.enabled=true \
-      --values ./values.yaml
+      --set config.featureGates.ACMEHTTP01IngressPathTypeExact=false
 
     # https://github.com/Infomaniak/cert-manager-webhook-infomaniak
     echo "Apply Infomaniak webhook"
@@ -471,7 +471,7 @@ function upgrade-cert-manager() {
         --namespace cert-manager \
         --version v1.18.2 \
         --set crds.enabled=true \
-        --values ./values.yaml
+        --set config.featureGates.ACMEHTTP01IngressPathTypeExact=false
 }
 
 function upgrade-cluster-issuer() {
