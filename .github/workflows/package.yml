@@ -1,0 +1,16 @@
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  task-all:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run task package-repo
+        run: ./task package-repo
+      - name: Run task commit
+        run: ./task commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN_MINTBOT }}

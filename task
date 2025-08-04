@@ -68,6 +68,7 @@ function help() {
     printf "$COLUMN" "index-repo" "" "Index Helm chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm chart files to dist."
     printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-build repo."
+    printf "$COLUMN" "commit" "" "Commit .tgz files."
     # LLM
     printf "$COLUMN" "commit-with-llm" "" "Commit with llm generated commit message."
     printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
@@ -620,6 +621,15 @@ function package-repo() {
         helm package vshnPostgres
         helm package odoo
     fi
+}
+
+function commit() {
+    git config user.name 'Mint Bot'
+    git config user.email 'bot@mint-system.ch'
+    # git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/Mint-System/Kubernetes-Build"
+    git add *.tgz
+    git commit -m "feat(helm): package revision update"
+    git push || echo "No changes to commit"
 }
 
 function index-repo() {
