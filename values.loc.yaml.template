@@ -1,0 +1,7 @@
+imagePullPolicy: Never
+# db: odoo
+# user: odoo
+postgres:
+    enabled: false
+postgresql:
+    enabled: true

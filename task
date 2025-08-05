@@ -88,7 +88,9 @@ CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
 # Dynamic vars
 
 PASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-CURRENT_CONTEXT=$(kubectl config current-context || "")
+if command -v kubectl &> /dev/null; then
+    CURRENT_CONTEXT=$(kubectl config current-context || "")
+fi
 
 # Import commands
 
@@ -546,19 +548,24 @@ function uninstall-cluster-issuer() {
 
 function get-secrets() {
     if [ "$1" = "odoo" ]; then
-        echo "Get the postgres user:"
+        echo "odoo-postgres/user:"
         kubectl get secret odoo-postgres -o jsonpath="{.data.user}" | base64 --decode && echo
-
-        echo "Get the postgres user password:"
+        echo "odoo-postgres/password:"
         kubectl get secret odoo-postgres -o jsonpath="{.data.password}" | base64 --decode && echo
     fi
 
     if [ "$1" = "postgres" ]; then
-        echo "Get the postgres user:"
+        echo "postgres/user:"
         kubectl get secret postgres -o jsonpath="{.data.user}" | base64 --decode && echo
-
-        echo "Get the postgres password:"
+        echo "postgres/password:"
         kubectl get secret postgres -o jsonpath="{.data.password}" | base64 --decode && echo
+    fi
+
+    if [ "$1" = "postgresql" ]; then
+        echo "odoo-postgresql/password:"
+        kubectl get secret odoo-postgresql -o jsonpath="{.data.password}" | base64 --decode && echo
+        echo "odoo-postgresql/postgres-password:"
+        kubectl get secret odoo-postgresql -o jsonpath="{.data.postgres-password}" | base64 --decode && echo
     fi
 }
 
