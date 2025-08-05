@@ -81,7 +81,6 @@ function help() {
 # Default vars
 
 OC_PROJECT=${OC_PROJECT:="odoo"}
-NAMESPACE=${NAMESPACE:="odoo"}
 RELEASE_NAME=${RELEASE_NAME:="odoo"}
 CONTAINER_REGISTRY=${CONTAINER_REGISTRY:="mintsystem/"}
 CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
@@ -124,7 +123,6 @@ function version() {
 function info() {
     echo "Current context: $CURRENT_CONTEXT"
     echo "Context alias: $(get-context-alias)"
-    echo "Namespace: $NAMESPACE"
     echo "Release name: $RELEASE_NAME"
 }
 
@@ -135,8 +133,8 @@ function install() {
 function setup-hosts() {
     echo "Adding entries to /etc/hosts ..."
     grep -qxF '127.0.0.1 knd.local' /etc/hosts || echo "127.0.0.1 knd.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 $NAMESPACE.knd.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.knd.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 $NAMESPACE.local" /etc/hosts || echo "127.0.0.1 $NAMESPACE.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 odoo.knd.local" /etc/hosts || echo "127.0.0.1 odoo.knd.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 odoo.local" /etc/hosts || echo "127.0.0.1 odoo.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 restic.knd.local" /etc/hosts || echo "127.0.0.1 restic.knd.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 restic.local" /etc/hosts || echo "127.0.0.1 restic.local" | sudo tee -a /etc/hosts > /dev/null
 }
@@ -277,13 +275,13 @@ function forward-hugo() {
 
 function forward-ingress-nginx() {
     PORT=8080
-    echo "Open http://$NAMESPACE.knd.local:$PORT or http://$NAMESPACE.local:$PORT url in your browser."
+    echo "Open http://odoo.knd.local:$PORT or http://odoo.local:$PORT url in your browser."
     kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller $PORT:80
 }
 
 function forward-haproxy-ingress() {
     PORT=8080
-    echo "Open http://$NAMESPACE.knd.local:$PORT or http://$NAMESPACE.local:$POR url in your browser."
+    echo "Open http://odoo.knd.local:$PORT or http://odoo.local:$POR url in your browser."
     kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $PORT:80
 }
 
@@ -334,7 +332,6 @@ function template-values {
         ALIAS="$(get-context-alias)"
     fi
 
-    export NAMESPACE
     export ACME_EMAIL
     export INFOMANIAK_API_TOKEN
 

@@ -1,5 +1,5 @@
 ingress:
-    host: "$NAMESPACE.k3s.raspberrypi.build"
+    host: "janikvonrotz.k3s.raspberrypi.build"
     clusterIssuerRef: letsencrypt-http-prod
     className: nginx
 acme:

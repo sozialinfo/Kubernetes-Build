@@ -1,5 +1,5 @@
 ingress:
-    host: "$NAMESPACE.chk.mintcloud.ch"
+    host: "odoo.chk.mintcloud.ch"
     clusterIssuerRef: letsencrypt-http-prod
     className: nginx
 acme:
