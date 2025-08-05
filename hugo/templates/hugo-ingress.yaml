@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: odoo-ingress
+  name: hugo-ingress
   annotations:
     {{- if .Values.ingress.clusterIssuerRef }}
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
@@ -23,4 +23,10 @@ spec:
             name: hugo
             port:
               number: 1313
+  {{- if .Values.ingress.clusterIssuerRef }}
+  tls:
+    - hosts:
+      - {{.Values.ingress.host }}
+      secretName: hugo-ingress-cert
+  {{- end }}
 {{- end }}
