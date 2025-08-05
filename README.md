@@ -186,7 +186,7 @@ task add-repos
 Install the Helm release.
 
 ```bash
-task install-chart odoo exo
+task install-chart odoo axo
 ```
 
 #### Publish Helm charts
@@ -206,7 +206,7 @@ Change these values:
 
 ```yaml
 ingress:
-  host: odoo.exo.mintcloud.ch
+  host: odoo.axo.mintcloud.ch
   secure: true
 vshnPostgres:
   enabled: true
@@ -267,7 +267,7 @@ task install-chart cluster-issuer
 Install the Odoo chart.
 
 ```bash
-task install-chart odoo chk
+task install-chart odoo
 ```
 
 ### K3s
@@ -305,6 +305,14 @@ Install cluster issuer.
 
 ```bash
 task install-chart cluster-issuer
+```
+
+#### Create Hugo release
+
+Install the Hugo chart.
+
+```bash
+task install-chart hugo
 ```
 
 ## Troubleshooting
