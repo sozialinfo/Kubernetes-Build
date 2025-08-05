@@ -5,3 +5,5 @@ ingress:
 acme:
     email: $ACME_EMAIL
     infomaniakApiToken: "$INFOMANIAK_API_TOKEN"
+postgres:
+    storageClassName: si-cinder-sc-retain
