@@ -369,8 +369,10 @@ function install-chart() {
 }
 
 function install-hugo() {
-    # echo "Load local hugo image."
-    # kind load docker-image janikvonrotz/janikvonrotz.ch:latest
+    if docker images -q "janikvonrotz/janikvonrotz.ch:latest" > /dev/null; then
+        echo "Load local Hugo image."
+        kind load docker-image "janikvonrotz/janikvonrotz.ch:latest"
+    fi
 
     echo "Install hugo chart as release $RELEASE_NAME."
     helm install "$RELEASE_NAME" hugo \
@@ -378,8 +380,10 @@ function install-hugo() {
 }
 
 function install-odoo() {
-    echo "Load local odoo image."
-    kind load docker-image mintsystem/odoo:18.0.20250725
+    if docker images -q "mintsystem/odoo:18.0.20250725" > /dev/null; then
+        echo "Load local Odoo image."
+        kind load docker-image "mintsystem/odoo:18.0.20250725"
+    fi
 
     echo "Install odoo chart as release $RELEASE_NAME."
     helm install "$RELEASE_NAME" odoo \
