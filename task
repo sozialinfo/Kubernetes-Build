@@ -23,6 +23,7 @@ function help() {
 
     # Env
     printf "$COLUMN" "version" "" "Show version of required tools."
+    printf "$COLUMN" "info" "" "Show info about env."
     printf "$COLUMN" "template-dotenv" "" "Generate .env from .env.template."
     printf "$COLUMN" "load-kubeconfig" "[ctx]" "Load kubeconfig file from pass."
     printf "$COLUMN" "load-dotenv" "" "Restore content to .env from pass entry."
@@ -89,7 +90,7 @@ CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
 
 PASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
 if kubectl &> /dev/null; then
-    CURRENT_CONTEXT=$(kubectl config current-context || "")
+    CURRENT_CONTEXT=$(kubectl config current-context 2> /dev/null) || CURRENT_CONTEXT=""
 fi
 
 # Import commands
@@ -120,6 +121,12 @@ function version() {
     helm version
 }
 
+function info() {
+    echo "Current context: $CURRENT_CONTEXT"
+    echo "Namespace: $NAMESPACE"
+    echo "Release name: $RELEASE_NAME"
+}
+
 function install() {
     pnpm install
 }
@@ -141,7 +148,8 @@ function test-k8s() {
     else
         start-kind
         add-repos
-        update-dependencies
+        info
+        update-dependencies odoo
         install-chart odoo
         install-ingress-nginx
     fi
@@ -280,7 +288,6 @@ function list-chart() {
     echo "cluster-issuer"
     echo "ingress-nginx"
     echo "haproxy-ingress"
-    echo "kuard"
 }
 
 function list-context() {
@@ -464,7 +471,7 @@ function upgrade-postgres() {
 
 function upgrade-postgresql() {
     echo "Upgrade bitnami/postgresql"
-    helm upgrade "$RELEASE_NAME" oci://registry-1.docker.io/bitnamicharts/postgresql -f odoo/values.yaml
+    helm upgrade "$RELEASE_NAME" bitnami/postgresql -f odoo/values.yaml
 }
 
 function upgrade-vshnpostgres() {
