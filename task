@@ -88,7 +88,7 @@ CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
 # Dynamic vars
 
 PASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-if command -v kubectl &> /dev/null; then
+if kubectl &> /dev/null; then
     CURRENT_CONTEXT=$(kubectl config current-context || "")
 fi
 
