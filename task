@@ -393,9 +393,17 @@ function install-postgresql() {
 }
 
 function install-ingress-nginx() {
-    echo "Install ingress-nginx/ingress-nginx."
-    helm install ingress-nginx ingress-nginx/ingress-nginx \
-        --create-namespace --namespace ingress-nginx
+
+    if [ -n "$EXTERNAL_IP" ]; then
+        echo "Install ingress-nginx/ingress-nginx with external IP $EXTERNAL_IP:"
+        helm install ingress-nginx ingress-nginx/ingress-nginx \
+            --create-namespace --namespace ingress-nginx \
+            --set controller.service.externalIPs[0]=$EXTERNAL_IP
+    else
+        echo "Install ingress-nginx/ingress-nginx:"
+        helm install ingress-nginx ingress-nginx/ingress-nginx \
+            --create-namespace --namespace ingress-nginx
+    fi
 }
 
 function install-cert-manager() {
