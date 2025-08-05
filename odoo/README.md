@@ -24,12 +24,13 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ### Postgres parameters
 
-| Name                 | Description                       | Value           |
-| -------------------- | --------------------------------- | --------------- |
-| `postgres.enabled`   | Enable or disable Postgres        | `true`          |
-| `postgres.db`        | The database name for Postgres    | `odoo`          |
-| `postgres.user`      | The username for Postgres         | `odoo`          |
-| `postgres.secretRef` | The secret reference for Postgres | `odoo-postgres` |
+| Name                        | Description                       | Value           |
+| --------------------------- | --------------------------------- | --------------- |
+| `postgres.enabled`          | Enable or disable Postgres        | `true`          |
+| `postgres.db`               | The database name for Postgres    | `odoo`          |
+| `postgres.user`             | The username for Postgres         | `odoo`          |
+| `postgres.secretRef`        | The secret reference for Postgres | `odoo-postgres` |
+| `postgres.storageClassName` | Set the storage class             | `standard`      |
 
 ### PostgreSQL parameters
 

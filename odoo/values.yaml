@@ -46,6 +46,9 @@ postgres:
   ## @param postgres.secretRef The secret reference for Postgres
   ##
   secretRef: odoo-postgres
+  ## @param postgres.storageClassName Set the storage class
+  ##
+  storageClassName: standard
 
 ## @section PostgreSQL parameters
 ##
