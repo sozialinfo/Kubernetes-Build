@@ -121,9 +121,10 @@ function version() {
 }
 
 function info() {
-    echo "Current context: $CURRENT_CONTEXT"
-    echo "Context alias: $(get-context-alias)"
-    echo "Release name: $RELEASE_NAME"
+    echo "Current Context: $CURRENT_CONTEXT"
+    echo "Context Alias: $(get-context-alias)"
+    echo "Release Name: $RELEASE_NAME"
+    echo "External IP: $EXTERNAL_IP"
 }
 
 function install() {
@@ -393,7 +394,6 @@ function install-postgresql() {
 }
 
 function install-ingress-nginx() {
-
     if [ -n "$EXTERNAL_IP" ]; then
         echo "Install ingress-nginx/ingress-nginx with external IP $EXTERNAL_IP:"
         helm install ingress-nginx ingress-nginx/ingress-nginx \
@@ -496,6 +496,18 @@ function upgrade-cluster-issuer() {
         cluster-issuer cluster-issuer \
         --namespace cert-manager \
         --values ./values.yaml
+}
+function upgrade-ingress-nginx() {
+    if [ -n "$EXTERNAL_IP" ]; then
+        echo "Upgrade ingress-nginx/ingress-nginx with external IP $EXTERNAL_IP:"
+        helm upgrade ingress-nginx ingress-nginx/ingress-nginx \
+            --namespace ingress-nginx \
+            --set controller.service.externalIPs[0]=$EXTERNAL_IP
+    else
+        echo "Upgrade ingress-nginx/ingress-nginx:"
+        helm upgrade ingress-nginx ingress-nginx/ingress-nginx \
+            --namespace ingress-nginx
+    fi
 }
 
 function uninstall-release() {
