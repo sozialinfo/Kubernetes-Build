@@ -500,20 +500,20 @@ function uninstall-odoo() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
 
-    if [ "$CURRENT_CONTEXT" = "kind-kind" ]; then
-        echo "Delete /data/volume"
-        docker exec kind-control-plane rm -rf /data/volume
-    fi
+    # if [ "$CURRENT_CONTEXT" = "kind-kind" ]; then
+    #     echo "Delete /data/volume"
+    #     docker exec kind-control-plane rm -rf /data/volume
+    # fi
 }
 
 function uninstall-postgres() {
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
 
-    if [ "$CURRENT_CONTEXT" = "kind-kind" ]; then
-        echo "Delete /data/volume"
-        docker exec kind-control-plane rm -rf /data/volume
-    fi
+    # if [ "$CURRENT_CONTEXT" = "kind-kind" ]; then
+    #     echo "Delete /data/volume"
+    #     docker exec kind-control-plane rm -rf /data/volume
+    # fi
 }
 
 function uninstall-postgresql() {
