@@ -36,6 +36,7 @@ List of charts:
 * [odoo](/odoo/README.md)
 * [postgres](/postgres/README.md)
 * [vshnPostgres](/vshnPostgres/README.md)
+* [hugo](/hugo/README.md)
 
 ## Develop
 
@@ -273,6 +274,10 @@ task install-chart odoo chk
 
 #### Setup project
 
+Setup K3s cluster with Ansible: <https://ansible.build/roles/k3s/>
+
+Setup Kubeconfig with alias `rpi`.
+
 #### Setup ingress nginx
 
 Add all repos and install the ingress nginx.
@@ -299,7 +304,7 @@ task install-chart cert-manager
 Install cluster issuer.
 
 ```bash
-task install-chart cluster-issuer rpi
+task install-chart cluster-issuer
 ```
 
 ## Troubleshooting

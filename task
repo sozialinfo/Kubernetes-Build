@@ -123,6 +123,7 @@ function version() {
 
 function info() {
     echo "Current context: $CURRENT_CONTEXT"
+    echo "Context alias: $(get-context-alias)"
     echo "Namespace: $NAMESPACE"
     echo "Release name: $RELEASE_NAME"
 }
@@ -197,6 +198,7 @@ function docs() {
     pnpm run generate-readme --values odoo/values.yaml -r odoo/README.md
     pnpm run generate-readme --values postgres/values.yaml -r postgres/README.md
     pnpm run generate-readme --values vshnPostgres/values.yaml -r vshnPostgres/README.md
+    pnpm run generate-readme --values hugo/values.yaml -r hugo/README.md
 }
 
 function lint() {
@@ -204,6 +206,7 @@ function lint() {
     helm lint odoo
     helm lint postgres
     helm lint vshnPostgres
+    helm lint hugo
 }
 
 function dev-vitepress() {
@@ -261,9 +264,15 @@ function forward-postgres() {
 }
 
 function forward-odoo() {
-    PORT=8080
+    PORT=8069
     echo "Open http://localhost:$PORT url in your browser."
     kubectl port-forward service/odoo $PORT:8069
+}
+
+function forward-hugo() {
+    PORT=1313
+    echo "Open http://localhost:$PORT url in your browser."
+    kubectl port-forward service/hugo $PORT:1313
 }
 
 function forward-ingress-nginx() {
@@ -282,6 +291,7 @@ function forward-haproxy-ingress() {
 
 function list-chart() {
     echo "postgresql"
+    echo "hugo"
     echo "postgres"
     echo "vshnpostgres"
     echo "cert-manager"
@@ -349,17 +359,25 @@ function install-chart() {
         oc project "$OC_PROJECT"
     fi
     template-values "$2"
-    "install-$1"
+    if [[ "$1" =~ (postgres|vshnPostgres) ]]; then
+        echo "Install chart $1 as release $RELEASE_NAME."
+        helm install "$RELEASE_NAME" "$1" \
+            --values ./values.yaml
+    else
+        "install-$1"
+    fi
 }
 
-function install-postgres() {
-    echo "Install chart postgres as release $RELEASE_NAME."
-    helm install "$RELEASE_NAME" postgres \
+function install-hugo() {
+    # echo "Load local hugo image."
+    # kind load docker-image janikvonrotz/janikvonrotz.ch:latest
+
+    echo "Install hugo chart as release $RELEASE_NAME."
+    helm install "$RELEASE_NAME" hugo \
         --values ./values.yaml
 }
 
 function install-odoo() {
-
     echo "Load local odoo image."
     kind load docker-image mintsystem/odoo:18.0.20250725
 
@@ -371,21 +389,6 @@ function install-odoo() {
 function install-postgresql() {
     echo "Install bitnami/postgresql"
     helm install "$RELEASE_NAME" bitnami/postgresql --values odoo/values.yaml
-}
-
-function install-vshnPostgres() {
-    echo "Install vshnPostgres chart as release odoo with APPUiO-specific values."
-    helm install "$RELEASE_NAME" vshnPostgres \
-        --values ./values.yaml
-}
-
-function install-odoo-appuio() {
-    echo "Install dependencies."
-    helm dependency build odoo
-
-    echo "Install odoo chart as release $RELEASE_NAME with APPUiO-specific values."
-    helm install "$RELEASE_NAME" odoo \
-        --values ./values.yaml
 }
 
 function install-ingress-nginx() {
@@ -454,30 +457,18 @@ EOF
 function upgrade-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
     template-values "$2"
-    "upgrade-$1"
-}
-
-function upgrade-odoo() {
-    echo "Upgrade odoo chart for release $RELEASE_NAME."
-    helm upgrade "$RELEASE_NAME" odoo \
-        --values ./values.yaml
-}
-
-function upgrade-postgres() {
-    echo "Upgrade postgres chart for release $RELEASE_NAME."
-    helm upgrade "$RELEASE_NAME" postgres \
-        --values ./values.yaml
+    if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres) ]]; then
+        echo "Upgrade $1 chart for release $RELEASE_NAME."
+        helm upgrade "$RELEASE_NAME" "$1" \
+            --values ./values.yaml
+    else
+        "upgrade-$1"
+    fi
 }
 
 function upgrade-postgresql() {
     echo "Upgrade bitnami/postgresql"
     helm upgrade "$RELEASE_NAME" bitnami/postgresql -f odoo/values.yaml
-}
-
-function upgrade-vshnpostgres() {
-    echo "Upgrade vshnPostgres chart for release $RELEASE_NAME."
-    helm upgrade "$RELEASE_NAME" vshnPostgres \
-        --values ./values.yaml
 }
 
 function upgrade-cert-manager() {
@@ -500,32 +491,12 @@ function upgrade-cluster-issuer() {
 
 function uninstall-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    "uninstall-$1"
-}
-
-function uninstall-odoo() {
-    echo "Uninstall release $RELEASE_NAME."
-    helm uninstall "$RELEASE_NAME"
-
-    # if [ "$CURRENT_CONTEXT" = "kind-kind" ]; then
-    #     echo "Delete /data/volume"
-    #     docker exec kind-control-plane rm -rf /data/volume
-    # fi
-}
-
-function uninstall-postgres() {
-    echo "Uninstall release $RELEASE_NAME."
-    helm uninstall "$RELEASE_NAME"
-
-    # if [ "$CURRENT_CONTEXT" = "kind-kind" ]; then
-    #     echo "Delete /data/volume"
-    #     docker exec kind-control-plane rm -rf /data/volume
-    # fi
-}
-
-function uninstall-postgresql() {
-    echo "Uninstall release $RELEASE_NAME."
-    helm uninstall "$RELEASE_NAME"
+    if [[ "$1" =~ (hugo|odoo|postgres|postgresql|vshnPostgres) ]]; then
+        echo "Uninstall release $RELEASE_NAME."
+        helm uninstall "$RELEASE_NAME"
+    else
+        "uninstall-$1"
+    fi
 }
 
 function uninstall-ingress-nginx() {
@@ -604,17 +575,14 @@ function logs-ingress-nginx() {
 
 function template-manifest() {
     template-values "$2"
-    echo "Template charts into manifest.yaml."
+    echo "Template chart $1 into manifest.yaml."
 
-    if [ "$1" = "odoo" ]; then
-        helm --debug template "$RELEASE_NAME" odoo \
+    if [[ "$1" =~ (hugo|odoo|postgres) ]]; then
+        helm --debug template "$RELEASE_NAME" "$1" \
             --values ./values.yaml > manifest.yaml
     elif [ "$1" = "cluster-issuer" ]; then
         helm --debug template cluster-issuer cluster-issuer \
             --namespace cert-manager \
-            --values ./values.yaml > manifest.yaml
-    elif [ "$1" = "postgres" ]; then
-        helm --debug template "$RELEASE_NAME" postgres \
             --values ./values.yaml > manifest.yaml
     fi
 }
@@ -634,6 +602,7 @@ function package-repo() {
         helm package postgres
         helm package vshnPostgres
         helm package odoo
+        helm package hugo
     fi
 }
 

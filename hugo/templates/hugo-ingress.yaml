@@ -1,0 +1,26 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: odoo-ingress
+  annotations:
+    {{- if .Values.ingress.clusterIssuerRef }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
+    {{- end }}
+    {{- if eq .Values.ingress.className "nginx" }}
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    {{- end }}
+spec:
+  ingressClassName: {{.Values.ingress.className }}
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hugo
+            port:
+              number: 1313
+{{- end }}
