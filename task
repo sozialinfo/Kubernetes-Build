@@ -25,6 +25,7 @@ function help() {
     printf "$COLUMN" "version" "" "Show version of required tools."
     printf "$COLUMN" "info" "" "Show info about env."
     printf "$COLUMN" "template-dotenv" "" "Generate .env from .env.template."
+    printf "$COLUMN" "export-kubeconfig" "[user][path]" "Export kubeconfig file for service account."
     printf "$COLUMN" "load-kubeconfig" "[ctx]" "Load kubeconfig file from pass."
     printf "$COLUMN" "load-dotenv" "" "Restore content to .env from pass entry."
     printf "$COLUMN" "save-kubeconfig" "[ctx]" "Save kubeconfig file in pass."
@@ -50,8 +51,8 @@ function help() {
     printf "$COLUMN" "get-context-alias" "" "Get alias of current context."
     printf "$COLUMN" "template-values" "[ctx]" "Template values file."
     printf "$COLUMN" "update-dependencies" "[name]" "Update dependencies for a chart."
-    printf "$COLUMN" "install-chart" "[name][ctx]" "Install Helm chart."
-    printf "$COLUMN" "upgrade-release" "[name][ctx]" "Upgrade Helm release."
+    printf "$COLUMN" "install-chart" "[name]" "Install Helm chart."
+    printf "$COLUMN" "upgrade-release" "[name]" "Upgrade Helm release."
     printf "$COLUMN" "uninstall-release" "" "Uninstall Helm release."
     # kubectl
     printf "$COLUMN" "get-secrets" "[name]" "Show secrets for chart."
@@ -190,6 +191,21 @@ function load-kubeconfig() {
     fi
 }
 
+export-kubeconfig() {
+  if test -z "$1"; then echo "\$1 is empty."; exit; fi
+  if test -z "$2"; then echo "\$2 is empty."; exit; fi
+
+  KUBE_USER=$1
+  KUBE_OUTPUT_FILE=$2
+  kubectl config set-cluster default --server=https://k3s.raspberrypi.build --kubeconfig=$KUBE_OUTPUT_FILE
+  kubectl config set-context default --cluster=default --user=$KUBE_USER --kubeconfig=$KUBE_OUTPUT_FILE
+  kubectl config set-credentials "$KUBE_USER" --token=$(kubectl create token $KUBE_USER --duration=87600h) --kubeconfig=$KUBE_OUTPUT_FILE
+  kubectl config use-context default --kubeconfig=$KUBE_OUTPUT_FILE
+
+  echo "Kubeconfig exported for user $KUBE_USER to file $KUBE_OUTPUT_FILE"
+}
+
+
 # Docs Commands
 
 function docs() {
@@ -198,6 +214,7 @@ function docs() {
     pnpm run generate-readme --values postgres/values.yaml -r postgres/README.md
     pnpm run generate-readme --values vshnPostgres/values.yaml -r vshnPostgres/README.md
     pnpm run generate-readme --values hugo/values.yaml -r hugo/README.md
+    pnpm run generate-readme --values deployment-updater/values.yaml -r deployment-updater/README.md
 }
 
 function lint() {
@@ -206,6 +223,7 @@ function lint() {
     helm lint postgres
     helm lint vshnPostgres
     helm lint hugo
+    helm lint deployment-updater
 }
 
 function dev-vitepress() {
@@ -289,6 +307,8 @@ function forward-haproxy-ingress() {
 # Chart Commands
 
 function list-chart() {
+    echo "keel"
+    echo "deployment-updater"
     echo "postgresql"
     echo "hugo"
     echo "postgres"
@@ -352,11 +372,11 @@ function update-dependencies() {
 
 function install-chart() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    if [ "$2" = "axo" ]; then
+    if [ "$(get-context-alias)" = "axo" ]; then
         echo "Set oc project to $OC_PROJECT."
         oc project "$OC_PROJECT"
     fi
-    template-values "$2"
+    template-values
     if [[ "$1" =~ (postgres|vshnPostgres) ]]; then
         echo "Install chart $1 as release $RELEASE_NAME."
         helm install "$RELEASE_NAME" "$1" \
@@ -364,6 +384,16 @@ function install-chart() {
     else
         "install-$1"
     fi
+}
+
+function install-deployment-updater() {
+    echo "Install deployment-updater chart as release deployment-updater."
+    helm install deployment-updater deployment-updater
+}
+
+function install-keel() {
+    echo "Install keel/keel chart as release keel."
+    helm install keel --namespace=kube-system keel/keel
 }
 
 function install-hugo() {
@@ -465,7 +495,7 @@ EOF
 
 function upgrade-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    template-values "$2"
+    template-values
     if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres) ]]; then
         echo "Upgrade $1 chart for release $RELEASE_NAME."
         helm upgrade "$RELEASE_NAME" "$1" \
@@ -473,6 +503,11 @@ function upgrade-release() {
     else
         "upgrade-$1"
     fi
+}
+
+function upgrade-deployment-updater() {
+    echo "Upgrade deployment-updater"
+    helm upgrade deployment-updater deployment-updater -f odoo/values.yaml
 }
 
 function upgrade-postgresql() {
@@ -518,6 +553,16 @@ function uninstall-release() {
     else
         "uninstall-$1"
     fi
+}
+
+function uninstall-deployment-updater() {
+    echo "Uninstall release deployment-updater."
+    helm uninstall deployment-updater
+}
+
+function uninstall-keel() {
+    echo "Uninstall release keel."
+    helm uninstall keel
 }
 
 function uninstall-ingress-nginx() {
@@ -662,6 +707,9 @@ function add-repos(){
 
     echo "Add bitnami."
     helm repo add bitnami https://charts.bitnami.com/bitnami
+
+    echo "Add keel."
+    helm repo add keel https://charts.keel.sh
 }
 
 function remove-repo(){
