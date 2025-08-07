@@ -18,4 +18,4 @@ spec:
           image: {{ .Values.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
-          - containerPort: 1313
+          - containerPort: 80

@@ -22,7 +22,7 @@ spec:
           service:
             name: hugo
             port:
-              number: 1313
+              number: 80
   {{- if .Values.ingress.clusterIssuerRef }}
   tls:
     - hosts:
