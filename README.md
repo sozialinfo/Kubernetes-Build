@@ -32,11 +32,12 @@ helm install "$NAME" "kubernetes-build/$NAME"
 
 List of charts:
 
-* [cluster-issuer](/cluster-issuer/README.md)
+* [clusterIssuer](/clusterIssuer/README.md)
 * [odoo](/odoo/README.md)
 * [postgres](/postgres/README.md)
 * [vshnPostgres](/vshnPostgres/README.md)
 * [hugo](/hugo/README.md)
+* [deploymentUpdater](/deploymentUpdater/README.md)
 
 ## Develop
 
@@ -259,7 +260,7 @@ task install-chart cert-manager
 Install cluster issuer.
 
 ```bash
-task install-chart cluster-issuer
+task install-chart clusterIssuer
 ```
 
 #### Create Odoo release
@@ -304,7 +305,7 @@ task install-chart cert-manager
 Install cluster issuer.
 
 ```bash
-task install-chart cluster-issuer
+task install-chart clusterIssuer
 ```
 
 #### Create Hugo release

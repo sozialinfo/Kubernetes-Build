@@ -1,4 +1,4 @@
-# Mint System Cluster Issuer
+# Mint System clusterIssuer
 
 This chart deploys cluster issuers for prod and staging and for dns and http.
 

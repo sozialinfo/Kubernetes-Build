@@ -1,9 +1,0 @@
-## @section ACME parameters
-##
-acme:
-  ## @param acme.email The email address for ACME
-  ##
-  email: login@example.com
-  ## @param acme.solver The solver for ACME
-  ##
-  solver: infomaniak

@@ -75,14 +75,13 @@ function help() {
     printf "$COLUMN" "commit-with-llm" "" "Commit with llm generated commit message."
     printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
     # Test
-    printf "$COLUMN" "test-cluster-issuer" "" "Test cluster issuer."
+    printf "$COLUMN" "test-clusterIssuer" "" "Test cluster issuer."
     printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
 }
 
 # Default vars
 
 OC_PROJECT=${OC_PROJECT:="odoo"}
-RELEASE_NAME=${RELEASE_NAME:="odoo"}
 CONTAINER_REGISTRY=${CONTAINER_REGISTRY:="mintsystem/"}
 CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
 
@@ -124,7 +123,6 @@ function version() {
 function info() {
     echo "Current Context: $CURRENT_CONTEXT"
     echo "Context Alias: $(get-context-alias)"
-    echo "Release Name: $RELEASE_NAME"
     echo "External IP: $EXTERNAL_IP"
 }
 
@@ -209,21 +207,21 @@ export-kubeconfig() {
 # Docs Commands
 
 function docs() {
-    pnpm run generate-readme --values cluster-issuer/values.yaml -r cluster-issuer/README.md
+    pnpm run generate-readme --values clusterIssuer/values.yaml -r clusterIssuer/README.md
     pnpm run generate-readme --values odoo/values.yaml -r odoo/README.md
     pnpm run generate-readme --values postgres/values.yaml -r postgres/README.md
     pnpm run generate-readme --values vshnPostgres/values.yaml -r vshnPostgres/README.md
     pnpm run generate-readme --values hugo/values.yaml -r hugo/README.md
-    pnpm run generate-readme --values deployment-updater/values.yaml -r deployment-updater/README.md
+    # pnpm run generate-readme --values deploymentUpdater/values.yaml -r deploymentUpdater/README.md
 }
 
 function lint() {
-    helm lint cluster-issuer
+    helm lint clusterIssuer
     helm lint odoo
     helm lint postgres
     helm lint vshnPostgres
     helm lint hugo
-    helm lint deployment-updater
+    helm lint deploymentUpdater
 }
 
 function dev-vitepress() {
@@ -308,13 +306,13 @@ function forward-haproxy-ingress() {
 
 function list-chart() {
     echo "keel"
-    echo "deployment-updater"
+    echo "deploymentUpdater"
     echo "postgresql"
     echo "hugo"
     echo "postgres"
     echo "vshnpostgres"
     echo "cert-manager"
-    echo "cluster-issuer"
+    echo "clusterIssuer"
     echo "ingress-nginx"
     echo "haproxy-ingress"
 }
@@ -377,50 +375,28 @@ function install-chart() {
         oc project "$OC_PROJECT"
     fi
     template-values
-    if [[ "$1" =~ (postgres|vshnPostgres) ]]; then
-        echo "Install chart $1 as release $RELEASE_NAME."
-        helm install "$RELEASE_NAME" "$1" \
+
+    # if docker images -q "janikvonrotz/janikvonrotz.ch:latest" > /dev/null; then
+    #     echo "Load local Hugo image."
+    #     kind load docker-image "janikvonrotz/janikvonrotz.ch:latest"
+    # fi
+    # if docker images -q "mintsystem/odoo:18.0.20250725" > /dev/null; then
+    #     echo "Load local Odoo image."
+    #     kind load docker-image "mintsystem/odoo:18.0.20250725"
+    # fi
+
+    if [[ "$1" =~ (postgres|vshnPostgres|deploymentUpdater) ]]; then
+        echo "Install chart $1 as release $1."
+        helm install "$1" "$1" \
             --values ./values.yaml
     else
         "install-$1"
     fi
 }
 
-function install-deployment-updater() {
-    echo "Install deployment-updater chart as release deployment-updater."
-    helm install deployment-updater deployment-updater
-}
-
-function install-keel() {
-    echo "Install keel/keel chart as release keel."
-    helm install keel --namespace=kube-system keel/keel
-}
-
-function install-hugo() {
-    # if docker images -q "janikvonrotz/janikvonrotz.ch:latest" > /dev/null; then
-    #     echo "Load local Hugo image."
-    #     kind load docker-image "janikvonrotz/janikvonrotz.ch:latest"
-    # fi
-
-    echo "Install hugo chart as release $RELEASE_NAME."
-    helm install "$RELEASE_NAME" hugo \
-        --values ./values.yaml
-}
-
-function install-odoo() {
-    # if docker images -q "mintsystem/odoo:18.0.20250725" > /dev/null; then
-    #     echo "Load local Odoo image."
-    #     kind load docker-image "mintsystem/odoo:18.0.20250725"
-    # fi
-
-    echo "Install odoo chart as release $RELEASE_NAME."
-    helm install "$RELEASE_NAME" odoo \
-        --values ./values.yaml
-}
-
 function install-postgresql() {
     echo "Install bitnami/postgresql"
-    helm install "$RELEASE_NAME" bitnami/postgresql --values odoo/values.yaml
+    helm install postgresql bitnami/postgresql --values odoo/values.yaml
 }
 
 function install-ingress-nginx() {
@@ -451,15 +427,15 @@ function install-cert-manager() {
     kubectl apply -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
 }
 
-function install-cluster-issuer() {
-    echo "Install cluster-issuer."
+function install-clusterIssuer() {
+    echo "Install clusterIssuer."
     helm install \
-        cluster-issuer cluster-issuer \
+        clusterIssuer clusterIssuer \
         --namespace cert-manager \
         --values ./values.yaml
 }
 
-function test-cluster-issuer() {
+function test-clusterIssuer() {
     echo "Apply certificate."
     cat <<EOF | kubectl apply -f -
 ---
@@ -496,23 +472,18 @@ EOF
 function upgrade-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
     template-values
-    if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres) ]]; then
-        echo "Upgrade $1 chart for release $RELEASE_NAME."
-        helm upgrade "$RELEASE_NAME" "$1" \
+    if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater) ]]; then
+        echo "Upgrade $1 chart for release $1."
+        helm upgrade "$1" "$1" \
             --values ./values.yaml
     else
         "upgrade-$1"
     fi
 }
 
-function upgrade-deployment-updater() {
-    echo "Upgrade deployment-updater"
-    helm upgrade deployment-updater deployment-updater -f odoo/values.yaml
-}
-
 function upgrade-postgresql() {
     echo "Upgrade bitnami/postgresql"
-    helm upgrade "$RELEASE_NAME" bitnami/postgresql -f odoo/values.yaml
+    helm upgrade postgresql bitnami/postgresql -f odoo/values.yaml
 }
 
 function upgrade-cert-manager() {
@@ -525,10 +496,10 @@ function upgrade-cert-manager() {
         --set config.featureGates.ACMEHTTP01IngressPathTypeExact=false
 }
 
-function upgrade-cluster-issuer() {
-    echo "Upgrade cluster-issuer."
+function upgrade-clusterIssuer() {
+    echo "Upgrade clusterIssuer."
     helm upgrade \
-        cluster-issuer cluster-issuer \
+        clusterIssuer clusterIssuer \
         --namespace cert-manager \
         --values ./values.yaml
 }
@@ -548,21 +519,11 @@ function upgrade-ingress-nginx() {
 function uninstall-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
     if [[ "$1" =~ (hugo|odoo|postgres|postgresql|vshnPostgres) ]]; then
-        echo "Uninstall release $RELEASE_NAME."
-        helm uninstall "$RELEASE_NAME"
+        echo "Uninstall release $1."
+        helm uninstall "$1"
     else
         "uninstall-$1"
     fi
-}
-
-function uninstall-deployment-updater() {
-    echo "Uninstall release deployment-updater."
-    helm uninstall deployment-updater
-}
-
-function uninstall-keel() {
-    echo "Uninstall release keel."
-    helm uninstall keel
 }
 
 function uninstall-ingress-nginx() {
@@ -583,9 +544,9 @@ function uninstall-cert-manager() {
     kubectl delete -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
 }
 
-function uninstall-cluster-issuer() {
-    echo "Uninstall release cluster-issuer."
-    helm uninstall cluster-issuer --namespace cert-manager
+function uninstall-clusterIssuer() {
+    echo "Uninstall release clusterIssuer."
+    helm uninstall clusterIssuer --namespace cert-manager
 }
 
 # kubectl Commands
@@ -644,10 +605,10 @@ function template-manifest() {
     echo "Template chart $1 into manifest.yaml."
 
     if [[ "$1" =~ (hugo|odoo|postgres) ]]; then
-        helm --debug template "$RELEASE_NAME" "$1" \
+        helm --debug template "$1" "$1" \
             --values ./values.yaml > manifest.yaml
-    elif [ "$1" = "cluster-issuer" ]; then
-        helm --debug template cluster-issuer cluster-issuer \
+    elif [ "$1" = "clusterIssuer" ]; then
+        helm --debug template clusterIssuer clusterIssuer \
             --namespace cert-manager \
             --values ./values.yaml > manifest.yaml
     fi
@@ -664,7 +625,7 @@ function package-repo() {
     else
         echo "Package all Helm charts."
         index-repo
-        helm package cluster-issuer
+        helm package clusterIssuer
         helm package postgres
         helm package vshnPostgres
         helm package odoo
@@ -707,9 +668,6 @@ function add-repos(){
 
     echo "Add bitnami."
     helm repo add bitnami https://charts.bitnami.com/bitnami
-
-    echo "Add keel."
-    helm repo add keel https://charts.keel.sh
 }
 
 function remove-repo(){
