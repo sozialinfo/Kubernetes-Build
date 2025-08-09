@@ -16,4 +16,4 @@ This chart deploys a Postgres container and stores the credentials in a secret.
 | `password`         | If not set a password will be generated | `nil`                |
 | `secretRef`        | The secret reference for Postgres       | `postgres`           |
 | `userPasswordKey`  | The user password key for Postgres      | `password`           |
-| `storageClassName` | Set the storage class                   | `standard`           |
+| `storageClassName` | Set the storage class                   | `nil`                |
