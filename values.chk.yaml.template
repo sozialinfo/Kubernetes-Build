@@ -1,7 +1,6 @@
 ingress:
     host: "odoo.chk.mintcloud.ch"
     clusterIssuerRef: letsencrypt-http-prod
-    className: nginx
 acme:
     email: $ACME_EMAIL
     infomaniakApiToken: "$INFOMANIAK_API_TOKEN"

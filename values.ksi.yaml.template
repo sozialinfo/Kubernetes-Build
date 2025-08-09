@@ -1,4 +1,3 @@
 ingress:
-    host: "odoo-upgrade.k8s.sozialinfo.ch"
-    clusterIssuerRef: letsencrypt-staging
-    className: nginx
+  clusterIssuerRef: letsencrypt-staging
+  host: odoo-upgrade.k8s.sozialinfo.ch
