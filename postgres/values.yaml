@@ -26,4 +26,4 @@ secretRef: postgres
 userPasswordKey: "password"
 ## @param storageClassName Set the storage class
 ##
-storageClassName: standard
+storageClassName:

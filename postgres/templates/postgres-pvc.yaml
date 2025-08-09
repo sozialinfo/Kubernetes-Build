@@ -8,4 +8,6 @@ spec:
   resources:
     requests:
       storage: 10Gi
+  {{- if .Values.storageClassName }}
   storageClassName: {{ .Values.storageClassName }}
+  {{- end }}

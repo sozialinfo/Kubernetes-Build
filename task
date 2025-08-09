@@ -42,7 +42,7 @@ function help() {
     printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
     printf "$COLUMN" "setup-hosts" "" "Update hosts file."
-    printf "$COLUMN" "forward" "[name]" "Forward port."
+    printf "$COLUMN" "forward" "[chart]" "Forward port."
     # Chart
     printf "$COLUMN" "list-chart" "" "List Helm charts."
     printf "$COLUMN" "list-context" "" "List contexts."
@@ -50,13 +50,13 @@ function help() {
     printf "$COLUMN" "show-context" "" "Show active kubeconfig."
     printf "$COLUMN" "get-context-alias" "" "Get alias of current context."
     printf "$COLUMN" "template-values" "[ctx]" "Template values file."
-    printf "$COLUMN" "update-dependencies" "[name]" "Update dependencies for a chart."
-    printf "$COLUMN" "install-chart" "[name]" "Install Helm chart."
-    printf "$COLUMN" "upgrade-release" "[name]" "Upgrade Helm release."
+    printf "$COLUMN" "update-dependencies" "[chart]" "Update dependencies for a chart."
+    printf "$COLUMN" "install-chart" "[chart][ns]" "Install Helm chart."
+    printf "$COLUMN" "upgrade-release" "[chart]" "Upgrade Helm release."
     printf "$COLUMN" "uninstall-release" "" "Uninstall Helm release."
     # kubectl
-    printf "$COLUMN" "get-secrets" "[name]" "Show secrets for chart."
-    printf "$COLUMN" "exec-bash" "[name]" "Open bash shell in container."
+    printf "$COLUMN" "get-secrets" "[chart]" "Show secrets for chart."
+    printf "$COLUMN" "exec-bash" "[chart]" "Open bash shell in container."
     printf "$COLUMN" "logs-odoo" "" "Show pod logs."
     printf "$COLUMN" "logs-haproxy-ingress" "" "Show haproxy-ingress logs."
     printf "$COLUMN" "logs-ingress-nginx" "" "Show ingress-nginx logs."
@@ -65,8 +65,8 @@ function help() {
     printf "$COLUMN" "login-oc" "" "Refresh the auth token for OpenShift."
     # Helm
     printf "$COLUMN" "add-repos" "" "Add the required Helm repos."
-    printf "$COLUMN" "template-manifest" "[name][ctx]" "Template all charts with Helm."
-    printf "$COLUMN" "package-repo" "[name]" "Package Helm charts."
+    printf "$COLUMN" "template-manifest" "[chart][ctx]" "Template all charts with Helm."
+    printf "$COLUMN" "package-repo" "[chart]" "Package Helm charts."
     printf "$COLUMN" "index-repo" "" "Index Helm chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm chart files to dist."
     printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-build repo."
@@ -384,10 +384,14 @@ function install-chart() {
     #     echo "Load local Odoo image."
     #     kind load docker-image "mintsystem/odoo:18.0.20250725"
     # fi
+    NAMESPACE="$1"
+    if [ -n "$2" ]; then
+        NAMESPACE="$2"
+    fi
 
     if [[ "$1" =~ (odoo|postgres|vshnPostgres|deploymentUpdater) ]]; then
-        echo "Install chart $1 as release $1."
-        helm install "$1" "$1" \
+        echo "Install chart $1 as release $NAMESPACE."
+        helm install "$NAMESPACE" "$1" \
             --values ./values.yaml
     else
         "install-$1"
