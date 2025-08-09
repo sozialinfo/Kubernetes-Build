@@ -576,6 +576,11 @@ function get-secrets() {
         echo "odoo-postgresql/postgres-password:"
         kubectl get secret odoo-postgresql -o jsonpath="{.data.postgres-password}" | base64 --decode && echo
     fi
+
+    if [ "$1" = "clusterIssuer" ]; then
+        echo "cert-managerinfomaniak-api-token"
+        kubectl get secret -n cert-manager infomaniak-api-token -o jsonpath="{.data.access-token}" | base64 --decode && echo
+    fi
 }
 
 function exec-bash() {
