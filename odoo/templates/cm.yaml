@@ -7,7 +7,6 @@ metadata:
 data:
   ODOO_DATABASE: {{ .Values.database }}
   GITHUB_USERNAME: {{ .Values.githubUsername | quote }}
-  GITHUB_USERNAME: {{ .Values.githubUsername | quote }}
   ADDONS_GIT_REPOS: {{ join "," .Values.addonsGitRepos | quote }}
   ODOO_INIT_LANG: {{ .Values.initLang | quote }}
   PROXY_MODE: {{ .Values.proxyMode | quote }}

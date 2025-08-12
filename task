@@ -57,7 +57,7 @@ function help() {
     # kubectl
     printf "$COLUMN" "get-secrets" "[chart]" "Show secrets for chart."
     printf "$COLUMN" "exec-bash" "[chart]" "Open bash shell in container."
-    printf "$COLUMN" "logs-odoo" "" "Show pod logs."
+    printf "$COLUMN" "logs" "[grep]" "Select pods with grep and show logs."
     printf "$COLUMN" "logs-haproxy-ingress" "" "Show haproxy-ingress logs."
     printf "$COLUMN" "logs-ingress-nginx" "" "Show ingress-nginx logs."
     printf "$COLUMN" "list" "" "List Helm deployments."
@@ -241,6 +241,8 @@ function preview-vitepress() {
 # Host Commands
 
 function start-kind() {
+    switch-context loc
+
     echo "Start kind."
     kind create cluster
 
@@ -305,7 +307,7 @@ function forward-haproxy-ingress() {
 # Chart Commands
 
 function list-chart() {
-    echo "keel"
+    echo "cnpg"
     echo "deploymentUpdater"
     echo "postgresql"
     echo "hugo"
@@ -377,14 +379,20 @@ function install-chart() {
     fi
     template-values
 
-    # if docker images -q "janikvonrotz/janikvonrotz.ch:latest" > /dev/null; then
-    #     echo "Load local Hugo image."
-    #     kind load docker-image "janikvonrotz/janikvonrotz.ch:latest"
-    # fi
-    # if docker images -q "mintsystem/odoo:18.0.20250725" > /dev/null; then
-    #     echo "Load local Odoo image."
-    #     kind load docker-image "mintsystem/odoo:18.0.20250725"
-    # fi
+    if kind &> /dev/null && kind get clusters | grep -q "kind"; then
+        echo "Kind cluster is available. Checking for local Docker images..."
+
+        if docker images -q "janikvonrotz/janikvonrotz.ch:latest" > /dev/null; then
+            echo "Loading local Hugo image into Kind cluster..."
+            kind load docker-image "janikvonrotz/janikvonrotz.ch:latest"
+        fi
+
+        if docker images -q "mintsystem/odoo:18.0.20250725" > /dev/null; then
+            echo "Loading local Odoo image into Kind cluster..."
+            kind load docker-image "mintsystem/odoo:18.0.20250725"
+        fi
+    fi
+
     NAMESPACE="$1"
     if [ -n "$2" ]; then
         NAMESPACE="$2"
@@ -399,8 +407,16 @@ function install-chart() {
     fi
 }
 
+function install-cnpg() {
+    echo "Install cnpg/cloudnative-pg."
+    helm upgrade --install cnpg \
+      --namespace cnpg-system \
+      --create-namespace \
+      cnpg/cloudnative-pg
+}
+
 function install-postgresql() {
-    echo "Install bitnami/postgresql"
+    echo "Install bitnami/postgresql."
     helm install postgresql bitnami/postgresql --values odoo/values.yaml
 }
 
@@ -558,10 +574,10 @@ function uninstall-clusterIssuer() {
 
 function get-secrets() {
     if [ "$1" = "odoo" ]; then
-        echo "odoo-postgres/user:"
-        kubectl get secret odoo-postgres -o jsonpath="{.data.user}" | base64 --decode && echo
-        echo "odoo-postgres/password:"
-        kubectl get secret odoo-postgres -o jsonpath="{.data.password}" | base64 --decode && echo
+        echo "odoo-postgresql-app/username:"
+        kubectl get secret odoo-postgresql-app -o jsonpath="{.data.username}" | base64 --decode && echo
+        echo "odoo-postgresql-app/password:"
+        kubectl get secret odoo-postgresql-app -o jsonpath="{.data.password}" | base64 --decode && echo
     fi
 
     if [ "$1" = "postgres" ]; then
@@ -589,8 +605,8 @@ function exec-bash() {
     kubectl exec -it "$1" -- bash
 }
 
-function logs-odoo() {
-    POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "odoo")
+function logs() {
+    POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "$1")
     kubectl logs "$POD_ID"
 }
 
@@ -678,6 +694,9 @@ function add-repos(){
 
     echo "Add bitnami."
     helm repo add bitnami https://charts.bitnami.com/bitnami
+
+    echo "Add cnpg."
+    helm repo add cnpg https://cloudnative-pg.github.io/charts
 }
 
 function remove-repo(){

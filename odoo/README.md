@@ -26,7 +26,7 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 | Name                        | Description                       | Value           |
 | --------------------------- | --------------------------------- | --------------- |
-| `postgres.enabled`          | Enable or disable Postgres        | `true`          |
+| `postgres.enabled`          | Enable or disable Postgres        | `false`         |
 | `postgres.db`               | The database name for Postgres    | `odoo`          |
 | `postgres.user`             | The username for Postgres         | `odoo`          |
 | `postgres.secretRef`        | The secret reference for Postgres | `odoo-postgres` |
@@ -42,6 +42,12 @@ This Helm chart deploys Odoo with PostgreSQL.
 | `postgresql.auth.existingSecret`              | Name of the secret key.                         | `odoo-postgresql`   |
 | `postgresql.auth.secretKeys.adminPasswordKey` | The admin password key for PostgreSQL           | `postgres-password` |
 | `postgresql.auth.secretKeys.userPasswordKey`  | The user password key for PostgreSQL            | `password`          |
+
+### CloudNativePG parameters
+
+| Name           | Description                     | Value  |
+| -------------- | ------------------------------- | ------ |
+| `cnpg.enabled` | Enable or disable CloudNativePG | `true` |
 
 ### Odoo parameters
 

@@ -12,3 +12,10 @@ This Helm chart deploys Hugo site.
 | `ingress.className`        | The class name for the ingress               | `nginx`          |
 | `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `nil`            |
 | `ingress.host`             | The host for the ingress                     | `hugo.knd.local` |
+
+### Hugo parameters
+
+| Name              | Description                | Value                                 |
+| ----------------- | -------------------------- | ------------------------------------- |
+| `image`           | The image for Hugo         | `janikvonrotz/janikvonrotz.ch:latest` |
+| `imagePullPolicy` | Pull policy for hugo image | `Always`                              |

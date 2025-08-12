@@ -36,7 +36,7 @@ vshnPostgres:
 postgres:
   ## @param postgres.enabled Enable or disable Postgres
   ##
-  enabled: true
+  enabled: false
   ## @param postgres.db The database name for Postgres
   ##
   db: odoo
@@ -74,6 +74,12 @@ postgresql:
       ##
       userPasswordKey: "password"
 
+## @section CloudNativePG parameters
+##
+cnpg:
+  ## @param cnpg.enabled Enable or disable CloudNativePG
+  ##
+  enabled: true
 
 ## @section Odoo parameters
 ##

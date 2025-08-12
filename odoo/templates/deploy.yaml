@@ -78,6 +78,20 @@ spec:
             - name: PGSSLROOTCERT
               value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
             {{- end }}
+            {{- if .Values.cnpg.enabled }}
+            - name: PGHOST
+              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: password
+            {{- end }}
           {{- if .Values.vshnPostgres.enabled }}
           volumeMounts:
           - name: {{ .Values.vshnPostgres.secretRef }}
@@ -143,6 +157,20 @@ spec:
               value: verify-ca
             - name: PGSSLROOTCERT
               value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
+            {{- end }}
+            {{- if .Values.cnpg.enabled }}
+            - name: PGHOST
+              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: password
             {{- end }}
           {{- if .Values.vshnPostgres.enabled }}
           volumeMounts:
