@@ -34,6 +34,7 @@ spec:
                 --no-interactive \
                 --token "$RUNNER_SECRET" \
                 --name "k8s-runner" \
+                --labels k8s,docker,linux,amd64,custom \
                 --instance "{{ .Values.forgejoInstanceUrl }}" \
               && \
               echo "⚙️ Generating config file..." \
