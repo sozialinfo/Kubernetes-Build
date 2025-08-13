@@ -148,6 +148,7 @@ function test-k8s() {
         start-kind
         add-repos
         info
+        install-chart cnpg
         update-dependencies odoo
         install-chart odoo
         install-ingress-nginx
@@ -241,22 +242,8 @@ function preview-vitepress() {
 # Host Commands
 
 function start-kind() {
-    switch-context loc
-
     echo "Start kind."
     kind create cluster
-
-#     echo "Apply kubelet config"
-#     cat <<EOF | kubectl apply -f -
-# ---
-# kind: Cluster
-# apiVersion: kind.x-k8s.io/v1alpha4
-# nodes:
-# - role: control-plane
-#   extraMounts:
-#   - containerPath: /var/lib/kubelet/config.json
-#     hostPath: $CONTAINER_CONFIG/secret.json
-# EOF
 }
 
 function delete-kind() {
