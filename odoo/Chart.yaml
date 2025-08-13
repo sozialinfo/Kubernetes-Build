@@ -22,6 +22,6 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
   - name: cloudnative-pg
-    version: 1.26.1
+    version: 0.25.0
     repository: https://cloudnative-pg.github.io/charts
     condition: cnpg.enabled
