@@ -39,6 +39,7 @@ function help() {
     printf "$COLUMN" "preview-vitepress" "" "Server VitePress build."
     # Host
     printf "$COLUMN" "start-kind" "" "Start kind Kubernetes cluster."
+    printf "$COLUMN" "load-images" "" "Load Docker images into kind cluster."
     printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
     printf "$COLUMN" "setup-hosts" "" "Update hosts file."
@@ -246,6 +247,22 @@ function start-kind() {
     kind create cluster
 }
 
+function load-images() {
+    if kind &> /dev/null && kind get clusters | grep -q "kind"; then
+        echo "Kind cluster is available. Checking for local Docker images..."
+
+        if docker images -q "janikvonrotz/janikvonrotz.ch:latest" > /dev/null; then
+            echo "Loading local Hugo image into Kind cluster..."
+            kind load docker-image "janikvonrotz/janikvonrotz.ch:latest"
+        fi
+
+        if docker images -q "mintsystem/odoo:18.0.20250725" > /dev/null; then
+            echo "Loading local Odoo image into Kind cluster..."
+            kind load docker-image "mintsystem/odoo:18.0.20250725"
+        fi
+    fi
+}
+
 function delete-kind() {
     echo "Delete kind."
     kind delete cluster
@@ -365,20 +382,6 @@ function install-chart() {
         oc project "$OC_PROJECT"
     fi
     template-values
-
-    if kind &> /dev/null && kind get clusters | grep -q "kind"; then
-        echo "Kind cluster is available. Checking for local Docker images..."
-
-        if docker images -q "janikvonrotz/janikvonrotz.ch:latest" > /dev/null; then
-            echo "Loading local Hugo image into Kind cluster..."
-            kind load docker-image "janikvonrotz/janikvonrotz.ch:latest"
-        fi
-
-        if docker images -q "mintsystem/odoo:18.0.20250725" > /dev/null; then
-            echo "Loading local Odoo image into Kind cluster..."
-            kind load docker-image "mintsystem/odoo:18.0.20250725"
-        fi
-    fi
 
     NAMESPACE="$1"
     if [ -n "$2" ]; then
