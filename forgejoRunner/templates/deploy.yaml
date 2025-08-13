@@ -34,7 +34,7 @@ spec:
                 --no-interactive \
                 --token "$RUNNER_SECRET" \
                 --name "k8s-runner" \
-                --labels "k8s-runner" \
+                --labels "ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:custom-24.04" \
                 --instance "{{ .Values.forgejoInstanceUrl }}" \
               && \
               echo "⚙️ Generating config file..." \
