@@ -45,9 +45,16 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ### CloudNativePG parameters
 
-| Name           | Description                     | Value  |
-| -------------- | ------------------------------- | ------ |
-| `cnpg.enabled` | Enable or disable CloudNativePG | `true` |
+| Name                        | Description                                                             | Value  |
+| --------------------------- | ----------------------------------------------------------------------- | ------ |
+| `cnpg.cluster.enabled`      | Enable or disable CloudNativePG                                         | `true` |
+| `cnpg.cluster.nameOverride` | Override the name of the PostgreSQL cluster                             | `""`   |
+| `cnpg.cluster.instances`    | Number of PostgreSQL instances (1 for single, 2+ for high availability) | `1`    |
+| `cnpg.cluster.storage.size` | Persistent volume size for each instance                                | `8Gi`  |
+| `cnpg.database.enabled`     | Enable or disable creation of a Database resource                       | `true` |
+| `cnpg.database.name`        | Name of the PostgreSQL database to create                               | `odoo` |
+| `cnpg.database.user`        | Name of the database user (optional, defaults to database name)         | `odoo` |
+| `cnpg.database.secretName`  | Name of the secret to store credentials                                 | `""`   |
 
 ### Odoo parameters
 

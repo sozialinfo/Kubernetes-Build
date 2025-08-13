@@ -1,4 +1,4 @@
-{{- if and .Values.cnpg.enabled }}
+{{- if and .Values.k8up.enabled }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -6,7 +6,7 @@ metadata:
   labels:
     app: odoo
 data:
-  {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace backup-repo }}
+  {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace "backup-repo" }}
   {{- if and $existingSecret (index $existingSecret.data "password") }}
   password: {{ index $existingSecret.data "password" }}
   {{- else }}

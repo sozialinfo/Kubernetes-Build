@@ -1,19 +1,22 @@
-{{- if and .Values.cnpg.enabled }}
+{{- if .Values.cnpg.cluster.enabled }}
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: {{ .Release.Name }}-postgresql
+  name: {{ default (printf "%s-postgresql" .Release.Name) .Values.cnpg.cluster.nameOverride }}
 spec:
-  instances: 1
+  instances: {{ .Values.cnpg.cluster.instances }}
   storage:
-    size: 1Gi
+    size: {{ .Values.cnpg.cluster.storage.size }}
+{{- end }}
+
+{{- if .Values.cnpg.database.enabled }}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
   name: {{ .Release.Name }}-database
 spec:
-  name: {{ .Values.database }}
+  name: {{ .Values.cnpg.database.name }}
   cluster:
-    name: {{ .Release.Name }}-postgresql
+    name: {{ default (printf "%s-postgresql" .Release.Name) .Values.cnpg.cluster.nameOverride }}
 {{- end }}

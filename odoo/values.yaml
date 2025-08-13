@@ -77,9 +77,36 @@ postgresql:
 ## @section CloudNativePG parameters
 ##
 cnpg:
-  ## @param cnpg.enabled Enable or disable CloudNativePG
+  cluster:
+    ## @param cnpg.cluster.enabled Enable or disable CloudNativePG
+    ##
+    enabled: true
+    ## @param cnpg.cluster.nameOverride Override the name of the PostgreSQL cluster
+    ## Default: "{release-name}-postgresql"
+    ##
+    nameOverride: ""
+    ## @param cnpg.cluster.instances Number of PostgreSQL instances (1 for single, 2+ for high availability)
+    ##
+    instances: 1
+    storage:
+      ## @param cnpg.cluster.storage.size Persistent volume size for each instance
+      ##
+      size: 8Gi
+  ## @param cnpg.database.enabled Enable or disable creation of a Database resource
+  ## Requires a running Cluster
   ##
-  enabled: true
+  database:
+    enabled: true
+    ## @param cnpg.database.name Name of the PostgreSQL database to create
+    ##
+    name: odoo
+    ## @param cnpg.database.user Name of the database user (optional, defaults to database name)
+    ##
+    user: odoo
+    ## @param cnpg.database.secretName Name of the secret to store credentials
+    ## Default: {release-name}-cnpg-credentials
+    ##
+    secretName: ""
 
 ## @section Odoo parameters
 ##
