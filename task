@@ -499,11 +499,11 @@ function upgrade-release() {
     template-values
 
     if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
-        echo "Upgrade $RELEASE_NAME chart for release $RELEASE_NAME."
-        helm upgrade "$RELEASE_NAME" "$RELEASE_NAME" \
+        echo "Upgrade $1 chart for release $RELEASE_NAME."
+        helm upgrade "$RELEASE_NAME" "$1" \
             --values ./values.yaml
     else
-        "upgrade-$RELEASE_NAME"
+        "upgrade-$1"
     fi
 }
 
@@ -550,7 +550,7 @@ function uninstall-release() {
         echo "Uninstall release $RELEASE_NAME."
         helm uninstall "$RELEASE_NAME"
     else
-        "uninstall-$RELEASE_NAME"
+        "uninstall-$1"
     fi
 }
 
@@ -602,8 +602,13 @@ function get-secrets() {
     fi
 
     if [ "$1" = "clusterIssuer" ]; then
-        echo "cert-manager/infomaniak-api-credentials"
+        echo "cert-manager/infomaniak-api-credentials:"
         kubectl get secret -n cert-manager infomaniak-api-token -o jsonpath="{.data.access-token}" | base64 --decode && echo
+    fi
+
+    if [ "$1" = "forgejoRunner" ]; then
+        echo "forgejo-runner/forgejoInstanceToken:"
+        kubectl get secret forgejo-runner -o jsonpath="{.data.forgejoInstanceToken}" | base64 --decode && echo
     fi
 }
 

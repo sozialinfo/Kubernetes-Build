@@ -5,7 +5,7 @@ metadata:
     app: forgejo-runner
   name: forgejo-runner
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: forgejo-runner
@@ -23,18 +23,27 @@ spec:
         - name: runner-data
           emptyDir: {}
       initContainers:
-        - name: runner-config-generation
+        - name: init
           image: {{ .Values.image }}
           command:
-            ['forgejo-runner create-runner-file --instance $FORGEJO_INSTANCE_URL --secret $RUNNER_SECRET --connect']
+            - sh
+            - -c
+            - |
+              echo "📝 Registering runner with {{ .Values.forgejoInstanceUrl }}..."
+              forgejo-runner register \
+                --no-interactive \
+                --token "$RUNNER_SECRET" \
+                --name "k8s-runner" \
+                --instance "{{ .Values.forgejoInstanceUrl }}" \
+              && \
+              echo "⚙️ Generating config file..." \
+              forgejo-runner generate-config > /data/forgejo-runner.yml
           env:
             - name: RUNNER_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.secretRef }}
                   key: forgejoInstanceToken
-            - name: FORGEJO_INSTANCE_URL
-              value: {{ .Values.forgejoInstanceUrl }}
           volumeMounts:
             - name: runner-data
               mountPath: /data
