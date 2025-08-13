@@ -110,28 +110,28 @@ cnpg:
 
 ## @section Odoo parameters
 ##
-## @param enabled Enable or disable odoo
+## @param enabled Enable or disable Odoo
 ##
 enabled: true
 ## @param image The image for odoo
 ##
 image: mintsystem/odoo:18.0.20250725
-## @param imagePullPolicy Pull policy for odoo image
+## @param imagePullPolicy Pull policy for Odoo image
 ##
 imagePullPolicy: Always
-## @param proxyMode Enable or disable proxy mode for odoo
+## @param proxyMode Enable or disable proxy mode for Odoo
 ##
 proxyMode: true
-## @param githubUsername The GitHub username for odoo
+## @param githubUsername The GitHub username for Odoo
 ##
 githubUsername: ""
-## @param githubPersonalAccessToken The GitHub personal access token for odoo
+## @param githubPersonalAccessToken The GitHub personal access token for Odoo
 ##
 githubPersonalAccessToken: ""
 ## @param downloadOdooEnterprise Enable or disable downloading Odoo Enterprise
 ##
 downloadOdooEnterprise: false
-## @param addonsGitRepos List of addon Git repositories for odoo
+## @param addonsGitRepos List of addon Git repositories for Odoo
 ##
 addonsGitRepos:
   - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0
@@ -140,13 +140,13 @@ addonsGitRepos:
 ## @param database The database for odoo
 ##
 database: odoo
-## @param initLang The initial language for odoo
+## @param initLang The initial language for Odoo
 ##
 initLang: de_CH
-## @param listDB Enable or disable listing databases for odoo
+## @param listDB Enable or disable listing databases for Odoo
 ##
 listDB: false
-## @param secretRef The secret reference for odoo
+## @param secretRef The secret reference for Odoo
 ##
 secretRef: odoo-creds
 

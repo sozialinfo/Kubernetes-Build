@@ -216,6 +216,7 @@ function docs() {
     pnpm run generate-readme --values vshnPostgres/values.yaml -r vshnPostgres/README.md
     pnpm run generate-readme --values hugo/values.yaml -r hugo/README.md
     # pnpm run generate-readme --values deploymentUpdater/values.yaml -r deploymentUpdater/README.md
+    pnpm run generate-readme --values forgejoRunner/values.yaml -r forgejoRunner/README.md
 }
 
 function lint() {
@@ -225,6 +226,7 @@ function lint() {
     helm lint vshnPostgres
     helm lint hugo
     helm lint deploymentUpdater
+    helm lint forgejoRunner
 }
 
 function dev-vitepress() {
@@ -323,6 +325,7 @@ function list-chart() {
     echo "clusterIssuer"
     echo "ingress-nginx"
     echo "haproxy-ingress"
+    echo "forgejoRunner"
 }
 
 function list-context() {
@@ -362,6 +365,7 @@ function template-values {
 
     export ACME_EMAIL
     export INFOMANIAK_API_TOKEN
+    export FORGEJO_INSTANCE_TOKEN
 
     if [ -n "$ALIAS" ]; then
         echo "Template values.yaml from values.$ALIAS.yaml.template"
@@ -385,14 +389,16 @@ function install-chart() {
     fi
     template-values
 
-    NAMESPACE="$1"
+    RELEASE_NAME="$1"
     if [ -n "$2" ]; then
-        NAMESPACE="$2"
+        RELEASE_NAME="$2"
     fi
+    RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
 
-    if [[ "$1" =~ (odoo|postgres|vshnPostgres|deploymentUpdater) ]]; then
-        echo "Install chart $1 as release $NAMESPACE."
-        helm install "$NAMESPACE" "$1" \
+    if [[ "$1" =~ (odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
+
+        echo "Install chart $1 as release $RELEASE_NAME."
+        helm install "$RELEASE_NAME" "$1" \
             --values ./values.yaml
     else
         "install-$1"
@@ -489,13 +495,15 @@ EOF
 
 function upgrade-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
+    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
     template-values
-    if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater) ]]; then
-        echo "Upgrade $1 chart for release $1."
-        helm upgrade "$1" "$1" \
+
+    if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
+        echo "Upgrade $RELEASE_NAME chart for release $RELEASE_NAME."
+        helm upgrade "$RELEASE_NAME" "$RELEASE_NAME" \
             --values ./values.yaml
     else
-        "upgrade-$1"
+        "upgrade-$RELEASE_NAME"
     fi
 }
 
@@ -536,11 +544,13 @@ function upgrade-ingress-nginx() {
 
 function uninstall-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    if [[ "$1" =~ (hugo|odoo|postgres|postgresql|vshnPostgres) ]]; then
-        echo "Uninstall release $1."
-        helm uninstall "$1"
+    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+
+    if [[ "$1" =~ (hugo|odoo|postgres|postgresql|vshnPostgres|k8up|deploymentUpdater|forgejoRunner) ]]; then
+        echo "Uninstall release $RELEASE_NAME."
+        helm uninstall "$RELEASE_NAME"
     else
-        "uninstall-$1"
+        "uninstall-$RELEASE_NAME"
     fi
 }
 
@@ -627,8 +637,9 @@ function template-manifest() {
     template-values "$2"
     echo "Template chart $1 into manifest.yaml."
 
-    if [[ "$1" =~ (hugo|odoo|postgres) ]]; then
-        helm --debug template "$1" "$1" \
+    if [[ "$1" =~ (hugo|odoo|postgres|deploymentUpdater|forgejoRunner) ]]; then
+        RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+        helm --debug template "$RELEASE_NAME" "$1" \
             --values ./values.yaml > manifest.yaml
     elif [ "$1" = "clusterIssuer" ]; then
         helm --debug template clusterIssuer clusterIssuer \
