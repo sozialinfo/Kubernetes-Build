@@ -4,3 +4,4 @@ ingress:
 acme:
     email: $ACME_EMAIL
     solver:
+forgejoInstanceToken: $FORGEJO_INSTANCE_TOKEN

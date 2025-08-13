@@ -395,7 +395,7 @@ function install-chart() {
     fi
     RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
 
-    if [[ "$1" =~ (odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
+    if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
 
         echo "Install chart $1 as release $RELEASE_NAME."
         helm install "$RELEASE_NAME" "$1" \
