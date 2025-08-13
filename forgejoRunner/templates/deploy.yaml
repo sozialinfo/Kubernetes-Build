@@ -34,7 +34,7 @@ spec:
                 --no-interactive \
                 --token "$RUNNER_SECRET" \
                 --name "k8s-runner" \
-                --labels "ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:custom-24.04" \
+                --labels "k8s-runner" \
                 --instance "{{ .Values.forgejoInstanceUrl }}" \
               && \
               echo "⚙️ Generating config file..." \
@@ -70,7 +70,7 @@ spec:
             - name: runner-data
               mountPath: /data
         - name: daemon
-          image: docker:dind
+          image: docker:24-git
           env:
             - name: DOCKER_TLS_CERTDIR
               value: /certs
