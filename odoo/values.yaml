@@ -122,3 +122,10 @@ listDB: false
 ## @param secretRef The secret reference for odoo
 ##
 secretRef: odoo-creds
+
+## @section K8up parameters
+##
+k8up:
+  ## @param k8up.enabled Enable or disable K8up
+  ##
+  enabled: false

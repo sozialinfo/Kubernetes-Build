@@ -313,6 +313,7 @@ function forward-haproxy-ingress() {
 
 function list-chart() {
     echo "cnpg"
+    echo "k8up"
     echo "deploymentUpdater"
     echo "postgresql"
     echo "hugo"
@@ -396,6 +397,11 @@ function install-chart() {
     else
         "install-$1"
     fi
+}
+
+function install-k8up() {
+    echo "Install k8up-io/k8up."
+    helm install k8up k8up-io/k8up
 }
 
 function install-cnpg() {
@@ -688,6 +694,9 @@ function add-repos(){
 
     echo "Add cnpg."
     helm repo add cnpg https://cloudnative-pg.github.io/charts
+
+    echo "Add k8up."
+    helm repo add k8up-io https://k8up-io.github.io/k8up
 }
 
 function remove-repo(){

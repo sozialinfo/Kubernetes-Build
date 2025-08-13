@@ -65,3 +65,9 @@ This Helm chart deploys Odoo with PostgreSQL.
 | `initLang`                  | The initial language for odoo                 | `de_CH`                                                                                                                                                       |
 | `listDB`                    | Enable or disable listing databases for odoo  | `false`                                                                                                                                                       |
 | `secretRef`                 | The secret reference for odoo                 | `odoo-creds`                                                                                                                                                  |
+
+### K8up parameters
+
+| Name           | Description            | Value   |
+| -------------- | ---------------------- | ------- |
+| `k8up.enabled` | Enable or disable K8up | `false` |
