@@ -150,6 +150,7 @@ function test-k8s() {
         add-repos
         info
         install-chart cnpg
+        kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         update-dependencies odoo
         install-chart odoo
         install-ingress-nginx
