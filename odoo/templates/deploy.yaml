@@ -86,7 +86,7 @@ spec:
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-odoo-postgresql
+                  name: {{ .Release.Name }}-odoo-db-app
                   key: password
             {{- end }}
           {{- if .Values.vshnPostgres.enabled }}
@@ -122,7 +122,7 @@ spec:
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-odoo-postgresql
+                  name: {{ .Release.Name }}-odoo-db-app
                   key: password
             - name: PGHOST
               value: postgres.{{ .Release.Namespace }}.svc.cluster.local
@@ -163,7 +163,7 @@ spec:
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-odoo-postgresql
+                  name: {{ .Release.Name }}-odoo-db-app
                   key: password
             {{- end }}
           {{- if .Values.vshnPostgres.enabled }}

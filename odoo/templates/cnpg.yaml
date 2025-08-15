@@ -11,8 +11,6 @@ spec:
     initdb:
       database: {{ .Values.cnpg.cluster.bootstrap.initdb.name }}
       owner: {{ .Values.cnpg.cluster.bootstrap.initdb.user }}
-      secret:
-        name: {{ .Values.cnpg.cluster.bootstrap.initdb.secretName }}
   postgresql:
     major: {{ .Values.cnpg.cluster.bootstrap.initdb.majorVersion }}
 {{- end }}
