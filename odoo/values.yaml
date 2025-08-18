@@ -120,6 +120,9 @@ image: mintsystem/odoo:18.0.20250725
 ## @param imagePullPolicy Pull policy for Odoo image
 ##
 imagePullPolicy: Always
+## @param imagePullSecrets List of image pull secrets for private registries
+##
+imagePullSecrets: []
 ## @param proxyMode Enable or disable proxy mode for Odoo
 ##
 proxyMode: true
@@ -129,9 +132,10 @@ downloadOdooEnterprise: false
 ## @param addonsGitRepos List of addon Git repositories for Odoo
 ##
 addonsGitRepos:
-  - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0
-  - https://github.com/OCA/Server-Tools.git#18.0
-  - https://github.com/OCA/Project.git#18.0
+  - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#16.0
+  - https://github.com/OCA/Server-Tools.git#16.0
+  - https://github.com/OCA/Project.git#16.0
+  - https://github.com/sozialinfo/odoo-apps-sozialinfo.git#16.0
 ## @param database The database for odoo
 ##
 database: odoo
@@ -144,9 +148,65 @@ listDB: false
 ## @param githubAddonsCredentialsSecretName Name of secret containing GITHUB_USERNAME and GITHUB_PERSONAL_ACCESS_TOKEN with access to the addons repo.
 ##
 githubAddonsCredentialsSecretName: odoo-github
+
+## @section Persistence parameters
+##
+persistence:
+  ## @param persistence.enabled Enable persistence for Odoo modules
+  ##
+  enabled: false
+  ## @param persistence.storageClass Storage class for the PVC
+  ##
+  storageClass: ""
+  ## @param persistence.accessModes Access modes for the PVC
+  ##
+  accessModes:
+    - ReadWriteOnce
+  ## @param persistence.size Size of the PVC
+  ##
+  size: 8Gi
+  ## @param persistence.existingClaim Use an existing PVC
+  ##
+  existingClaim: ""
+  ## @param persistence.mountPath Mount path for the persistent volume
+  ##
+  mountPath: /mnt/extra-addons
+
 ## @section K8up parameters
 ##
 k8up:
   ## @param k8up.enabled Enable or disable K8up
   ##
   enabled: false
+
+## @section External Services
+##
+externalServices:
+  ## @param externalServices.meilisearch.enabled Enable Meilisearch integration
+  ##
+  meilisearch:
+    enabled: false
+    ## @param externalServices.meilisearch.serviceName Service name for Meilisearch
+    ##
+    serviceName: "{{ .Release.Name }}-meilisearch"
+    ## @param externalServices.meilisearch.port Port for Meilisearch service
+    ##
+    port: 7700
+
+## @section Extra Environment Variables
+##
+## @param extraEnv Additional environment variables for the Odoo container
+## You can define environment variables in Kubernetes YAML format.
+## This supports both simple values and references to secrets/configmaps.
+## Example:
+##   extraEnv: |
+##     - name: ODOO_EMAIL
+##       value: "admin@example.com"
+##     - name: DB_PASSWORD
+##       valueFrom:
+##         secretKeyRef:
+##           name: my-secret
+##           key: password
+##
+extraEnv: |
+    

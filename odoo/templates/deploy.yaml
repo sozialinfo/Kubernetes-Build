@@ -13,6 +13,12 @@ spec:
       labels:
         app: odoo
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ .name }}
+        {{- end }}
+      {{- end }}
       initContainers:
         - name: init
           image: {{ .Values.image }}
@@ -165,6 +171,13 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-odoo-db-app
                   key: password
+            {{- end }}
+            {{- if .Values.externalServices.meilisearch.enabled }}
+            - name: PUBLIC_MEILISEARCH_HOST
+              value: "http://{{ tpl .Values.externalServices.meilisearch.serviceName . }}:{{ .Values.externalServices.meilisearch.port }}"
+            {{- end }}
+            {{- if .Values.extraEnv }}
+            {{- .Values.extraEnv | nindent 12 }}
             {{- end }}
           {{- if .Values.vshnPostgres.enabled }}
           volumeMounts:
