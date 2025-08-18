@@ -30,6 +30,20 @@ spec:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env:
+            {{- if .Values.cnpg.database.enabled }}
+            - name: PGHOST
+              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: password
+            {{- end }}
             {{- if .Values.postgresql.enabled }}
             - name: PGPASSWORD
               valueFrom:
@@ -78,38 +92,53 @@ spec:
             - name: PGSSLROOTCERT
               value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
             {{- end }}
-            {{- if .Values.cnpg.enabled }}
-            - name: PGHOST
-              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
-            - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql-app
-                  key: username
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql-app
-                  key: password
-            {{- end }}
-          {{- if .Values.vshnPostgres.enabled }}
           volumeMounts:
-          - name: {{ .Values.vshnPostgres.secretRef }}
-            readOnly: true
-            mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
-          {{- end }}
+            - mountPath: /var/lib/odoo/
+              name: odoo
+              subPath: odoodata
+            {{- if .Values.vshnPostgres.enabled }}
+            - name: {{ .Values.vshnPostgres.secretRef }}
+              readOnly: true
+              mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
+            {{- end }}
       containers:
         - name: odoo
           image: {{ .Values.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
           - containerPort: 8069
+          livenessProbe:
+            httpGet:
+              path: /web/health
+              port: 8069
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /web/ready
+              port: 8069
+            initialDelaySeconds: 30
+            periodSeconds: 5
           envFrom:
             - secretRef:
                 name: {{ .Values.secretRef }}
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env:
+            {{- if .Values.cnpg.database.enabled }}
+            - name: PGHOST
+              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: password
+            {{- end }}
             {{- if .Values.postgresql.enabled }}
             - name: PGPASSWORD
               valueFrom:
@@ -158,29 +187,21 @@ spec:
             - name: PGSSLROOTCERT
               value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
             {{- end }}
-            {{- if .Values.cnpg.enabled }}
-            - name: PGHOST
-              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
-            - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql-app
-                  key: username
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql-app
-                  key: password
-            {{- end }}
-          {{- if .Values.vshnPostgres.enabled }}
           volumeMounts:
-          - name: {{ .Values.vshnPostgres.secretRef }}
-            readOnly: true
-            mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
-          {{- end }}
-      {{- if .Values.vshnPostgres.enabled }}
+            - mountPath: /var/lib/odoo/
+              name: odoo
+              subPath: odoodata
+            {{- if .Values.vshnPostgres.enabled }}
+            - name: {{ .Values.vshnPostgres.secretRef }}
+              readOnly: true
+              mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
+            {{- end }}
       volumes:
-      - name: {{ .Values.vshnPostgres.secretRef }}
-        secret:
-          secretName: {{ .Values.vshnPostgres.secretRef }}
-      {{- end }}
+        - name: odoo
+          persistentVolumeClaim:
+            claimName: data-odoo
+        {{- if .Values.vshnPostgres.enabled }}
+        - name: {{ .Values.vshnPostgres.secretRef }}
+          secret:
+            secretName: {{ .Values.vshnPostgres.secretRef }}
+        {{- end }}

@@ -149,6 +149,9 @@ listDB: false
 ## @param secretRef The secret reference for Odoo
 ##
 secretRef: odoo-creds
+## @param storageClassName Set the storage class
+##
+storageClassName: ""
 
 ## @section K8up parameters
 ##

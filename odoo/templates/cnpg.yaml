@@ -19,4 +19,20 @@ spec:
   name: {{ .Values.cnpg.database.name }}
   cluster:
     name: {{ default (printf "%s-postgresql" .Release.Name) .Values.cnpg.cluster.nameOverride }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: SQL
+metadata:
+  name: odoo-db-access
+  namespace: default
+spec:
+  cluster:
+    name: {{ default (printf "%s-postgresql" .Release.Name) .Values.cnpg.cluster.nameOverride }}
+  sql: |
+    GRANT CONNECT ON DATABASE odoo TO app;
+    GRANT USAGE ON SCHEMA public TO app;
+    GRANT CREATE ON SCHEMA public TO app;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO app;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO app;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO app;
 {{- end }}

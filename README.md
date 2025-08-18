@@ -93,6 +93,12 @@ Template the .env file.
 task template-dotenv
 ```
 
+Install the CloudNativePG chart:
+
+```bash
+task install-chart cnpg
+```
+
 Install the Odoo chart:
 
 ```bash
