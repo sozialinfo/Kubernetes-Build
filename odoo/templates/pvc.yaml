@@ -1,0 +1,47 @@
+{{- if and .Values.persistence.addons.enabled (not .Values.persistence.addons.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-odoo-addons-pvc
+  labels:
+    app: odoo
+spec:
+  accessModes:
+    {{- range .Values.persistence.addons.accessModes }}
+    - {{ . | quote }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.addons.size | quote }}
+  {{- if .Values.persistence.addons.storageClass }}
+  {{- if (eq "-" .Values.persistence.addons.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.persistence.addons.storageClass | quote }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+---
+{{- if and .Values.persistence.filestore.enabled (not .Values.persistence.filestore.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-odoo-filestore-pvc
+  labels:
+    app: odoo
+spec:
+  accessModes:
+    {{- range .Values.persistence.filestore.accessModes }}
+    - {{ . | quote }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.filestore.size | quote }}
+  {{- if .Values.persistence.filestore.storageClass }}
+  {{- if (eq "-" .Values.persistence.filestore.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.persistence.filestore.storageClass | quote }}
+  {{- end }}
+  {{- end }}
+{{- end }}

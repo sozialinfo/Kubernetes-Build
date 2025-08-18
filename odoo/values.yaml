@@ -17,66 +17,6 @@ ingress:
   ##
   customDomain: ""
 
-## @section vshnPostgres parameters
-##
-vshnPostgres:
-  ## @param vshnPostgres.enabled Enable or disable vshnPostgres
-  ##
-  enabled: false
-  ## @param vshnPostgres.secretRef The secret reference for vshnPostgres
-  ##
-  secretRef: odoo-postgresql
-  client:
-    ## @param vshnPostgres.client.enabled Enable or disable the vshnPostgres client
-    ##
-    enabled: false
-
-## @section Postgres parameters
-##
-postgres:
-  ## @param postgres.enabled Enable or disable Postgres
-  ##
-  enabled: false
-  ## @param postgres.db The database name for Postgres
-  ##
-  db: odoo
-  ## @param postgres.user The username for Postgres
-  ##
-  user: odoo
-  ## @param postgres.secretRef The secret reference for Postgres
-  ##
-  secretRef: odoo-postgres
-  ## @param postgres.userPasswordKey The user password key for Postgres
-  ##
-  userPasswordKey: password
-  ## @param postgres.storageClassName Set the storage class
-  ##
-  storageClassName: standard
-
-## @section PostgreSQL parameters
-##
-postgresql:
-  ## @param postgresql.enabled Enable or disable PostgreSQL
-  ##
-  enabled: false
-  auth:
-    ## @param postgresql.auth.username The username for PostgreSQL authentication
-    ##
-    username: odoo
-    ## @param postgresql.auth.database The database name for PostgreSQL authentication
-    ##
-    database: odoo
-    ## @param postgresql.auth.existingSecret Name of the secret key.
-    ##
-    existingSecret: odoo-postgresql
-    secretKeys:
-      ## @param postgresql.auth.secretKeys.adminPasswordKey The admin password key for PostgreSQL
-      ##
-      adminPasswordKey: "postgres-password"
-      ## @param postgresql.auth.secretKeys.userPasswordKey The user password key for PostgreSQL
-      ##
-      userPasswordKey: "password"
-
 ## @section CloudNativePG parameters
 ##
 cnpg:
@@ -152,25 +92,51 @@ githubAddonsCredentialsSecretName: odoo-github
 ## @section Persistence parameters
 ##
 persistence:
-  ## @param persistence.enabled Enable persistence for Odoo modules
+  ## @section Addons persistence parameters
   ##
-  enabled: false
-  ## @param persistence.storageClass Storage class for the PVC
+  addons:
+    ## @param persistence.addons.enabled Enable persistence for Odoo addons/modules
+    ##
+    enabled: false
+    ## @param persistence.addons.storageClass Storage class for the addons PVC
+    ##
+    storageClass: ""
+    ## @param persistence.addons.accessModes Access modes for the addons PVC
+    ##
+    accessModes:
+      - ReadWriteOnce
+    ## @param persistence.addons.size Size of the addons PVC
+    ##
+    size: 4Gi
+    ## @param persistence.addons.existingClaim Use an existing PVC for addons
+    ##
+    existingClaim: ""
+    ## @param persistence.addons.mountPath Mount path for the addons persistent volume
+    ##
+    mountPath: /mnt/extra-addons
+
+  ## @section Filestore persistence parameters
   ##
-  storageClass: ""
-  ## @param persistence.accessModes Access modes for the PVC
-  ##
-  accessModes:
-    - ReadWriteOnce
-  ## @param persistence.size Size of the PVC
-  ##
-  size: 8Gi
-  ## @param persistence.existingClaim Use an existing PVC
-  ##
-  existingClaim: ""
-  ## @param persistence.mountPath Mount path for the persistent volume
-  ##
-  mountPath: /mnt/extra-addons
+  filestore:
+    ## @param persistence.filestore.enabled Enable persistence for Odoo filestore
+    ##
+    enabled: false
+    ## @param persistence.filestore.storageClass Storage class for the filestore PVC
+    ##
+    storageClass: ""
+    ## @param persistence.filestore.accessModes Access modes for the filestore PVC
+    ##
+    accessModes:
+      - ReadWriteOnce
+    ## @param persistence.filestore.size Size of the filestore PVC
+    ##
+    size: 4Gi
+    ## @param persistence.filestore.existingClaim Use an existing PVC for filestore
+    ##
+    existingClaim: ""
+    ## @param persistence.filestore.mountPath Mount path for the filestore persistent volume
+    ##
+    mountPath: /var/lib/odoo/filestore
 
 ## @section K8up parameters
 ##
