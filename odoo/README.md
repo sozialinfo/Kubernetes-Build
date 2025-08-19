@@ -45,16 +45,14 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ### CloudNativePG parameters
 
-| Name                        | Description                                                             | Value  |
-| --------------------------- | ----------------------------------------------------------------------- | ------ |
-| `cnpg.cluster.enabled`      | Enable or disable CloudNativePG                                         | `true` |
-| `cnpg.cluster.nameOverride` | Override the name of the PostgreSQL cluster                             | `""`   |
-| `cnpg.cluster.instances`    | Number of PostgreSQL instances (1 for single, 2+ for high availability) | `1`    |
-| `cnpg.cluster.storage.size` | Persistent volume size for each instance                                | `8Gi`  |
-| `cnpg.database.enabled`     | Enable or disable creation of a Database resource                       | `true` |
-| `cnpg.database.name`        | Name of the PostgreSQL database to create                               | `odoo` |
-| `cnpg.database.user`        | Name of the database user (optional, defaults to database name)         | `odoo` |
-| `cnpg.database.secretName`  | Name of the secret to store credentials                                 | `""`   |
+| Name                | Description                                                  | Value  |
+| ------------------- | ------------------------------------------------------------ | ------ |
+| `cnpg.enabled`      | Enable or disable CloudNativePG                              | `true` |
+| `cnpg.nameOverride` | Override the name of the CloudNativePG cluster               | `""`   |
+| `cnpg.instances`    | Number of instances (1 for single, 2+ for high availability) | `1`    |
+| `cnpg.storage.size` | Persistent volume size for each instance                     | `8Gi`  |
+| `cnpg.database`     | Name of the CloudNativePG database to create                 | `odoo` |
+| `cnpg.owner`        | Name of the database user                                    | `app`  |
 
 ### Odoo parameters
 
@@ -72,7 +70,7 @@ This Helm chart deploys Odoo with PostgreSQL.
 | `initLang`                  | The initial language for Odoo                 | `de_CH`                                                                                                                                                       |
 | `listDB`                    | Enable or disable listing databases for Odoo  | `false`                                                                                                                                                       |
 | `secretRef`                 | The secret reference for Odoo                 | `odoo-creds`                                                                                                                                                  |
-| `storageClassName`          | Set the storage class                         | `nil`                                                                                                                                                         |
+| `storageClassName`          | Set the storage class                         | `""`                                                                                                                                                          |
 
 ### K8up parameters
 

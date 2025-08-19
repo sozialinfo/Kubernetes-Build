@@ -30,7 +30,7 @@ spec:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env:
-            {{- if .Values.cnpg.database.enabled }}
+            {{- if .Values.cnpg.enabled }}
             - name: PGHOST
               value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGUSER
@@ -113,19 +113,13 @@ spec:
               port: 8069
             initialDelaySeconds: 60
             periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /web/ready
-              port: 8069
-            initialDelaySeconds: 30
-            periodSeconds: 5
           envFrom:
             - secretRef:
                 name: {{ .Values.secretRef }}
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env:
-            {{- if .Values.cnpg.database.enabled }}
+            {{- if .Values.cnpg.enabled }}
             - name: PGHOST
               value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGUSER
