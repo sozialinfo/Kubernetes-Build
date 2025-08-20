@@ -1,5 +1,6 @@
 ingress:
     host: "odoo.chk.mintcloud.ch"
+    customDomain: "$CUSTOM_DOMAIN"
     clusterIssuerRef: letsencrypt-http-prod
 acme:
     email: $ACME_EMAIL
