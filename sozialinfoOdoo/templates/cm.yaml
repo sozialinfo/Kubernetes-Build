@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  labels:
+    app: odoo
+data:
+  ODOO_DATABASE: {{ .Values.database }}
+  ADDONS_GIT_REPOS: {{ join "," .Values.addonsGitRepos | quote }}
+  ADDONS_PATH: "/opt/odoo/addons{{- range .Values.addonsGitRepos -}},{{ $.Values.persistence.mountPath }}github.com/{{ . | replace "https://github.com/" "" | replace ".git#16.0" "" }}{{- end }}"
+  LOCAL_PATH: {{ .Values.persistence.mountPath | quote }}
+  ODOO_INIT_LANG: {{ .Values.initLang | quote }}
+  PROXY_MODE: {{ .Values.proxyMode | quote }}
+  LIST_DB: {{ .Values.listDB | quote }}

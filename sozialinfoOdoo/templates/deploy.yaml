@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-odoo
+  labels:
+    app: odoo
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: odoo
+  template:
+    metadata:
+      labels:
+        app: odoo
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ .name }}
+        {{- end }}
+      {{- end }}
+      initContainers:
+        - name: init
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command:
+            - /bin/bash
+            - -c
+            - |
+              {{- if .Values.downloadOdooEnterprise }}/entrypoint.sh download-git-archive && \{{- end }}
+              /entrypoint.sh git-clone-addons && \
+              pip install unittest-xml-reporting unidecode xmlschema codicefiscale asn1crypto && \
+              {{- $addonPaths := list -}}
+              {{- range .Values.addonsGitRepos -}}
+              {{- $repoPath := . | replace "https://github.com/" "" | replace ".git#16.0" "" -}}
+              {{- $addonPaths = append $addonPaths (printf "%sgithub.com/%s" $.Values.persistence.mountPath $repoPath) -}}
+              {{- end -}}
+              manifestoo --addons-path {{ join "," $addonPaths }} --select-found list --separator=, > /tmp/addons.txt && \
+              ADDONS=$(cat /tmp/addons.txt) && \
+              /entrypoint.sh init-db && \
+              /entrypoint.sh init-module $ADDONS
+          envFrom:
+            - secretRef:
+                name: {{ .Values.githubAddonsCredentialsSecretName }}
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+          env:
+            {{- if .Values.cnpg.enabled }}
+            - name: PGHOST
+              value: {{ .Release.Name }}-odoo-db-rw.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              value: {{ .Values.cnpg.cluster.bootstrap.initdb.user }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-odoo-db-app
+                  key: password
+            {{- end }}
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+          - name: odoo-data
+            mountPath: {{ .Values.persistence.mountPath }}
+          {{- end }}
+      containers:
+        - name: odoo
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+          - containerPort: 8069
+            name: http
+          - containerPort: 8072
+            name: websocket
+          envFrom:
+            - secretRef:
+                name: {{ .Values.githubAddonsCredentialsSecretName }}
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+          env:
+            {{- if .Values.cnpg.enabled }}
+            - name: PGHOST
+              value: {{ .Release.Name }}-odoo-db-rw.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              value: {{ .Values.cnpg.cluster.bootstrap.initdb.user }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-odoo-db-app
+                  key: password
+            {{- end }}
+            {{- if .Values.externalServices.meilisearch.enabled }}
+            - name: PUBLIC_MEILISEARCH_HOST
+              value: "http://{{ tpl .Values.externalServices.meilisearch.serviceName . }}:{{ .Values.externalServices.meilisearch.port }}"
+            {{- end }}
+            {{- if .Values.extraEnv }}
+            {{- .Values.extraEnv | nindent 12 }}
+            {{- end }}
+          {{- if .Values.persistence.enabled  }}
+          volumeMounts:
+          - name: odoo-data
+            mountPath: {{ .Values.persistence.mountPath }}
+          {{- end }}
+      {{- if .Values.persistence.enabled }}
+      volumes:
+      - name: odoo-data
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (printf "%s-odoo-data-pvc" .Release.Name) }}
+      {{- end }}
