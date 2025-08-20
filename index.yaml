@@ -1,24 +1,39 @@
 apiVersion: v1
 entries:
-  cluster-issuer:
+  clusterIssuer:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-08-04T19:56:48.88047866+02:00"
-    description: Mint System Cluster Issuer
-    digest: c5f22d5ce14dcad4f6cc402e4fe669fbc99c9d6b68ee85fce0f90da551afe70e
+    created: "2025-08-20T11:28:45.388218064+02:00"
+    description: Mint System clusterIssuer
+    digest: 913dcd2ff62ae3f3b963befb379c22d2adb258b426be4895dd681369de99cdac
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
       name: Mint System GmbH
-    name: cluster-issuer
+    name: clusterIssuer
     type: application
     urls:
-    - cluster-issuer-0.1.0.tgz
+    - clusterIssuer-0.1.0.tgz
+    version: 0.1.0
+  hugo:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-08-20T11:28:45.388663111+02:00"
+    description: Mint System Hugo
+    digest: 36022c187e7e82035ed5e7500340567c8b50145dc2ee7cd13e5f09cd827732b0
+    home: https://kubernetes.build
+    maintainers:
+    - email: support@mint-system.ch
+      name: Mint System GmbH
+    name: hugo
+    type: application
+    urls:
+    - hugo-0.1.0.tgz
     version: 0.1.0
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-08-04T19:56:48.886714315+02:00"
+    created: "2025-08-20T11:28:45.396616571+02:00"
     dependencies:
     - condition: postgres.enabled
       name: postgres
@@ -33,7 +48,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 16.7.21
     description: Mint System Odoo
-    digest: 903f096677c513b37f2ffdfeea0bf4d9767334847ff8ef0fac8b7ac3e2946e11
+    digest: 566e1d5a2b0cf63048075e103c134e540e2e60b1dbd68b946b445a58cfa9fa45
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -46,9 +61,9 @@ entries:
   postgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-08-04T19:56:48.886880968+02:00"
+    created: "2025-08-20T11:28:45.39712112+02:00"
     description: Mint System Postgres
-    digest: 2bf775777a86d0c8e2e69689306976c30cf63bc4b19e9c176bae6cf24627fcfe
+    digest: 9cbece69938385f0b57f5c37cc82e59aa6dd6c4ffb34efb24bf853788d0e246a
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -61,9 +76,9 @@ entries:
   vshnPostgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-08-04T19:56:48.886993991+02:00"
+    created: "2025-08-20T11:28:45.397496175+02:00"
     description: VSHN Postgres
-    digest: b9463d670fa38e989014abfda45c5eb906812b000c3b24a3168dc7d98f262128
+    digest: dba0f9e0ceb54c792797e03e39b44d688e6daad92d437045819cac4cf125ef76
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -73,4 +88,4 @@ entries:
     urls:
     - vshnPostgres-0.1.0.tgz
     version: 0.1.0
-generated: "2025-08-04T19:56:48.880240993+02:00"
+generated: "2025-08-20T11:28:45.379494416+02:00"
