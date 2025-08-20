@@ -76,8 +76,8 @@ function help() {
     printf "$COLUMN" "commit-with-llm" "" "Commit with llm generated commit message."
     printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
     # Test
-    printf "$COLUMN" "test-clusterIssuer" "" "Test cluster issuer."
-    printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
+    printf "$COLUMN" "test-chart-clusterIssuer" "" "Test cluster issuer."
+    printf "$COLUMN" "test-chart-odoo" "[clean]" "Setup Odoo chart and dependencies."
 }
 
 # Default vars
@@ -140,7 +140,7 @@ function setup-hosts() {
     grep -qxF "127.0.0.1 restic.local" /etc/hosts || echo "127.0.0.1 restic.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
-function test-k8s() {
+function test-chart-odoo() {
     if [ "$1" = "clean" ]; then
         echo "Cleanup environment"
         delete-kind
@@ -149,11 +149,11 @@ function test-k8s() {
         start-kind
         add-repos
         info
+        install-chart ingress-nginx
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         update-dependencies odoo
         install-chart odoo
-        install-ingress-nginx
     fi
 }
 
@@ -459,7 +459,7 @@ function install-clusterIssuer() {
         --values ./values.yaml
 }
 
-function test-clusterIssuer() {
+function test-chart-clusterIssuer() {
     echo "Apply certificate."
     cat <<EOF | kubectl apply -f -
 ---
