@@ -127,6 +127,7 @@ function info() {
     echo "Current-Context: $CURRENT_CONTEXT"
     echo "Context-Alias: $(get-context-alias)"
     echo "Namespace: $NAMESPACE"
+    echo "Release-Name: $RELEASE_NAME"
     echo "Custom-Domain: $CUSTOM_DOMAIN"
     echo "External-IP: $EXTERNAL_IP"
 }
@@ -368,6 +369,7 @@ function template-values {
     fi
 
     export ACME_EMAIL
+    export NAMESPACE
     export CUSTOM_DOMAIN
     export INFOMANIAK_API_TOKEN
     export FORGEJO_INSTANCE_TOKEN
@@ -501,7 +503,7 @@ function upgrade-release() {
     if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
         echo "Upgrade $1 chart for release $RELEASE_NAME in $NAMESPACE:"
         helm upgrade "$RELEASE_NAME" "$1" \
-            --namespace "$NAMESPACE"
+            --namespace "$NAMESPACE" \
             --values ./values.yaml
     else
         "upgrade-$1"
