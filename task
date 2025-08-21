@@ -52,8 +52,8 @@ function help() {
     printf "$COLUMN" "get-context-alias" "" "Get alias of current context."
     printf "$COLUMN" "template-values" "[ctx]" "Template values file."
     printf "$COLUMN" "update-dependencies" "[chart]" "Update dependencies for a chart."
-    printf "$COLUMN" "install-chart" "[chart][release]" "Install Helm chart."
-    printf "$COLUMN" "upgrade-release" "[chart][release]" "Upgrade Helm release."
+    printf "$COLUMN" "install-chart" "[chart]" "Install Helm chart."
+    printf "$COLUMN" "upgrade-release" "[chart]" "Upgrade Helm release."
     printf "$COLUMN" "uninstall-release" "[release]" "Uninstall Helm release."
     # kubectl
     printf "$COLUMN" "get-secrets" "[chart]" "Show secrets for chart."
@@ -123,11 +123,12 @@ function version() {
 }
 
 function info() {
-    echo "Current Context: $CURRENT_CONTEXT"
-    echo "Context Alias: $(get-context-alias)"
+    echo "OpenShift-Project: $OC_PROJECT"
+    echo "Current-Context: $CURRENT_CONTEXT"
+    echo "Context-Alias: $(get-context-alias)"
     echo "Namespace: $NAMESPACE"
-    echo "Custom Domain: $CUSTOM_DOMAIN"
-    echo "External IP: $EXTERNAL_IP"
+    echo "Custom-Domain: $CUSTOM_DOMAIN"
+    echo "External-IP: $EXTERNAL_IP"
 }
 
 function install() {
@@ -392,15 +393,10 @@ function install-chart() {
         oc project "$OC_PROJECT"
     fi
     template-values
-
-    RELEASE_NAME="$1"
-    if [ -n "$2" ]; then
-        RELEASE_NAME="$2"
-    fi
-    RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
+    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
     if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
-        echo "Install chart $1 as release $RELEASE_NAME."
+        echo "Install chart $1 as release $RELEASE_NAME in $NAMESPACE:"
         helm install "$RELEASE_NAME" "$1" \
             --create-namespace --namespace "$NAMESPACE" \
             --values ./values.yaml
@@ -499,16 +495,13 @@ EOF
 
 function upgrade-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    RELEASE_NAME="$1"
-    if [ -n "$2" ]; then
-        RELEASE_NAME="$2"
-    fi
-    RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
+    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
     template-values
 
     if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
-        echo "Upgrade $1 chart for release $RELEASE_NAME."
+        echo "Upgrade $1 chart for release $RELEASE_NAME in $NAMESPACE:"
         helm upgrade "$RELEASE_NAME" "$1" \
+            --namespace "$NAMESPACE"
             --values ./values.yaml
     else
         "upgrade-$1"
@@ -649,11 +642,7 @@ function logs-ingress-nginx() {
 
 function template-manifest() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    RELEASE_NAME="$1"
-    if [ -n "$2" ]; then
-        RELEASE_NAME="$2"
-    fi
-    RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
+    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
     template-values
 
     echo "Template chart $1 as release $RELEASE_NAME into manifest.yaml."
