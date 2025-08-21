@@ -31,7 +31,7 @@ function help() {
     printf "$COLUMN" "save-kubeconfig" "[ctx]" "Save kubeconfig file in pass."
     printf "$COLUMN" "save-dotenv" "" "Store content of .env in pass entry."
     # Docs
-    printf "$COLUMN" "install" "" "Install node dependencies."
+    printf "$COLUMN" "install-vitepress" "" "Install node dependencies."
     printf "$COLUMN" "docs" "" "Generate Helm chart readmes."
     printf "$COLUMN" "lint" "" "Lint Helm charts."
     printf "$COLUMN" "dev-vitepress" "" "Start VitePress dev server."
@@ -132,7 +132,7 @@ function info() {
     echo "External-IP: $EXTERNAL_IP"
 }
 
-function install() {
+function install-vitepress() {
     pnpm install
 }
 
