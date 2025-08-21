@@ -52,9 +52,9 @@ function help() {
     printf "$COLUMN" "get-context-alias" "" "Get alias of current context."
     printf "$COLUMN" "template-values" "[ctx]" "Template values file."
     printf "$COLUMN" "update-dependencies" "[chart]" "Update dependencies for a chart."
-    printf "$COLUMN" "install-chart" "[chart][ns]" "Install Helm chart."
-    printf "$COLUMN" "upgrade-release" "[chart]" "Upgrade Helm release."
-    printf "$COLUMN" "uninstall-release" "" "Uninstall Helm release."
+    printf "$COLUMN" "install-chart" "[chart][release]" "Install Helm chart."
+    printf "$COLUMN" "upgrade-release" "[chart][release]" "Upgrade Helm release."
+    printf "$COLUMN" "uninstall-release" "[release]" "Uninstall Helm release."
     # kubectl
     printf "$COLUMN" "get-secrets" "[chart]" "Show secrets for chart."
     printf "$COLUMN" "exec-bash" "[chart]" "Open bash shell in container."
@@ -66,7 +66,7 @@ function help() {
     printf "$COLUMN" "login-oc" "" "Refresh the auth token for OpenShift."
     # Helm
     printf "$COLUMN" "add-repos" "" "Add the required Helm repos."
-    printf "$COLUMN" "template-manifest" "[chart][ctx]" "Template all charts with Helm."
+    printf "$COLUMN" "template-manifest" "[chart][release]" "Template all charts with Helm."
     printf "$COLUMN" "package-repo" "[chart]" "Package Helm charts."
     printf "$COLUMN" "index-repo" "" "Index Helm chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm chart files to dist."
@@ -76,12 +76,13 @@ function help() {
     printf "$COLUMN" "commit-with-llm" "" "Commit with llm generated commit message."
     printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
     # Test
-    printf "$COLUMN" "test-clusterIssuer" "" "Test cluster issuer."
-    printf "$COLUMN" "test-k8s" "[clean]" "Test Kubernetes environment."
+    printf "$COLUMN" "test-chart-clusterIssuer" "" "Test cluster issuer."
+    printf "$COLUMN" "test-chart-odoo" "[clean]" "Setup Odoo chart and dependencies."
 }
 
 # Default vars
 
+NAMESPACE=${NAMESPACE:="default"}
 OC_PROJECT=${OC_PROJECT:="odoo"}
 CONTAINER_REGISTRY=${CONTAINER_REGISTRY:="mintsystem/"}
 CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
@@ -124,6 +125,8 @@ function version() {
 function info() {
     echo "Current Context: $CURRENT_CONTEXT"
     echo "Context Alias: $(get-context-alias)"
+    echo "Namespace: $NAMESPACE"
+    echo "Custom Domain: $CUSTOM_DOMAIN"
     echo "External IP: $EXTERNAL_IP"
 }
 
@@ -140,7 +143,7 @@ function setup-hosts() {
     grep -qxF "127.0.0.1 restic.local" /etc/hosts || echo "127.0.0.1 restic.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
-function test-k8s() {
+function test-chart-odoo() {
     if [ "$1" = "clean" ]; then
         echo "Cleanup environment"
         delete-kind
@@ -149,11 +152,11 @@ function test-k8s() {
         start-kind
         add-repos
         info
+        install-chart ingress-nginx
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         update-dependencies odoo
         install-chart odoo
-        install-ingress-nginx
     fi
 }
 
@@ -364,6 +367,7 @@ function template-values {
     fi
 
     export ACME_EMAIL
+    export CUSTOM_DOMAIN
     export INFOMANIAK_API_TOKEN
     export FORGEJO_INSTANCE_TOKEN
 
@@ -396,9 +400,9 @@ function install-chart() {
     RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
 
     if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
-
         echo "Install chart $1 as release $RELEASE_NAME."
         helm install "$RELEASE_NAME" "$1" \
+            --create-namespace --namespace "$NAMESPACE" \
             --values ./values.yaml
     else
         "install-$1"
@@ -459,7 +463,7 @@ function install-clusterIssuer() {
         --values ./values.yaml
 }
 
-function test-clusterIssuer() {
+function test-chart-clusterIssuer() {
     echo "Apply certificate."
     cat <<EOF | kubectl apply -f -
 ---
@@ -495,7 +499,11 @@ EOF
 
 function upgrade-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+    RELEASE_NAME="$1"
+    if [ -n "$2" ]; then
+        RELEASE_NAME="$2"
+    fi
+    RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
     template-values
 
     if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
@@ -545,37 +553,38 @@ function upgrade-ingress-nginx() {
 function uninstall-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+    template-values
 
-    if [[ "$1" =~ (hugo|odoo|postgres|postgresql|vshnPostgres|k8up|deploymentUpdater|forgejoRunner) ]]; then
-        echo "Uninstall release $RELEASE_NAME."
-        helm uninstall "$RELEASE_NAME"
-    else
-        "uninstall-$1"
-    fi
+    # if [[ "$1" =~ (hugo|odoo|postgres|postgresql|vshnPostgres|k8up|deploymentUpdater|forgejoRunner) ]]; then
+    echo "Uninstall release $RELEASE_NAME."
+    helm uninstall "$RELEASE_NAME"
+    # else
+    #     "uninstall-$1"
+    # fi
 }
 
-function uninstall-ingress-nginx() {
-    echo "Uninstall release ingress-nginx."
-    helm uninstall ingress-nginx --namespace ingress-nginx
-}
+# function uninstall-ingress-nginx() {
+#     echo "Uninstall release ingress-nginx."
+#     helm uninstall ingress-nginx --namespace ingress-nginx
+# }
 
-function uninstall-haproxy-ingress() {
-    echo "Uninstall release haproxy-ingress."
-    helm uninstall haproxy-ingress --namespace haproxy-ingress
-}
+# function uninstall-haproxy-ingress() {
+#     echo "Uninstall release haproxy-ingress."
+#     helm uninstall haproxy-ingress --namespace haproxy-ingress
+# }
 
-function uninstall-cert-manager() {
-    echo "Uninstall release cert-manager."
-    helm uninstall cert-manager --namespace cert-manager
+# function uninstall-cert-manager() {
+#     echo "Uninstall release cert-manager."
+#     helm uninstall cert-manager --namespace cert-manager
 
-    echo "Delete Infomaniak webhook"
-    kubectl delete -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
-}
+#     echo "Delete Infomaniak webhook"
+#     kubectl delete -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
+# }
 
-function uninstall-clusterIssuer() {
-    echo "Uninstall release clusterIssuer."
-    helm uninstall clusterIssuer --namespace cert-manager
-}
+# function uninstall-clusterIssuer() {
+#     echo "Uninstall release clusterIssuer."
+#     helm uninstall clusterIssuer --namespace cert-manager
+# }
 
 # kubectl Commands
 
@@ -639,11 +648,17 @@ function logs-ingress-nginx() {
 # Helm Commands
 
 function template-manifest() {
-    template-values "$2"
-    echo "Template chart $1 into manifest.yaml."
+    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+    RELEASE_NAME="$1"
+    if [ -n "$2" ]; then
+        RELEASE_NAME="$2"
+    fi
+    RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
+    template-values
+
+    echo "Template chart $1 as release $RELEASE_NAME into manifest.yaml."
 
     if [[ "$1" =~ (hugo|odoo|postgres|deploymentUpdater|forgejoRunner) ]]; then
-        RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
         helm --debug template "$RELEASE_NAME" "$1" \
             --values ./values.yaml > manifest.yaml
     elif [ "$1" = "clusterIssuer" ]; then

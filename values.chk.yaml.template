@@ -1,9 +1,10 @@
 ingress:
     host: "odoo.chk.mintcloud.ch"
+    customDomain: "$CUSTOM_DOMAIN"
     clusterIssuerRef: letsencrypt-http-prod
 acme:
     email: $ACME_EMAIL
     infomaniakApiToken: "$INFOMANIAK_API_TOKEN"
-postgres:
-    storageClassName: csi-cinder-sc-retain
 storageClassName: csi-cinder-sc-retain
+addonsGitRepos:
+ - https://github.com/odoo/design-themes.git#18.0

@@ -16,9 +16,9 @@ jobs:
           python-version: '3.12'
       - name: Install uv
         uses: astral-sh/setup-uv@v5
-      - name: Run task clone taskfile
+      - name: Clone taskfile
         run: ./task clone-taskfile
-      - name: Run task template .env
+      - name: Template .env
         run: ./task template-dotenv
-      - name: Run task test-k8s
-        run: ./task test-k8s
+      - name: Test chart odoo
+        run: ./task test-chart-odoo
