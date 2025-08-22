@@ -82,7 +82,7 @@ function help() {
 
 # Default vars
 
-NAMESPACE=${NAMESPACE:="default"}
+NAMESPACE=${NAMESPACE:="$(kubens -c)"}
 OC_PROJECT=${OC_PROJECT:="odoo"}
 CONTAINER_REGISTRY=${CONTAINER_REGISTRY:="mintsystem/"}
 CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
@@ -220,8 +220,8 @@ function docs() {
     pnpm run generate-readme --values postgres/values.yaml -r postgres/README.md
     pnpm run generate-readme --values vshnPostgres/values.yaml -r vshnPostgres/README.md
     pnpm run generate-readme --values hugo/values.yaml -r hugo/README.md
-    # pnpm run generate-readme --values deploymentUpdater/values.yaml -r deploymentUpdater/README.md
     pnpm run generate-readme --values forgejoRunner/values.yaml -r forgejoRunner/README.md
+    pnpm run generate-readme --values s3/values.yaml -r s3/README.md
 }
 
 function lint() {
@@ -232,6 +232,7 @@ function lint() {
     helm lint hugo
     helm lint deploymentUpdater
     helm lint forgejoRunner
+    helm lint s3
 }
 
 function dev-vitepress() {
@@ -320,6 +321,7 @@ function forward-haproxy-ingress() {
 
 function list-chart() {
     echo "cnpg"
+    echo "s3"
     echo "k8up"
     echo "deploymentUpdater"
     echo "postgresql"
@@ -376,6 +378,8 @@ function template-values {
     export CUSTOM_DOMAIN
     export INFOMANIAK_API_TOKEN
     export FORGEJO_INSTANCE_TOKEN
+    export EXOSCALE_IAM_KEY
+    export EXOSCALE_IAM_SECRET
 
     if [ -n "$ALIAS" ]; then
         echo "Template values.yaml from values.$ALIAS.yaml.template"
@@ -400,7 +404,7 @@ function install-chart() {
     template-values
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
+    if [[ "$1" =~ (s3|hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
         echo "Install chart $1 as release $RELEASE_NAME in $NAMESPACE:"
         helm install "$RELEASE_NAME" "$1" \
             --create-namespace --namespace "$NAMESPACE" \
@@ -503,7 +507,7 @@ function upgrade-release() {
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
     template-values
 
-    if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
+    if [[ "$1" =~ (s3|hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
         echo "Upgrade $1 chart for release $RELEASE_NAME in $NAMESPACE:"
         helm upgrade "$RELEASE_NAME" "$1" \
             --namespace "$NAMESPACE" \
@@ -553,36 +557,9 @@ function uninstall-release() {
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
     template-values
 
-    # if [[ "$1" =~ (hugo|odoo|postgres|postgresql|vshnPostgres|k8up|deploymentUpdater|forgejoRunner) ]]; then
     echo "Uninstall release $RELEASE_NAME."
     helm uninstall "$RELEASE_NAME"
-    # else
-    #     "uninstall-$1"
-    # fi
 }
-
-# function uninstall-ingress-nginx() {
-#     echo "Uninstall release ingress-nginx."
-#     helm uninstall ingress-nginx --namespace ingress-nginx
-# }
-
-# function uninstall-haproxy-ingress() {
-#     echo "Uninstall release haproxy-ingress."
-#     helm uninstall haproxy-ingress --namespace haproxy-ingress
-# }
-
-# function uninstall-cert-manager() {
-#     echo "Uninstall release cert-manager."
-#     helm uninstall cert-manager --namespace cert-manager
-
-#     echo "Delete Infomaniak webhook"
-#     kubectl delete -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
-# }
-
-# function uninstall-clusterIssuer() {
-#     echo "Uninstall release clusterIssuer."
-#     helm uninstall clusterIssuer --namespace cert-manager
-# }
 
 # kubectl Commands
 
@@ -616,6 +593,11 @@ function get-secrets() {
     if [ "$1" = "forgejoRunner" ]; then
         echo "forgejo-runner/forgejoInstanceToken:"
         kubectl get secret forgejo-runner -o jsonpath="{.data.forgejoInstanceToken}" | base64 --decode && echo
+    fi
+
+    if [ "$1" = "s3" ]; then
+        echo "s3-credentials/password:"
+        kubectl get secret s3-credentials -o jsonpath="{.data.password}" | base64 --decode && echo
     fi
 }
 
@@ -652,7 +634,7 @@ function template-manifest() {
 
     echo "Template chart $1 as release $RELEASE_NAME into manifest.yaml."
 
-    if [[ "$1" =~ (hugo|odoo|postgres|deploymentUpdater|forgejoRunner) ]]; then
+    if [[ "$1" =~ (s3|hugo|odoo|postgres|deploymentUpdater|forgejoRunner) ]]; then
         helm --debug template "$RELEASE_NAME" "$1" \
             --values ./values.yaml > manifest.yaml
     elif [ "$1" = "clusterIssuer" ]; then
@@ -678,6 +660,7 @@ function package-repo() {
         helm package vshnPostgres
         helm package odoo
         helm package hugo
+        helm package s3
     fi
 }
 

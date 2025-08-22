@@ -8,3 +8,7 @@ acme:
 storageClassName: csi-cinder-sc-retain
 addonsGitRepos:
  - https://github.com/odoo/design-themes.git#18.0
+endpoint: "https://sos-ch-gva-2.exo.io"
+bucket: "k8up.mintcloud.ch"
+username: "$EXOSCALE_IAM_KEY"
+password: "$EXOSCALE_IAM_SECRET"

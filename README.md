@@ -34,6 +34,7 @@ helm install "$NAME" "kubernetes-build/$NAME"
 
 List of charts:
 
+* [s3](/s3/README.md)
 * [clusterIssuer](/clusterIssuer/README.md)
 * [odoo](/odoo/README.md)
 * [postgres](/postgres/README.md)
