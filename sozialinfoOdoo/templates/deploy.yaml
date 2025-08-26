@@ -30,18 +30,36 @@ spec:
             - /bin/bash
             - -c
             - |
-              {{- if .Values.downloadOdooEnterprise }}/entrypoint.sh download-git-archive && \{{- end }}
+              set -e
+              
+              # Download Odoo Enterprise if enabled
+              {{- if .Values.downloadOdooEnterprise }}
+              /entrypoint.sh download-odoo-enterprise && \
+              {{- end }}
+              
+              # Clone all addon repositories
               /entrypoint.sh git-clone-addons && \
-              pip install unittest-xml-reporting unidecode xmlschema codicefiscale asn1crypto && \
-              {{- $addonPaths := list -}}
-              {{- range .Values.addonsGitRepos -}}
-              {{- $repoPath := . | replace "https://github.com/" "" | replace ".git#16.0" "" -}}
-              {{- $addonPaths = append $addonPaths (printf "%sgithub.com/%s" $.Values.persistence.mountPath $repoPath) -}}
-              {{- end -}}
-              manifestoo --addons-path {{ join "," $addonPaths }} --select-found list --separator=, > /tmp/addons.txt && \
-              ADDONS=$(cat /tmp/addons.txt) && \
+              
+              # Initialize the database
               /entrypoint.sh init-db && \
-              /entrypoint.sh init-module $ADDONS
+              
+              # Install Sozialinfo-specific modules
+              SOZIALINFO_ADDONS=$(manifestoo --select-addons-dir /var/lib/odoo/git/github.com/sozialinfo/odoo-apps-sozialinfo list --separator=,) && \
+              /entrypoint.sh init-module $SOZIALINFO_ADDONS && \
+              
+              # Configure API endpoints and keys
+              odoo shell --database "$ODOO_DATABASE" << 'EOF'
+              # Sync FastAPI registry
+              env.ref('fastapi_base.fastapi_sozialinfo_endpoint_customerportal').action_sync_registry()
+              # Create test API key
+              env['auth.api.key'].create({
+                  'name': 'Test Key', 
+                  'key': 'Ys+wIclz/CVQ8UL6Pcozmi9M5FKjt4HxY6xXyKJ3j+M=', 
+                  'user_id': 6
+              })
+              env.cr.commit()
+              EOF
+
           envFrom:
             - secretRef:
                 name: {{ .Values.githubAddonsCredentialsSecretName }}
