@@ -82,7 +82,6 @@ function help() {
 
 # Default vars
 
-NAMESPACE=${NAMESPACE:="$(kubens -c)"}
 OC_PROJECT=${OC_PROJECT:="odoo"}
 CONTAINER_REGISTRY=${CONTAINER_REGISTRY:="mintsystem/"}
 CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
@@ -126,7 +125,7 @@ function info() {
     echo "OpenShift-Project: $OC_PROJECT"
     echo "Current-Context: $CURRENT_CONTEXT"
     echo "Context-Alias: $(get-context-alias)"
-    echo "Namespace: $NAMESPACE"
+    echo "Namespace: $(kubens -c)"
     echo "Release-Name: $RELEASE_NAME"
     echo "Custom-Domain: $CUSTOM_DOMAIN"
     echo "External-IP: $EXTERNAL_IP"
@@ -374,7 +373,6 @@ function template-values {
     fi
 
     export ACME_EMAIL
-    export NAMESPACE
     export CUSTOM_DOMAIN
     export INFOMANIAK_API_TOKEN
     export FORGEJO_INSTANCE_TOKEN
@@ -405,9 +403,8 @@ function install-chart() {
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
     if [[ "$1" =~ (s3|hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
-        echo "Install chart $1 as release $RELEASE_NAME in $NAMESPACE:"
+        echo "Install chart $1 as release $RELEASE_NAME:"
         helm install "$RELEASE_NAME" "$1" \
-            --create-namespace --namespace "$NAMESPACE" \
             --values ./values.yaml
     else
         "install-$1"
@@ -508,9 +505,8 @@ function upgrade-release() {
     template-values
 
     if [[ "$1" =~ (s3|hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
-        echo "Upgrade $1 chart for release $RELEASE_NAME in $NAMESPACE:"
+        echo "Upgrade $1 chart for release $RELEASE_NAME:"
         helm upgrade "$RELEASE_NAME" "$1" \
-            --namespace "$NAMESPACE" \
             --values ./values.yaml
     else
         "upgrade-$1"
@@ -557,7 +553,7 @@ function uninstall-release() {
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
     template-values
 
-    echo "Uninstall release $RELEASE_NAME."
+    echo "Uninstall release $RELEASE_NAME:"
     helm uninstall "$RELEASE_NAME"
 }
 
