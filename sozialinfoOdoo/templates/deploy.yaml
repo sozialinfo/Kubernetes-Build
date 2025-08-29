@@ -51,12 +51,19 @@ spec:
               odoo shell --database "$ODOO_DATABASE" << 'EOF'
               # Sync FastAPI registry
               env.ref('fastapi_base.fastapi_sozialinfo_endpoint_customerportal').action_sync_registry()
-              # Create test API key
-              env['auth.api.key'].create({
-                  'name': 'Test Key', 
-                  'key': 'Ys+wIclz/CVQ8UL6Pcozmi9M5FKjt4HxY6xXyKJ3j+M=', 
-                  'user_id': 6
-              })
+              
+              # Create test API key only if it doesn't exist
+              existing_key = env['auth.api.key'].search([('name', '=', 'Test Key')])
+              if not existing_key:
+                  env['auth.api.key'].create({
+                      'name': 'Test Key', 
+                      'key': 'Ys+wIclz/CVQ8UL6Pcozmi9M5FKjt4HxY6xXyKJ3j+M=', 
+                      'user_id': 6
+                  })
+                  print("Created Test Key")
+              else:
+                  print("Test Key already exists, skipping creation")
+              
               env.cr.commit()
               EOF
 
@@ -76,6 +83,9 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-odoo-db-app
                   key: password
+            {{- end }}
+            {{- if .Values.extraEnv }}
+            {{- tpl .Values.extraEnv . | nindent 12 }}
             {{- end }}
           {{- if .Values.persistence.enabled }}
           volumeMounts:
@@ -113,7 +123,7 @@ spec:
               value: "http://{{ tpl .Values.externalServices.meilisearch.serviceName . }}:{{ .Values.externalServices.meilisearch.port }}"
             {{- end }}
             {{- if .Values.extraEnv }}
-            {{- .Values.extraEnv | nindent 12 }}
+            {{- tpl .Values.extraEnv . | nindent 12 }}
             {{- end }}
           {{- if .Values.persistence.enabled  }}
           volumeMounts:
