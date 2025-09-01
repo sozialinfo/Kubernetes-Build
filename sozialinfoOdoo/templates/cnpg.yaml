@@ -11,7 +11,7 @@ spec:
     initdb:
       database: {{ .Values.cnpg.cluster.bootstrap.initdb.name }}
       owner: {{ .Values.cnpg.cluster.bootstrap.initdb.user }}
-      postInitSQL:
+      postInitApplicationSQL:
         - CREATE EXTENSION IF NOT EXISTS "pg_trgm";
   postgresql:
     major: {{ .Values.cnpg.cluster.bootstrap.initdb.majorVersion }}
