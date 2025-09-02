@@ -76,6 +76,10 @@ addonsGitRepos:
   - https://github.com/OCA/Server-Tools.git#16.0
   - https://github.com/OCA/Project.git#16.0
   - https://github.com/sozialinfo/odoo-apps-sozialinfo.git#16.0
+## @param additionalModulesToInstall List of additional Odoo modules to install alongside Sozialinfo modules
+##
+additionalModulesToInstall:
+  - server_environment_ir_config_parameter
 ## @param database The database for odoo
 ##
 database: odoo

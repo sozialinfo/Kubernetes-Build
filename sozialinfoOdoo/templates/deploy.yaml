@@ -47,6 +47,12 @@ spec:
               SOZIALINFO_ADDONS=$(manifestoo --select-addons-dir /var/lib/odoo/git/github.com/sozialinfo/odoo-apps-sozialinfo list --separator=,) && \
               /entrypoint.sh init-module $SOZIALINFO_ADDONS && \
               
+              {{- if .Values.additionalModulesToInstall }}
+              # Install additional modules
+              ADDITIONAL_MODULES="{{ join "," .Values.additionalModulesToInstall }}" && \
+              /entrypoint.sh init-module $ADDITIONAL_MODULES && \
+              {{- end }}
+              
               # Configure API endpoints and keys
               odoo shell --database "$ODOO_DATABASE" << 'EOF'
               # Sync FastAPI registry
