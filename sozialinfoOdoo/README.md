@@ -33,12 +33,48 @@ kubectl create secret docker-registry dockerhub-registry-read \
 
 Replace `<your-namespace>`, `<your-dockerhub-username>`, and `<your-dockerhub-access-token>` with your actual DockerHub namespace, username, and access token.
 
-### 3. Install the Chart
+### 3. Add Uploadcare Secret
+```sh
+kubectl create secret generic odoo-uploadcare-secret \
+    --from-literal=public-key=<UPLOADCARE_PUBLIC_KEY> \
+    --from-literal=secret-key=<UPLOADCARE_SECRET_KEY> \
+    -n <namespace>
+```
+
+### 4. Install the Chart
 
 Install the chart using Helm:
 
 ```sh
 helm upgrade --install sozialinfo . -f values.yaml
+```
+
+## Configuration
+
+### External Services Integration
+
+The chart includes support for several external services through environment variables:
+
+- **Meilisearch**: For enhanced search functionality (`odoo-meilisearch-secret`)
+- **Uploadcare**: For file upload and management services (`odoo-uploadcare-secret`)
+- **Netlify**: For static site deployments (`odoo-netlify-secret`)
+- **Keycloak**: For OAuth authentication (`odoo-keycloak-secret`)
+
+Each service uses its own dedicated Kubernetes secret, which are referenced through the `extraEnv` section in values.yaml. You can customize which services to include by modifying the `extraEnv` configuration in your values.yaml file.
+
+### Adding Custom Environment Variables
+
+To add additional environment variables, update the `extraEnv` section in your values.yaml:
+
+```yaml
+extraEnv: |
+  - name: MY_CUSTOM_VAR
+    value: "my-custom-value"
+  - name: MY_SECRET_VAR
+    valueFrom:
+      secretKeyRef:
+        name: my-custom-secret
+        key: secret-key
 ```
 
 ## Parameters
