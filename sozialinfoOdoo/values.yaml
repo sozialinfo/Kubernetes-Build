@@ -13,9 +13,6 @@ ingress:
   ## @param ingress.host The host for the ingress
   ##
   host: odoo.knd.local
-  ## @param ingress.customDomain The custom domain for the ingress
-  ##
-  customDomain: ""
 
 ## @section CloudNativePG parameters
 ##

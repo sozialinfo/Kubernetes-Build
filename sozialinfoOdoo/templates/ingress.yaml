@@ -33,32 +33,10 @@ spec:
             name: odoo
             port:
               number: 8069
-  {{- if .Values.ingress.customDomain }}
-  - host: {{.Values.ingress.customDomain }}
-    http:
-      paths:
-      - path: /websocket
-        pathType: Prefix
-        backend:
-          service:
-            name: odoo
-            port:
-              number: 8072
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: odoo
-            port:
-              number: 8069
-  {{- end }}
   {{- if .Values.ingress.clusterIssuerRef }}
   tls:
     - hosts:
       - {{.Values.ingress.host }}
-      {{- if .Values.ingress.customDomain }}
-      - {{ .Values.ingress.customDomain }}
-      {{- end }}
       secretName: odoo-ingress-cert
   {{- end }}
 {{- end }}
