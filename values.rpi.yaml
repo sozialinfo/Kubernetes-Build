@@ -2,6 +2,5 @@ ingress:
     host: "janikvonrotz.k3s.raspberrypi.build"
     clusterIssuerRef: letsencrypt-http-prod
 acme:
-    email: $ACME_EMAIL
+    email: login@janikvonrotz.ch
     solver:
-forgejoInstanceToken: $FORGEJO_INSTANCE_TOKEN

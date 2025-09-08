@@ -2,6 +2,16 @@
 
 Setup a Forgejo runner to run actions.
 
+## Secrets
+
+To register the runner set up a `forgejo-runner` secret with the token.
+
+```bash
+kubectl create secret generic forgejo-runner \
+    --from-literal=forgejoInstanceToken="$FORGEJO_INSTANCE_TOKEN" \
+    -n <namespace>
+```
+
 ## Parameters
 
 ### Forgejo Runner parameters
@@ -12,4 +22,3 @@ Setup a Forgejo runner to run actions.
 | `forgejoInstanceUrl`   | Forgejo instance url.                       | `https://codeberg.org`              |
 | `secretRef`            | The secret reference for the Forgejo Runner | `forgejo-runner`                    |
 | `forgejoInstanceToken` | Forgejo instance access token.              | `""`                                |
-
