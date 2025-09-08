@@ -151,7 +151,6 @@ function test-chart-odoo() {
     if [ "$1" = "clean" ]; then
         echo "Cleanup environment"
         delete-kind
-        rm values.yaml
     else
         start-kind
         add-repos
