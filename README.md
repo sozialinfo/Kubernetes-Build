@@ -16,6 +16,8 @@ The Mint System collection of Helm charts.
 
 ## Usage
 
+You can use this project as any other Helm chart repository.
+
 Add [this Helm repository](/index.yaml).
 
 ```bash
@@ -46,7 +48,9 @@ Setup a local Kubernetes cluster and deploy the Helm charts.
 
 ### Requirements
 
-* Install [Helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+Setup the required tools:
+
+* [helm](https://helm.sh/docs/intro/install/), [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) and [kubctx](https://kubectx.dev/)
 * Setup [kind](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/docs/)
 * Optional: bash/zsh alias `task='./task'` with [completion](https://taskfile.build/#completion).
 
@@ -59,13 +63,13 @@ cd Kubernetes-Build
 
 ### Start Kubernetes cluster
 
-Start Kubernetes with `kind`.
+Start cluster with `kind`.
 
 ```bash
 task start-kind
 ```
 
-Or start Kubernetes with `minikube`.
+Or start cluster with `minikube`.
 
 ```bash
 task start-minikube
@@ -73,24 +77,16 @@ task start-minikube
 
 ### Deploy Odoo chart
 
-Ensure you have `kubectl` installed and can access the cluster.
-
-Add chart dependencies.
+Add Helm chart repos.
 
 ```bash
 task add-repos
 ```
 
-If not already done setup the local hostnames.
+Ssetup the local hostnames.
 
 ```bash
 task setup-hosts
-```
-
-Template the .env file.
-
-```bash
-task template-dotenv
 ```
 
 Install the CloudNativePG chart:
@@ -105,7 +101,7 @@ Install the Odoo chart:
 task install-chart odoo
 ```
 
-The Odoo database will be initialized automtically.
+The Odoo database will be initialized automatically.
 
 Once the pod is ready, run this command to port forward the service:
 
@@ -141,21 +137,9 @@ Forward the haproxy-ingress port.
 task forward haproxy-ingress
 ```
 
-### Release charts
+## Deploy
 
-Adjust the version in the `Chart.yaml` files.
-
-Create new packages for all charts.
-
-```bash
-task package-repo
-```
-
-Commit and push the files.
-
-## Usage
-
-You can use this project to deploy to these Kubernetes clusters:
+You can use this project to deploy the charts to these Kubernetes clusters:
 
 * [APPUiO](#APPUiO)
 * [Infomaniak](#Infomaniak)
@@ -185,44 +169,23 @@ oc new-project odoo
 
 #### Create Odoo release
 
-Add this Helm repo to the local index.
+Add Helm repos to the local index.
 
 ```bash
 task add-repos
 ```
 
+Switch context to `axo`.
+
+```bash
+task switch-context axo
+```
+
 Install the Helm release.
 
 ```bash
-task install-chart odoo axo
+task install-chart odoo
 ```
-
-#### Publish Helm charts
-
-In your zone open *Helm > Tab Repositories > Create > Repository* and enter:
-
-* **Name**: `kubernetes-build`
-* **Display name**: `Kubernetes Build`
-* **Description**: `The Mint System collection of Helm charts.`
-* **URL**: <https://kubernetes.build>
-
-#### Create release from web console
-
-In your zone open *Helm > Tab Helm Releases > Create > Helm Release* and filter `Odoo`. Click on the Helm chart and select *Create*.
-
-Change these values:
-
-```yaml
-ingress:
-  host: odoo.axo.mintcloud.ch
-  secure: true
-vshnPostgres:
-  enabled: true
-postgres:
-  enabled: false
-```
-
-Confirm with *Create*.
 
 ### Infomaniak
 
@@ -238,6 +201,12 @@ Download the Kubeconfig file and move it.
 mv ~/Downloads/pck-XXXXXXX-kubeconfig ~/.kube/config.chk
 export KUBECONFIG=~/.kube/config.chk
 kubectl get namespaces
+```
+
+Switch context to `chk`.
+
+```bash
+task switch-context chk
 ```
 
 #### Setup ingress nginx
@@ -285,6 +254,12 @@ task install-chart odoo
 Setup K3s cluster with Ansible: <https://ansible.build/roles/k3s/>
 
 Setup Kubeconfig with alias `rpi`.
+
+Switch context to `rpi`.
+
+```bash
+task switch-context rpi
+```
 
 #### Setup ingress nginx
 

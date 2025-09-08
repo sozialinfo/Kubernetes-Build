@@ -31,7 +31,7 @@ function help() {
     printf "$COLUMN" "save-kubeconfig" "[ctx]" "Save kubeconfig file in pass."
     printf "$COLUMN" "save-dotenv" "" "Store content of .env in pass entry."
     # Docs
-    printf "$COLUMN" "install" "" "Install node dependencies."
+    printf "$COLUMN" "install-vitepress" "" "Install node dependencies."
     printf "$COLUMN" "docs" "" "Generate Helm chart readmes."
     printf "$COLUMN" "lint" "" "Lint Helm charts."
     printf "$COLUMN" "dev-vitepress" "" "Start VitePress dev server."
@@ -50,10 +50,9 @@ function help() {
     printf "$COLUMN" "switch-context" "" "Switch kubeconfig file."
     printf "$COLUMN" "show-context" "" "Show active kubeconfig."
     printf "$COLUMN" "get-context-alias" "" "Get alias of current context."
-    printf "$COLUMN" "template-values" "[ctx]" "Template values file."
     printf "$COLUMN" "update-dependencies" "[chart]" "Update dependencies for a chart."
-    printf "$COLUMN" "install-chart" "[chart][release]" "Install Helm chart."
-    printf "$COLUMN" "upgrade-release" "[chart][release]" "Upgrade Helm release."
+    printf "$COLUMN" "install-chart" "[chart]" "Install Helm chart."
+    printf "$COLUMN" "upgrade-release" "[chart]" "Upgrade Helm release."
     printf "$COLUMN" "uninstall-release" "[release]" "Uninstall Helm release."
     # kubectl
     printf "$COLUMN" "get-secrets" "[chart]" "Show secrets for chart."
@@ -82,7 +81,6 @@ function help() {
 
 # Default vars
 
-NAMESPACE=${NAMESPACE:="default"}
 OC_PROJECT=${OC_PROJECT:="odoo"}
 CONTAINER_REGISTRY=${CONTAINER_REGISTRY:="mintsystem/"}
 CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
@@ -93,6 +91,13 @@ PASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
 if kubectl &> /dev/null; then
     CURRENT_CONTEXT=$(kubectl config current-context 2> /dev/null) || CURRENT_CONTEXT=""
 fi
+if kubens &> /dev/null; then
+    NAMESPACE=$(kubens -c)
+fi
+function get-context-alias() {
+    echo "$(basename "$(readlink "$HOME/.kube/config")" | cut -d '.' -f 2)"
+}
+CONTEXT_ALIAS=$(get-context-alias)
 
 # Import commands
 
@@ -123,14 +128,13 @@ function version() {
 }
 
 function info() {
-    echo "Current Context: $CURRENT_CONTEXT"
-    echo "Context Alias: $(get-context-alias)"
+    echo "OpenShift-Project: $OC_PROJECT"
+    echo "Current-Context: $CURRENT_CONTEXT"
+    echo "Context-Alias: $CONTEXT_ALIAS"
     echo "Namespace: $NAMESPACE"
-    echo "Custom Domain: $CUSTOM_DOMAIN"
-    echo "External IP: $EXTERNAL_IP"
 }
 
-function install() {
+function install-vitepress() {
     pnpm install
 }
 
@@ -147,7 +151,6 @@ function test-chart-odoo() {
     if [ "$1" = "clean" ]; then
         echo "Cleanup environment"
         delete-kind
-        rm values.yaml
     else
         start-kind
         add-repos
@@ -218,7 +221,6 @@ function docs() {
     pnpm run generate-readme --values postgres/values.yaml -r postgres/README.md
     pnpm run generate-readme --values vshnPostgres/values.yaml -r vshnPostgres/README.md
     pnpm run generate-readme --values hugo/values.yaml -r hugo/README.md
-    # pnpm run generate-readme --values deploymentUpdater/values.yaml -r deploymentUpdater/README.md
     pnpm run generate-readme --values forgejoRunner/values.yaml -r forgejoRunner/README.md
 }
 
@@ -339,10 +341,6 @@ function list-context() {
     echo "ksi (k8s.sozialinfo.ch)"
 }
 
-get-context-alias() {
-    echo "$(basename "$(readlink "$HOME/.kube/config")" | cut -d '.' -f 2)"
-}
-
 function switch-context() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
 
@@ -354,30 +352,13 @@ function switch-context() {
     echo "Setup symlink from $LINK_NAME to $TARGET"
     ln -s "$TARGET" "$LINK_NAME"
     chmod 0644 "$TARGET"
+
+    echo "Select namespace"
+    kubens
 }
 
 function show-context() {
-    ls -l "$HOME/.kube/config"
-}
-
-function template-values {
-    ALIAS="$1"
-    if [ -z "$ALIAS" ]; then
-        ALIAS="$(get-context-alias)"
-    fi
-
-    export ACME_EMAIL
-    export CUSTOM_DOMAIN
-    export INFOMANIAK_API_TOKEN
-    export FORGEJO_INSTANCE_TOKEN
-
-    if [ -n "$ALIAS" ]; then
-        echo "Template values.yaml from values.$ALIAS.yaml.template"
-        envsubst < "values.$ALIAS.yaml.template" > "values.yaml"
-    else
-        echo "Template values.yaml from values.yaml.template"
-        envsubst < "values.yaml.template" > "values.yaml"
-    fi
+    basename "$(readlink "$HOME/.kube/config")" | cut -d. -f2
 }
 
 function update-dependencies() {
@@ -391,19 +372,12 @@ function install-chart() {
         echo "Set oc project to $OC_PROJECT."
         oc project "$OC_PROJECT"
     fi
-    template-values
-
-    RELEASE_NAME="$1"
-    if [ -n "$2" ]; then
-        RELEASE_NAME="$2"
-    fi
-    RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
+    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
     if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
-        echo "Install chart $1 as release $RELEASE_NAME."
+        echo "Install chart $1 as release $RELEASE_NAME:"
         helm install "$RELEASE_NAME" "$1" \
-            --create-namespace --namespace "$NAMESPACE" \
-            --values ./values.yaml
+            --values "./values.${CONTEXT_ALIAS}.yaml"
     else
         "install-$1"
     fi
@@ -460,7 +434,7 @@ function install-clusterIssuer() {
     helm install \
         clusterIssuer clusterIssuer \
         --namespace cert-manager \
-        --values ./values.yaml
+        --values "./values.${CONTEXT_ALIAS}.yaml"
 }
 
 function test-chart-clusterIssuer() {
@@ -499,17 +473,12 @@ EOF
 
 function upgrade-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    RELEASE_NAME="$1"
-    if [ -n "$2" ]; then
-        RELEASE_NAME="$2"
-    fi
-    RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
-    template-values
+    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
     if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
-        echo "Upgrade $1 chart for release $RELEASE_NAME."
+        echo "Upgrade $1 chart for release $RELEASE_NAME:"
         helm upgrade "$RELEASE_NAME" "$1" \
-            --values ./values.yaml
+            --values "./values.${CONTEXT_ALIAS}.yaml"
     else
         "upgrade-$1"
     fi
@@ -535,7 +504,7 @@ function upgrade-clusterIssuer() {
     helm upgrade \
         clusterIssuer clusterIssuer \
         --namespace cert-manager \
-        --values ./values.yaml
+        --values "./values.${CONTEXT_ALIAS}.yaml"
 }
 function upgrade-ingress-nginx() {
     if [ -n "$EXTERNAL_IP" ]; then
@@ -553,38 +522,10 @@ function upgrade-ingress-nginx() {
 function uninstall-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
-    template-values
 
-    # if [[ "$1" =~ (hugo|odoo|postgres|postgresql|vshnPostgres|k8up|deploymentUpdater|forgejoRunner) ]]; then
-    echo "Uninstall release $RELEASE_NAME."
+    echo "Uninstall release $RELEASE_NAME:"
     helm uninstall "$RELEASE_NAME"
-    # else
-    #     "uninstall-$1"
-    # fi
 }
-
-# function uninstall-ingress-nginx() {
-#     echo "Uninstall release ingress-nginx."
-#     helm uninstall ingress-nginx --namespace ingress-nginx
-# }
-
-# function uninstall-haproxy-ingress() {
-#     echo "Uninstall release haproxy-ingress."
-#     helm uninstall haproxy-ingress --namespace haproxy-ingress
-# }
-
-# function uninstall-cert-manager() {
-#     echo "Uninstall release cert-manager."
-#     helm uninstall cert-manager --namespace cert-manager
-
-#     echo "Delete Infomaniak webhook"
-#     kubectl delete -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
-# }
-
-# function uninstall-clusterIssuer() {
-#     echo "Uninstall release clusterIssuer."
-#     helm uninstall clusterIssuer --namespace cert-manager
-# }
 
 # kubectl Commands
 
@@ -649,22 +590,17 @@ function logs-ingress-nginx() {
 
 function template-manifest() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    RELEASE_NAME="$1"
-    if [ -n "$2" ]; then
-        RELEASE_NAME="$2"
-    fi
-    RELEASE_NAME="$(echo "$RELEASE_NAME" | tr '[:upper:]' '[:lower:]')"
-    template-values
+    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
     echo "Template chart $1 as release $RELEASE_NAME into manifest.yaml."
 
     if [[ "$1" =~ (hugo|odoo|postgres|deploymentUpdater|forgejoRunner) ]]; then
         helm --debug template "$RELEASE_NAME" "$1" \
-            --values ./values.yaml > manifest.yaml
+            --values "./values.${CONTEXT_ALIAS}.yaml" > manifest.yaml
     elif [ "$1" = "clusterIssuer" ]; then
         helm --debug template clusterIssuer clusterIssuer \
             --namespace cert-manager \
-            --values ./values.yaml > manifest.yaml
+            --values "./values.${CONTEXT_ALIAS}.yaml" > manifest.yaml
     fi
 }
 

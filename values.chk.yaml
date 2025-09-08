@@ -1,10 +1,9 @@
 ingress:
-    host: "odoo.chk.mintcloud.ch"
-    customDomain: "$CUSTOM_DOMAIN"
+    host: "zita-haus.chk.mintcloud.ch"
+    customDomain: "zita.haus"
     clusterIssuerRef: letsencrypt-http-prod
 acme:
-    email: $ACME_EMAIL
-    infomaniakApiToken: "$INFOMANIAK_API_TOKEN"
+    email: login@janikvonrotz.ch
 storageClassName: csi-cinder-sc-retain
 addonsGitRepos:
  - https://github.com/odoo/design-themes.git#18.0
